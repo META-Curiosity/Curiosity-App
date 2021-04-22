@@ -1,29 +1,20 @@
+import 'package:curiosity_flutter/screens/good_morning_screen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        // title: Text('Onboarding'),
-        backgroundColor: Colors.amber,
-      ),
       body: Container(
         color: Colors.amber,
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Welcome to Curiosity',
-              style: TextStyle(color: Colors.white),
-            )
-          ],
+          children: <Widget>[GoodMorningScreen()],
         ),
       ),
       bottomNavigationBar: CurvedNavigationBar(
