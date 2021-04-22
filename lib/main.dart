@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'onboarding_page.dart';
+import 'screens/set_custom_tasks_screen.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 
 void main() {
@@ -14,12 +15,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          body: Container(
-            child: MyHomePage(),
-          ),
-        ));
+      initialRoute: '/',
+      routes: {
+        // When navigating to the "/" route, build the FirstScreen widget.
+        '/': (context) => Scaffold(
+              body: Container(
+                child: MyHomePage(),
+              ),
+            ),
+        // When navigating to the "/second" route, build the SecondScreen widget.
+        '/set_custom_tasks': (context) => Scaffold(
+              body: Container(
+                child: SetCustomTasksScreen(),
+              ),
+            ),
+      },
+    );
   }
 }
 

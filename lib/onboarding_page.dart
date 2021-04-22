@@ -1,4 +1,4 @@
-import 'package:curiosity_flutter/screens/good_morning_screen.dart';
+import 'package:curiosity_flutter/screens/start_journey_screen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,14 +9,13 @@ class OnboardingPage extends StatelessWidget {
     // TODO: implement build
     return Scaffold(
       body: Container(
-        color: Colors.amber,
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[GoodMorningScreen()],
-        ),
-      ),
+          color: Colors.amber,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[StartJourneyScreen()],
+          )),
       bottomNavigationBar: CurvedNavigationBar(
         color: Colors.white,
         backgroundColor: Colors.amber,
