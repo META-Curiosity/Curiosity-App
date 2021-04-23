@@ -25,6 +25,11 @@ class MyApp extends StatelessWidget {
             ),
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/set_custom_tasks': (context) => Scaffold(
+              appBar: AppBar(
+                leading: BackButton(),
+                backgroundColor: Color(0xFFF6C344),
+                centerTitle: true,
+              ),
               body: Container(
                 child: SetCustomTasksScreen(),
               ),

@@ -51,6 +51,7 @@ flutter:
     - assets/images/mindfulness.svg
     - assets/images/target.svg
     - assets/images/edit.svg
+    - assets/images/plus.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
