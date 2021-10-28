@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'onboarding_page.dart';
 import 'screens/set_custom_tasks_screen.dart';
+import 'screens/input_tasks_screen.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 
 void main() {
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/',
+      initialRoute: '/set_custom_tasks',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -32,6 +33,18 @@ class MyApp extends StatelessWidget {
               ),
               body: Container(
                 child: SetCustomTasksScreen(),
+              ),
+            ),
+        '/input_tasks': (context) => Scaffold(
+              appBar: AppBar(
+                //centerTitle: true,
+                leading: BackButton(),
+                //title: Text('New Task'),
+                backgroundColor: Color(0xFFF6C344),
+              ),
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: InputTasksScreen(),
               ),
             ),
       },
