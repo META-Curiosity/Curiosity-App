@@ -37,7 +37,9 @@ class MyApp extends StatelessWidget {
             ),
         '/input_tasks': (context) => Scaffold(
               appBar: AppBar(
+                //centerTitle: true,
                 leading: BackButton(),
+                //title: Text('New Task'),
                 backgroundColor: Color(0xFFF6C344),
               ),
               resizeToAvoidBottomInset: true,
