@@ -80,6 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
+    users.add({
+      'name': "webapp", // ios //android
+    });
 
     windowHeight = MediaQuery.of(context).size.height;
     windowWidth = MediaQuery.of(context).size.width;
@@ -208,10 +211,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       context,
                       MaterialPageRoute(builder: (context) => OnboardingPage()),
                     );
-                    users.add({
-                      'full_name': "test", // John Doe
-                      'age': "age" // 42
-                    });
                     // final snackbar = SnackBar(content: Text("HI"));
                     // ScaffoldMessenger.of(context).showSnackBar(snackbar);
                   },
