@@ -2,17 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'onboarding_page.dart';
 import 'screens/set_custom_tasks_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'screens/input_tasks_screen.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(App());
 }
 
-// final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+class App extends StatefulWidget {
+  _AppState createState() => _AppState();
+}
+
+FirebaseAuth auth = FirebaseAuth.instance;
+FirebaseFirestore firestore = FirebaseFirestore.instance;
+
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  _AppState createState() => _AppState();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -68,6 +79,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    users.add({
+      'name': "webapp", // ios //android
+    });
+
     windowHeight = MediaQuery.of(context).size.height;
     windowWidth = MediaQuery.of(context).size.width;
     switch (_pageState) {
@@ -195,7 +211,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       context,
                       MaterialPageRoute(builder: (context) => OnboardingPage()),
                     );
-                    //final snackbar = SnackBar(content: Text("HI"));
+                    // final snackbar = SnackBar(content: Text("HI"));
                     // ScaffoldMessenger.of(context).showSnackBar(snackbar);
                   },
                   child: Column(children: <Widget>[
@@ -302,5 +318,49 @@ class _OutlineBtnState extends State<OutlineBtn> {
         ),
       ),
     );
+  }
+}
+
+
+class _AppState extends State<App> {
+  // Set default `_initialized` and `_error` state to false
+  bool _initialized = false;
+  bool _error = false;
+
+  // Define an async function to initialize FlutterFire
+  void initializeFlutterFire() async {
+    try {
+      // Wait for Firebase to initialize and set `_initialized` state to true
+      await Firebase.initializeApp();
+      setState(() {
+        _initialized = true;
+      });
+    } catch(e) {
+      // Set `_error` state to true if Firebase initialization fails
+      setState(() {
+        _error = true;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    initializeFlutterFire();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Show error message if initialization failed
+    // if(_error) {
+    //   return SomethingWentWrong();
+    // }
+    //
+    // // Show a loader until FlutterFire is initialized
+    // if (!_initialized) {
+    //   return Loading();
+    // }
+
+    return MyApp();
   }
 }
