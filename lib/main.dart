@@ -1,6 +1,4 @@
-import 'package:curiosity_flutter/home.dart';
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
-import 'package:curiosity_flutter/provider/google_sign_in_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'onboarding_page.dart';
@@ -31,7 +29,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/set_custom_tasks',
+      initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -84,6 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    //Change page once user is logged in
     FirebaseAuth.instance
         .authStateChanges()
         .listen((User user) {
@@ -95,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
           MaterialPageRoute(builder: (context) => OnboardingPage()),
         );                      }
     });
-    GoogleSignInProvider();
+
     windowHeight = MediaQuery.of(context).size.height;
     windowWidth = MediaQuery.of(context).size.width;
     switch (_pageState) {
@@ -185,7 +184,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         borderRadius: BorderRadius.circular(50)),
                     child: Center(
                       child: Text(
-                        "Sign up with Google",
+                        "Sign in with Google",
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ),
