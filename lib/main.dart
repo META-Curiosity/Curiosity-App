@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'screens/input_tasks_screen.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -92,7 +94,14 @@ class _MyHomePageState extends State<MyHomePage> {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => OnboardingPage()),
-        );                      }
+        );
+        //Getting user hashed email example
+        var currentUser = FirebaseAuth.instance.currentUser;
+        if (currentUser != null) {
+          print(currentUser.email);
+          var output = sha256.convert(utf8.encode(currentUser.email)).toString();
+          print("Digest as hex string: $output");      // Print After Hashing
+        }}
     });
 
     windowHeight = MediaQuery.of(context).size.height;
