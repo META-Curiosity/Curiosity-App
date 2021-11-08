@@ -1,3 +1,6 @@
+import 'package:curiosity_flutter/home.dart';
+import 'package:curiosity_flutter/provider/google_sign_in.dart';
+import 'package:curiosity_flutter/provider/google_sign_in_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'onboarding_page.dart';
@@ -7,8 +10,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'screens/input_tasks_screen.dart';
 
-void main() {
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(App());
 }
 
@@ -63,6 +67,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -79,11 +84,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    users.add({
-      'name': "webapp", // ios //android
+    FirebaseAuth.instance
+        .authStateChanges()
+        .listen((User user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => OnboardingPage()),
+        );                      }
     });
-
+    GoogleSignInProvider();
     windowHeight = MediaQuery.of(context).size.height;
     windowWidth = MediaQuery.of(context).size.width;
     switch (_pageState) {
@@ -153,6 +165,27 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Center(
                       child: Text(
                         "Get Started",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                child: GestureDetector(
+                  onTap: ()  {
+                    signInWithGoogle();
+                  },
+                  child: Container(
+                    margin: EdgeInsets.all(50),
+                    padding: EdgeInsets.all(20),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        color: Color(0xFF3a82f7),
+                        borderRadius: BorderRadius.circular(50)),
+                    child: Center(
+                      child: Text(
+                        "Sign up with Google",
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ),
