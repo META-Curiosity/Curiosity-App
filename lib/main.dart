@@ -1,24 +1,21 @@
+import 'package:curiosity_flutter/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'models/custom_task.dart';
 import 'onboarding_page.dart';
 import 'screens/set_custom_tasks_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'screens/input_tasks_screen.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(App());
 }
 
 class App extends StatefulWidget {
   _AppState createState() => _AppState();
 }
-
-FirebaseAuth auth = FirebaseAuth.instance;
-FirebaseFirestore firestore = FirebaseFirestore.instance;
-
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -77,13 +74,31 @@ class _MyHomePageState extends State<MyHomePage> {
   double windowWidth = 0;
   double windowHeight = 0;
 
+  FireStoreService db;
+  List docs = [];
+  dynamic data = Null;
+
+  // [TODO]: authenticate the users because initializing the database
+  initialize() {
+    db = FireStoreService();
+    db.initialize('STUB');
+    Map<String, dynamic> data = {
+      "method": "open google chrome and watch youtube tutorials",
+      "title": "To do better",
+      "moment": "every day",
+      "proof": "create a new full stack application with nodejs and react"
+    };
+    db.updateTask("email2", "1", new CustomTask.fromData(data));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initialize();
+  }
+
   @override
   Widget build(BuildContext context) {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    users.add({
-      'name': "webapp", // ios //android
-    });
-
     windowHeight = MediaQuery.of(context).size.height;
     windowWidth = MediaQuery.of(context).size.width;
     switch (_pageState) {
@@ -321,46 +336,14 @@ class _OutlineBtnState extends State<OutlineBtn> {
   }
 }
 
-
 class _AppState extends State<App> {
-  // Set default `_initialized` and `_error` state to false
-  bool _initialized = false;
-  bool _error = false;
-
-  // Define an async function to initialize FlutterFire
-  void initializeFlutterFire() async {
-    try {
-      // Wait for Firebase to initialize and set `_initialized` state to true
-      await Firebase.initializeApp();
-      setState(() {
-        _initialized = true;
-      });
-    } catch(e) {
-      // Set `_error` state to true if Firebase initialization fails
-      setState(() {
-        _error = true;
-      });
-    }
-  }
-
   @override
   void initState() {
-    initializeFlutterFire();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Show error message if initialization failed
-    // if(_error) {
-    //   return SomethingWentWrong();
-    // }
-    //
-    // // Show a loader until FlutterFire is initialized
-    // if (!_initialized) {
-    //   return Loading();
-    // }
-
     return MyApp();
   }
 }
