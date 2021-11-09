@@ -78,17 +78,11 @@ class _MyHomePageState extends State<MyHomePage> {
   List docs = [];
   dynamic data = Null;
 
-  // [TODO]: authenticate the users because initializing the database
+  // [TODO]: authenticate the users and use hash id to initialize the database
   initialize() {
     db = FireStoreService();
+    // replace with user hash email
     db.initialize('STUB');
-    Map<String, dynamic> data = {
-      "method": "open google chrome and watch youtube tutorials",
-      "title": "To do better",
-      "moment": "every day",
-      "proof": "create a new full stack application with nodejs and react"
-    };
-    db.updateTask("email2", "1", new CustomTask.fromData(data));
   }
 
   @override
