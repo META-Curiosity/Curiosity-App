@@ -86,10 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // [TODO]: authenticate the users and use hash id to initialize the database
   initialize() {
     //Change page once user is logged in
-    print('before hitting firebase auth');
-    dynamic test = FirebaseAuth.instance.authStateChanges();
-    print('finsish insit auth state changes');
-    test.listen((User user) {
+    FirebaseAuth.instance.authStateChanges().listen((User user) {
       if (user == null) {
         print('User is currently signed out!');
         signedIn = false;
@@ -98,12 +95,20 @@ class _MyHomePageState extends State<MyHomePage> {
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
           print(currentUser.email);
-          var output =
+          String hashedEmail =
               sha256.convert(utf8.encode(currentUser.email)).toString();
-          print("Digest as hex string: $output"); // Print After Hashing
-          db = FireStoreService();
+          db = FireStoreService(hashedEmail);
           // replace with user hash email
-          db.initialize(output);
+          db.registerUser(hashedEmail, "-1", true).then((value) => {
+                setState(() {
+                  print("user = $value");
+                  signedIn = true;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => OnboardingPage()));
+                })
+              });
         }
       }
     });

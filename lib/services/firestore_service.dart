@@ -14,9 +14,8 @@ class FireStoreService {
   String uid;
   CollectionReference usersCollection;
 
-  initialize(String uid) {
-    usersCollection =
-        FirebaseFirestore.instance.collection(this.USER_DATABASE_NAME);
+  FireStoreService(String uid) {
+    usersCollection = FirebaseFirestore.instance.collection(USER_DATABASE_NAME);
     this.uid = uid;
   }
 
