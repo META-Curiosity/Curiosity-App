@@ -86,7 +86,10 @@ class _MyHomePageState extends State<MyHomePage> {
   // [TODO]: authenticate the users and use hash id to initialize the database
   initialize() {
     //Change page once user is logged in
-    FirebaseAuth.instance.authStateChanges().listen((User user) {
+    print('before hitting firebase auth');
+    dynamic test = FirebaseAuth.instance.authStateChanges();
+    print('finsish insit auth state changes');
+    test.listen((User user) {
       if (user == null) {
         print('User is currently signed out!');
         signedIn = false;
@@ -104,6 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }
     });
+    print("end");
   }
 
   @override
