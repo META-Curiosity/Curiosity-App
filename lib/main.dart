@@ -107,7 +107,6 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }
     });
-    print("end");
   }
 
   @override
@@ -195,6 +194,27 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               )
             ],
+          ),
+        ),
+        Container(
+          child: GestureDetector(
+            onTap: () {
+              signInWithGoogle();
+            },
+            child: Container(
+              margin: EdgeInsets.all(50),
+              padding: EdgeInsets.all(20),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  color: Color(0xFF3a82f7),
+                  borderRadius: BorderRadius.circular(50)),
+              child: Center(
+                child: Text(
+                  "Sign in with Google",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+            ),
           ),
         ),
         GestureDetector(
