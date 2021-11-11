@@ -1,16 +1,17 @@
-import 'package:curiosity_flutter/provider/google_sign_in.dart';
+import 'package:curiosity_flutter/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'onboarding_page.dart';
 import 'screens/set_custom_tasks_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'screens/input_tasks_screen.dart';
+import 'package:curiosity_flutter/provider/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
-Future main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(App());
@@ -20,10 +21,6 @@ class App extends StatefulWidget {
   _AppState createState() => _AppState();
 }
 
-FirebaseAuth auth = FirebaseAuth.instance;
-FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   _AppState createState() => _AppState();
@@ -31,7 +28,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/',
+      initialRoute: '/set_custom_tasks',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -67,7 +64,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -82,28 +78,43 @@ class _MyHomePageState extends State<MyHomePage> {
   double windowWidth = 0;
   double windowHeight = 0;
 
-  @override
-  Widget build(BuildContext context) {
+  FireStoreService db;
+  List docs = [];
+  dynamic data = Null;
+  bool signedIn = false;
+
+  // [TODO]: authenticate the users and use hash id to initialize the database
+  initialize() {
     //Change page once user is logged in
-    FirebaseAuth.instance
-        .authStateChanges()
-        .listen((User user) {
+    FirebaseAuth.instance.authStateChanges().listen((User user) {
       if (user == null) {
         print('User is currently signed out!');
+        signedIn = false;
       } else {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => OnboardingPage()),
-        );
         //Getting user hashed email example
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
           print(currentUser.email);
-          var output = sha256.convert(utf8.encode(currentUser.email)).toString();
-          print("Digest as hex string: $output");      // Print After Hashing
-        }}
+          var output =
+              sha256.convert(utf8.encode(currentUser.email)).toString();
+          print("Digest as hex string: $output"); // Print After Hashing
+          db = FireStoreService();
+          // replace with user hash email
+          db.initialize(output);
+        }
+      }
     });
+  }
 
+  @override
+  void initState() {
+    super.initState();
+    initialize();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("user sign in $signedIn");
     windowHeight = MediaQuery.of(context).size.height;
     windowWidth = MediaQuery.of(context).size.width;
     switch (_pageState) {
@@ -173,27 +184,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Center(
                       child: Text(
                         "Get Started",
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                child: GestureDetector(
-                  onTap: ()  {
-                    signInWithGoogle();
-                  },
-                  child: Container(
-                    margin: EdgeInsets.all(50),
-                    padding: EdgeInsets.all(20),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: Color(0xFF3a82f7),
-                        borderRadius: BorderRadius.circular(50)),
-                    child: Center(
-                      child: Text(
-                        "Sign in with Google",
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ),
@@ -362,46 +352,14 @@ class _OutlineBtnState extends State<OutlineBtn> {
   }
 }
 
-
 class _AppState extends State<App> {
-  // Set default `_initialized` and `_error` state to false
-  bool _initialized = false;
-  bool _error = false;
-
-  // Define an async function to initialize FlutterFire
-  void initializeFlutterFire() async {
-    try {
-      // Wait for Firebase to initialize and set `_initialized` state to true
-      await Firebase.initializeApp();
-      setState(() {
-        _initialized = true;
-      });
-    } catch(e) {
-      // Set `_error` state to true if Firebase initialization fails
-      setState(() {
-        _error = true;
-      });
-    }
-  }
-
   @override
   void initState() {
-    initializeFlutterFire();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Show error message if initialization failed
-    // if(_error) {
-    //   return SomethingWentWrong();
-    // }
-    //
-    // // Show a loader until FlutterFire is initialized
-    // if (!_initialized) {
-    //   return Loading();
-    // }
-
     return MyApp();
   }
 }
