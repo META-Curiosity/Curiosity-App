@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curiosity_flutter/models/custom_task.dart';
+import 'package:curiosity_flutter/models/nightly_evaluation.dart';
 import 'package:curiosity_flutter/models/user.dart';
 
 /* 
@@ -10,13 +11,17 @@ import 'package:curiosity_flutter/models/user.dart';
 */
 
 class FireStoreService {
-  final String USER_DATABASE_NAME = 'tb-test';
+  final String USER_DB_NAME = 'tb-test';
+  final String NIGHTLY_EVALUATION_DB_NAME = 'nightlyEval';
   String uid;
   CollectionReference usersCollection;
+  CollectionReference nightlyEvalCollection;
 
   FireStoreService(String uid) {
-    usersCollection = FirebaseFirestore.instance.collection(USER_DATABASE_NAME);
     this.uid = uid;
+    usersCollection = FirebaseFirestore.instance.collection(USER_DB_NAME);
+    nightlyEvalCollection =
+        usersCollection.doc(uid).collection(NIGHTLY_EVALUATION_DB_NAME);
   }
 
   // Read and return all data from the users database, result can be accessed
@@ -39,7 +44,6 @@ class FireStoreService {
     }
   }
 
-  // [TODO]: replace the parameter later to optional id
   // Querying for an user with the specific id. Result can be accessed
   // via the 'user' key
   Future<Map<String, dynamic>> getUserById(String id) async {
@@ -69,16 +73,20 @@ class FireStoreService {
   // Adding new user to the database, if successful the new user data can be
   // accessed via the 'user' key of the response
   Future<Map<String, dynamic>> registerUser(
-      String email, String labId, bool contributeData) async {
+      String hashedEmail, String labId, bool contributeData) async {
     print({
       "method": "registerUser",
-      "data": {"email": email, "labId": labId, "contributeData": contributeData}
+      "data": {
+        "email": hashedEmail,
+        "labId": labId,
+        "contributeData": contributeData
+      }
     });
     try {
       User user = new User();
       user.labId = "-1";
       // [TODO]: Hash the email to id
-      user.id = email;
+      user.id = hashedEmail;
       user.contributeData = contributeData;
 
       // Put the new user id into the db
@@ -95,10 +103,10 @@ class FireStoreService {
   // Upon successful update - the value of the new updated user can be accessed
   // in the key 'user' of the returned response
   Future<Map<String, dynamic>> updateTask(
-      String userId, String taskId, CustomTask newTask) async {
+      String taskId, CustomTask newTask) async {
     print({
       "method": "updateTask",
-      "userId": userId,
+      "userId": this.uid,
       "taskId": taskId,
       "newTask": newTask
     });
@@ -107,10 +115,10 @@ class FireStoreService {
         "customTasks.${taskId}": newTask.toJson()
       };
 
-      await usersCollection.doc(userId).update(sharedObject);
+      await usersCollection.doc(this.uid).update(sharedObject);
 
       // Retrieve the user from the database again
-      Map<String, dynamic> newUser = await getUserById(userId);
+      Map<String, dynamic> newUser = await getUserById(this.uid);
 
       // Getting the user by their id results in an error => return the error
       if (newUser.containsKey("error")) {
@@ -125,5 +133,109 @@ class FireStoreService {
       print({"method": "updateTask - error", "error": error});
       return {'error': error, 'user': new User()};
     }
+  }
+
+  // Creating a nightly evaluation for an user and store in user db
+  // date format: MM-DD-YY
+  // Expecting photo to be a base64 encoding of user proof image
+  Future<Map<String, dynamic>> addNightlyEvalToDb(
+      String date, String reflection, bool isSuccessful,
+      [String imageProof = '']) async {
+    print({
+      "method": "addNightlyEval",
+      "date": date,
+      "isSuccessful": isSuccessful,
+      "imageProof": imageProof
+    });
+    try {
+      NightlyEvaluation userInputEval = new NightlyEvaluation.fromInput(
+          date, reflection, imageProof, isSuccessful, _calculateDateHash(date));
+      await nightlyEvalCollection.doc(date).set(userInputEval.toJson());
+
+      // Successful output
+      print({"method": "addNightlyEval - done", "nightlyEval": userInputEval});
+      return {"nightlyEval": userInputEval};
+    } catch (error) {
+      return {'error': error, 'nightlyEval': new NightlyEvaluation()};
+    }
+  }
+
+  // Querying a specific nightly evaluation of the user
+  // expected date format: MM-DD-YY
+  Future<Map<String, dynamic>> getUserNightlyEvalByDate(String date) async {
+    print({'method': 'getUserNightlyEvalByDate', 'id': this.uid, 'date': date});
+    DocumentSnapshot nightlyEvalSnapshot;
+    try {
+      nightlyEvalSnapshot = await nightlyEvalCollection.doc(date).get();
+
+      // User does not exist
+      if (!nightlyEvalSnapshot.exists) {
+        String message =
+            'Nightly evaluation with date = ${date} does not exist';
+        print({'method': 'getUserNightlyEvalByDate', 'message': message});
+        return {"error": message, "nightlyEval": new NightlyEvaluation()};
+      }
+
+      NightlyEvaluation newNightlyEval =
+          new NightlyEvaluation.fromData(nightlyEvalSnapshot.data());
+      print({
+        'method': 'getUserNightlyEvalByDate',
+        'nightlyEval': newNightlyEval.toJson()
+      });
+      return {"nightlyEval": newNightlyEval};
+    } catch (error) {
+      print({'method': 'getUserNightlyEvalByDate', 'error': error});
+      return {"error": error, "nightlyEval": new NightlyEvaluation()};
+    }
+  }
+
+  // Retrieving a list of all nightly evaluation dates of an user within
+  // a month
+  // Need to receive the ending date of a month in the format: MM-DD-YY
+  Future<Map<String, dynamic>> getUserNightlyEvalDatesByMonth(
+      String endDate) async {
+    print({
+      'method': 'getUserNightlyEvalDatesByMonth',
+      'id': this.uid,
+      'endDate': endDate
+    });
+
+    List<String> endDateSplit = endDate.split('-');
+    int hashedStartDate =
+        _calculateDateHash(endDateSplit[0] + '-01-' + endDateSplit[2]);
+
+    QuerySnapshot querySnapshot;
+    List<dynamic> nightlyEvalDates = [];
+    try {
+      querySnapshot = await nightlyEvalCollection
+          .where('hashedDate', isGreaterThanOrEqualTo: hashedStartDate)
+          .where('hashedDate', isLessThanOrEqualTo: _calculateDateHash(endDate))
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        for (var doc in querySnapshot.docs.toList()) {
+          nightlyEvalDates.add(new NightlyEvaluation.fromData(doc.data()));
+        }
+      }
+      print({
+        'method': 'getUserNightlyEvalDatesByMonth - successs',
+        'nightlyEvalDates': nightlyEvalDates
+      });
+      return {"nightlyEvalDates": nightlyEvalDates};
+    } catch (error) {
+      print({'method': 'getUserNightlyEvalDatesByMonth', 'error': error});
+      return {"error": error, "nightlyEvalDates": nightlyEvalDates};
+    }
+  }
+
+  // Hashing the date for each nightly evaluation for the purpose of retrieving date
+  int _calculateDateHash(String date) {
+    List<String> dateSplit = date.split('-');
+    final int initialYear = 20;
+    final int constantMultiplier = 31;
+
+    int value = int.parse(dateSplit[0]) * constantMultiplier;
+    value += int.parse(dateSplit[1]);
+    value += (403 * (int.parse(date[3]) - initialYear));
+    return value;
   }
 }
