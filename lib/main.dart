@@ -127,8 +127,8 @@ class _MyHomePageState extends State<MyHomePage> {
     windowWidth = MediaQuery.of(context).size.width;
     switch (_pageState) {
       case 0:
-        backgroundColor = Colors.white;
-        headingColor = Color(0xFF3a82f7);
+        backgroundColor = Color(0xFFfcba3e);
+        headingColor = Colors.white;
         loginYOffset = windowHeight;
         break;
       case 1:
@@ -165,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ],
                 ),
               ),
-              // Lottie.asset('assets/cat.json'),
+              Lottie.asset('assets/cat.json'),
               Container(
                 child: Center(
                   child: Text(""),
@@ -173,16 +173,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Container(
                 child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (_pageState != 0) {
-                        _pageState = 0;
-                      } else {
-                        _pageState = 1;
-                      }
-                    });
+                  onTap: ()  {
+                    signInWithGoogle();
                   },
                   child: Container(
+
                     margin: EdgeInsets.all(50),
                     padding: EdgeInsets.all(20),
                     width: double.infinity,
@@ -191,35 +186,15 @@ class _MyHomePageState extends State<MyHomePage> {
                         borderRadius: BorderRadius.circular(50)),
                     child: Center(
                       child: Text(
-                        "Get Started",
+                        "Sign in with Google",
                         style: TextStyle(color: Colors.white, fontSize: 16),
+
                       ),
                     ),
                   ),
                 ),
               )
             ],
-          ),
-        ),
-        Container(
-          child: GestureDetector(
-            onTap: () {
-              signInWithGoogle();
-            },
-            child: Container(
-              margin: EdgeInsets.all(50),
-              padding: EdgeInsets.all(20),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  color: Color(0xFF3a82f7),
-                  borderRadius: BorderRadius.circular(50)),
-              child: Center(
-                child: Text(
-                  "Sign in with Google",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ),
-            ),
           ),
         ),
         GestureDetector(
