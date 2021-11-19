@@ -1,4 +1,5 @@
 import 'package:curiosity_flutter/models/custom_task.dart';
+import 'package:pretty_json/pretty_json.dart';
 
 class User {
   final int CUSTOM_TASK_LENGTH = 6; // indicate how many task we currently have
@@ -10,8 +11,8 @@ class User {
 
   // Default constructor to initialize everthing to Null equivalent
   User() {
-    id = "";
-    labId = "";
+    id = null;
+    labId = null;
     customTasks = {
       '0': new CustomTask(),
       '1': new CustomTask(),
@@ -20,18 +21,26 @@ class User {
       '4': new CustomTask(),
       '5': new CustomTask()
     };
-    contributeData = false;
+    contributeData = null;
   }
 
   // Created from the data retrieved from firestore as
-  User.fromData(String userId, Map<String, dynamic> data) {
-    id = userId;
+  User.fromData(Map<String, dynamic> data) {
+    id = data['id'];
     labId = data['labId'];
-    contributeData = data["contributeData"];
+    contributeData = data['contributeData'];
 
-    // Initiate a custom tasks array to store custom task object of the user
     data['customTasks'].forEach(
         (key, value) => {customTasks[key] = new CustomTask.fromData(value)});
+  }
+
+  fromData(Map<String, dynamic> data) {
+    print('in from data');
+    id = data['id'];
+    print('after id');
+    labId = data['labId'];
+    print('after lab id');
+    contributeData = data['contributeData'];
   }
 
   Map<String, dynamic> toJson() {
@@ -41,15 +50,15 @@ class User {
     });
 
     return {
-      "id": id,
-      "labId": labId,
-      "customTasks": customTasksJson,
-      "contributeData": contributeData
+      'id': id,
+      'labId': labId,
+      'customTasks': customTasksJson,
+      'contributeData': contributeData
     };
   }
 
   @override
   String toString() {
-    return "id: ${id}, labId: ${labId}, contributeData ${contributeData}, customTasks: ${customTasks}";
+    return prettyJson(toJson());
   }
 }

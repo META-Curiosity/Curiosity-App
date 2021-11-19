@@ -1,34 +1,33 @@
+import 'package:pretty_json/pretty_json.dart';
+
 class NightlyEvaluation {
   bool isSuccessful;
+  bool isCustomTask;
   String id;
   String reflection;
   String imageProof; // stored as base64 encoding
   int hashedDate; // comparison purpose
+  String taskTitle;
 
   NightlyEvaluation.fromData(Map<String, dynamic> data) {
-    isSuccessful = data["isSuccessful"];
-    id = data["id"];
-    reflection = data["reflection"];
-    imageProof = data["imageProof"];
-    hashedDate = data["hashedDate"];
+    isSuccessful = data['isSuccessful'];
+    isCustomTask = data['isCustomTask'];
+    taskTitle = data['taskTitle'];
+    id = data['id'];
+    reflection = data['reflection'];
+    imageProof = data['imageProof'];
+    hashedDate = data['hashedDate'];
   }
 
   // Default constructor for a nightly evaluation
   NightlyEvaluation() {
-    isSuccessful = false;
     id = '';
     reflection = '';
     imageProof = '';
+    taskTitle = '';
     hashedDate = null;
-  }
-
-  NightlyEvaluation.fromInput(String dateInput, String reflectionInput,
-      String imageProofInput, bool isSuccessfulInput, int hashedDateInput) {
-    isSuccessful = isSuccessfulInput;
-    id = dateInput;
-    reflection = reflectionInput;
-    imageProof = imageProofInput;
-    hashedDate = hashedDateInput;
+    isSuccessful = null;
+    isCustomTask = null;
   }
 
   Map<String, dynamic> toJson() {
@@ -37,12 +36,14 @@ class NightlyEvaluation {
       'id': id,
       'reflection': reflection,
       'imageProof': imageProof,
-      'hashedDate': hashedDate
+      'hashedDate': hashedDate,
+      'taskTitle': taskTitle,
+      'isCustomTask': isCustomTask
     };
   }
 
   @override
   String toString() {
-    return "{'isSuccessful': ${isSuccessful}, 'id': ${id}, 'reflection': ${reflection}, 'imageProof': ${imageProof}}";
+    return prettyJson(toJson());
   }
 }

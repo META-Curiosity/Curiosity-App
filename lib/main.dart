@@ -79,36 +79,24 @@ class _MyHomePageState extends State<MyHomePage> {
   double windowHeight = 0;
 
   FireStoreService db;
-  List docs = [];
-  dynamic data = Null;
-  bool signedIn = false;
+  int firstRegistration = 0;
 
-  // [TODO]: authenticate the users and use hash id to initialize the database
-  initialize() {
+  Future<void> initialize() async {
     //Change page once user is logged in
-    FirebaseAuth.instance.authStateChanges().listen((User user) {
+    FirebaseAuth.instance.authStateChanges().listen((User user) async {
       if (user == null) {
         print('User is currently signed out!');
-        signedIn = false;
       } else {
+        firstRegistration += 1;
         //Getting user hashed email example
-        var currentUser = FirebaseAuth.instance.currentUser;
-        if (currentUser != null) {
-          print(currentUser.email);
-          String hashedEmail =
-              sha256.convert(utf8.encode(currentUser.email)).toString();
-          db = FireStoreService(hashedEmail);
-          // replace with user hash email
-          db.registerUser(hashedEmail, "-1", true).then((value) => {
-                setState(() {
-                  print("user = $value");
-                  signedIn = true;
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => OnboardingPage()));
-                })
-              });
+        if (firstRegistration == 1) {
+          var currentUser = FirebaseAuth.instance.currentUser;
+          if (currentUser != null) {
+            String hashedEmail =
+                sha256.convert(utf8.encode(currentUser.email)).toString();
+            db = FireStoreService(hashedEmail);
+            await db.registerUser({'labId': '-1', 'contributeData': false});
+          }
         }
       }
     });
@@ -122,7 +110,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("user sign in $signedIn");
     windowHeight = MediaQuery.of(context).size.height;
     windowWidth = MediaQuery.of(context).size.width;
     switch (_pageState) {
