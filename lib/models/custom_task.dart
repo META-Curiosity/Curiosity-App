@@ -1,3 +1,5 @@
+import 'package:pretty_json/pretty_json.dart';
+
 class CustomTask {
   String title;
   String moment;
@@ -5,18 +7,18 @@ class CustomTask {
   String proof;
 
   CustomTask.fromData(Map<String, dynamic> data) {
-    title = data["title"];
-    moment = data["moment"];
-    method = data["method"];
-    proof = data["proof"];
+    title = data['title'];
+    moment = data['moment'];
+    method = data['method'];
+    proof = data['proof'];
   }
 
   // Default constructor for custom tasks
   CustomTask() {
-    title = "";
-    moment = "";
-    method = "";
-    proof = "";
+    title = null;
+    moment = null;
+    method = null;
+    proof = null;
   }
 
   Map<String, dynamic> toJson() {
@@ -25,6 +27,6 @@ class CustomTask {
 
   @override
   String toString() {
-    return "{'title': ${title}, 'moment': ${moment}, 'method': ${method}, 'proof': ${proof}}";
+    return prettyJson(toJson());
   }
 }
