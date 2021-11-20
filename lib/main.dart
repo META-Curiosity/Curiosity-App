@@ -1,4 +1,4 @@
-import 'package:curiosity_flutter/services/firestore_service.dart';
+import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'onboarding_page.dart';
@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
   double windowWidth = 0;
   double windowHeight = 0;
 
-  FireStoreService db;
+  UserDbService db;
   int firstRegistration = 0;
 
   Future<void> initialize() async {
@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
           if (currentUser != null) {
             String hashedEmail =
                 sha256.convert(utf8.encode(currentUser.email)).toString();
-            db = FireStoreService(hashedEmail);
+            db = UserDbService(hashedEmail);
             await db.registerUser({'labId': '-1', 'contributeData': false});
           }
         }
@@ -160,11 +160,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Container(
                 child: GestureDetector(
-                  onTap: ()  {
+                  onTap: () {
                     signInWithGoogle();
                   },
                   child: Container(
-
                     margin: EdgeInsets.all(50),
                     padding: EdgeInsets.all(20),
                     width: double.infinity,
@@ -175,7 +174,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Text(
                         "Sign in with Google",
                         style: TextStyle(color: Colors.white, fontSize: 16),
-
                       ),
                     ),
                   ),

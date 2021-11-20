@@ -5,20 +5,20 @@ import 'package:curiosity_flutter/models/user.dart';
 import 'package:pretty_json/pretty_json.dart';
 
 /* 
-1) FireStoreService - the service expects an authenticated user id to perform neccessary operations 
+1) UserDbService - the service expects an authenticated user id to perform neccessary operations 
 2) At each call to the service, the return type is of type map
   a) If the key 'error' exist inside the return value -> there is an error from the method
   b) If the key 'error' does not exist -> the call is successful
 */
 
-class FireStoreService {
+class UserDbService {
   final String USER_DB_NAME = 'tb-test';
   final String NIGHTLY_EVALUATION_DB_NAME = 'nightlyEval';
   String uid;
   CollectionReference usersCollection;
   CollectionReference nightlyEvalCollection;
 
-  FireStoreService(String uid) {
+  UserDbService(String uid) {
     this.uid = uid;
     usersCollection = FirebaseFirestore.instance.collection(USER_DB_NAME);
     nightlyEvalCollection =
