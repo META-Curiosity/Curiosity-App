@@ -53,7 +53,7 @@ class UserDbService {
     printPrettyJson(
         {'method': 'updateTask', 'taskId': taskId, 'newTask': newTask});
     try {
-      Map<String, dynamic> sharedObject = {
+      Map<String, Map<String, dynamic>> sharedObject = {
         'customTasks.${taskId}': newTask.toJson()
       };
 
@@ -192,7 +192,7 @@ class UserDbService {
         calculateDateHash(endDateSplit[0] + '-01-' + endDateSplit[2]);
 
     QuerySnapshot querySnapshot;
-    List<dynamic> nightEvalRecords = [];
+    List<NightlyEvaluation> nightEvalRecords = [];
     try {
       querySnapshot = await nightlyEvalCollection
           .where('hashedDate', isGreaterThanOrEqualTo: hashedStartDate)

@@ -35,11 +35,8 @@ class User {
   }
 
   fromData(Map<String, dynamic> data) {
-    print('in from data');
     id = data['id'];
-    print('after id');
     labId = data['labId'];
-    print('after lab id');
     contributeData = data['contributeData'];
   }
 
