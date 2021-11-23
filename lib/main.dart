@@ -1,3 +1,5 @@
+import 'package:curiosity_flutter/services/log_service.dart';
+import 'package:curiosity_flutter/services/meta_task_db_service.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -79,12 +81,13 @@ class _MyHomePageState extends State<MyHomePage> {
   double windowHeight = 0;
 
   UserDbService db;
+  LogService log = new LogService();
 
   Future<void> initialize() async {
     //Change page once user is logged in
     FirebaseAuth.instance.authStateChanges().listen((User user) async {
       if (user == null) {
-        print('User is currently signed out!');
+        log.infoString('User is currently signed out!', 0);
       } else {
         //Getting user hashed email example
         var currentUser = FirebaseAuth.instance.currentUser;
@@ -92,6 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
           String hashedEmail =
               sha256.convert(utf8.encode(currentUser.email)).toString();
           db = UserDbService(hashedEmail);
+          log.infoString('user has log in successfully', 0);
         }
       }
     });

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curiosity_flutter/models/custom_task.dart';
 import 'package:curiosity_flutter/models/nightly_evaluation.dart';
 import 'package:curiosity_flutter/models/user.dart';
-import 'package:pretty_json/pretty_json.dart';
+import 'package:curiosity_flutter/services/log_service.dart';
 
 /* 
 1) UserDbService - the service expects an authenticated user id to perform neccessary operations 
@@ -12,8 +12,9 @@ import 'package:pretty_json/pretty_json.dart';
 */
 
 class UserDbService {
-  final String USER_DB_NAME = 'tb-test';
-  final String NIGHTLY_EVALUATION_DB_NAME = 'nightlyEval';
+  final String USER_DB_NAME = 'users-dev';
+  final String NIGHT_EVAL_DB_NAME = 'nightlyEval';
+  final LogService log = new LogService();
   String uid;
   CollectionReference usersCollection;
   CollectionReference nightlyEvalCollection;
@@ -22,14 +23,14 @@ class UserDbService {
     this.uid = uid;
     usersCollection = FirebaseFirestore.instance.collection(USER_DB_NAME);
     nightlyEvalCollection =
-        usersCollection.doc(uid).collection(NIGHTLY_EVALUATION_DB_NAME);
+        usersCollection.doc(uid).collection(NIGHT_EVAL_DB_NAME);
   }
 
   // Adding new user to the database, if successful the new user data can be
   // accessed via the 'user' key of the response. Expecting data to contain:
   // the field labId and contributeData.
   Future<Map<String, dynamic>> registerUser(Map<String, dynamic> data) async {
-    printPrettyJson({'method': 'registerUser', 'data': data});
+    log.infoObj({'method': 'registerUser', 'data': data});
     try {
       User user = new User();
       data['id'] = uid;
@@ -37,11 +38,12 @@ class UserDbService {
 
       // Put the new user id into the db
       await usersCollection.doc(uid).set(user.toJson());
-      printPrettyJson({'method': 'registerUser - success', 'user': user});
+      log.successObj({'method': 'registerUser - success', 'user': user});
       return {'user': user};
     } catch (error) {
-      printPrettyJson({'method': 'registerUser - error', 'error': error});
-      return {'error': error, 'user': new User()};
+      log.errorObj(
+          {'method': 'registerUser - error', 'error': error.toString()}, 2);
+      return {'error': error};
     }
   }
 
@@ -50,8 +52,7 @@ class UserDbService {
   // NOTE: 2 tasks cannot have the same title
   Future<Map<String, dynamic>> updateTask(String taskId, CustomTask newTask,
       Map<String, CustomTask> oldTask) async {
-    printPrettyJson(
-        {'method': 'updateTask', 'taskId': taskId, 'newTask': newTask});
+    log.infoObj({'method': 'updateTask', 'taskId': taskId, 'newTask': newTask});
     try {
       Map<String, Map<String, dynamic>> sharedObject = {
         'customTasks.${taskId}': newTask.toJson()
@@ -68,7 +69,7 @@ class UserDbService {
       });
 
       if (hasDuplicateTitle) {
-        printPrettyJson(
+        log.errorObj(
             {'method': 'updateTask - error', 'message': 'duplicate title key'});
         return {
           'error': 'Two tasks cannot have the same title, please try again'
@@ -79,11 +80,11 @@ class UserDbService {
       // Override the old task id with the new task
       oldTask[taskId] = newTask;
 
-      printPrettyJson(
-          {'method': 'updateTask - success', 'customTask': oldTask});
+      log.successObj({'method': 'updateTask - success', 'customTask': oldTask});
       return {'customTask': oldTask};
     } catch (error) {
-      printPrettyJson({'method': 'updateTask - error', 'error': error});
+      log.errorObj(
+          {'method': 'updateTask - error', 'error': error.toString()}, 2);
       return {'error': error};
     }
   }
@@ -96,20 +97,22 @@ class UserDbService {
   //  3. isCustomTask (a task from experiment or from user)
   Future<Map<String, dynamic>> addNightlyEvalMorningEvent(
       Map<String, dynamic> data) async {
-    printPrettyJson({'method': 'addNightlyEvalMorningEvent', 'data': data});
+    log.infoObj({'method': 'addNightlyEvalMorningEvent', 'data': data});
     try {
       NightlyEvaluation userInputEval = new NightlyEvaluation.fromData(data);
       userInputEval.hashedDate = calculateDateHash(data['id']);
       await nightlyEvalCollection.doc(data['id']).set(userInputEval.toJson());
 
-      printPrettyJson({
-        'method': 'addNightlyEvalMorningEvent - done',
+      log.successObj({
+        'method': 'addNightlyEvalMorningEvent - success',
         'nightlyEvalRecord': userInputEval
       });
       return {'nightlyEvalRecord': userInputEval};
     } catch (error) {
-      printPrettyJson(
-          {'method': 'addNightlyEvalMorningEvent - error', 'error': error});
+      log.errorObj({
+        'method': 'addNightlyEvalMorningEvent - error',
+        'error': error.toString()
+      }, 2);
       return {'error': error};
     }
   }
@@ -119,7 +122,7 @@ class UserDbService {
   // of user proof image
   Future<Map<String, dynamic>> updateNightlyEval(
       Map<String, dynamic> data) async {
-    printPrettyJson({'method': 'updateNightlyEval', 'data': data});
+    log.infoObj({'method': 'updateNightlyEval', 'data': data});
     try {
       String id = data.remove('id');
       await nightlyEvalCollection.doc(id).update(data);
@@ -128,19 +131,21 @@ class UserDbService {
 
       if (!nightlyEvalSnapshot.exists) {
         String message = 'Nightly evaluation with date = ${id} does not exist';
-        printPrettyJson({'method': 'updateNightlyEval', 'message': message});
+        log.errorObj({'method': 'updateNightlyEval', 'error': message});
         return {'error': message};
       }
 
       NightlyEvaluation nightlyEvalRecord =
           new NightlyEvaluation.fromData(nightlyEvalSnapshot.data());
-      printPrettyJson({
+      log.successObj({
         'method': 'updateNightlyEval - success',
         'nightlyEvalRecord': nightlyEvalRecord
       });
       return {'nightlyEvalRecord': nightlyEvalRecord};
     } catch (error) {
-      printPrettyJson({'method': 'updateNightlyEval - error', 'error': error});
+      log.errorObj(
+          {'method': 'updateNightlyEval - error', 'error': error.toString()},
+          2);
       return {'error': error};
     }
   }
@@ -148,7 +153,7 @@ class UserDbService {
   // Querying a specific nightly evaluation of the user
   // expected date format: MM-DD-YY
   Future<Map<String, dynamic>> getUserNightlyEvalByDate(String date) async {
-    printPrettyJson({'method': 'getUserNightlyEvalByDate', 'date': date});
+    log.infoObj({'method': 'getUserNightlyEvalByDate', 'date': date});
     DocumentSnapshot nightlyEvalSnapshot;
     try {
       nightlyEvalSnapshot = await nightlyEvalCollection.doc(date).get();
@@ -157,21 +162,22 @@ class UserDbService {
       if (!nightlyEvalSnapshot.exists) {
         String message =
             'Nightly evaluation with date = ${date} does not exist';
-        printPrettyJson(
-            {'method': 'getUserNightlyEvalByDate', 'message': message});
+        log.errorObj({'method': 'getUserNightlyEvalByDate', 'error': message});
         return {'error': message};
       }
 
       NightlyEvaluation nightlyEvalRecord =
           new NightlyEvaluation.fromData(nightlyEvalSnapshot.data());
-      printPrettyJson({
+      log.successObj({
         'method': 'getUserNightlyEvalByDate - success',
         'nightlyEvalRecord': nightlyEvalRecord
       });
       return {'nightlyEvalRecord': nightlyEvalRecord};
     } catch (error) {
-      printPrettyJson(
-          {'method': 'getUserNightlyEvalByDate - error', 'error': error});
+      log.errorObj({
+        'method': 'getUserNightlyEvalByDate - error',
+        'error': error.toString()
+      }, 2);
       return {'error': error};
     }
   }
@@ -181,7 +187,7 @@ class UserDbService {
   // in the format: MM-DD-YY
   Future<Map<String, dynamic>> getUserNightlyEvalDatesByMonth(
       String endDate) async {
-    printPrettyJson({
+    log.infoObj({
       'method': 'getUserNightlyEvalDatesByMonth',
       'id': uid,
       'endDate': endDate
@@ -203,14 +209,16 @@ class UserDbService {
           nightEvalRecords.add(new NightlyEvaluation.fromData(doc.data()));
         }
       }
-      printPrettyJson({
+      log.successObj({
         'method': 'getUserNightlyEvalDatesByMonth - successs',
         'nightEvalRecords': nightEvalRecords
       });
       return {'nightEvalRecords': nightEvalRecords};
     } catch (error) {
-      printPrettyJson(
-          {'method': 'getUserNightlyEvalDatesByMonth - error', 'error': error});
+      log.errorObj({
+        'method': 'getUserNightlyEvalDatesByMonth - error',
+        'error': error.toString()
+      }, 2);
       return {'error': error};
     }
   }

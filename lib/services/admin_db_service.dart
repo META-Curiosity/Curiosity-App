@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curiosity_flutter/models/user.dart';
+import 'package:curiosity_flutter/services/log_service.dart';
 import 'package:pretty_json/pretty_json.dart';
 
 /* 
@@ -13,6 +14,7 @@ users or search an user by their id
 class AdminDbService {
   final String USER_DB_NAME = 'tb-test';
   final String NIGHTLY_EVALUATION_DB_NAME = 'nightlyEval';
+  final LogService log = new LogService();
   CollectionReference usersCollection;
 
   AdminDbService() {
@@ -22,18 +24,19 @@ class AdminDbService {
   // Read and return all data from the users database, succesful
   // result can be accessed inside the 'docs' key
   Future<Map<String, dynamic>> getAllUsers() async {
-    printPrettyJson({'method': 'getAllUsers'});
+    log.infoObj({'method': 'getAllUsers'});
     try {
-      List<dynamic> docs = [];
+      List<User> users = [];
       QuerySnapshot querySnapshot = await usersCollection.get();
       if (querySnapshot.docs.isNotEmpty) {
         for (var doc in querySnapshot.docs.toList()) {
-          docs.add(new User.fromData(doc.data()));
+          users.add(new User.fromData(doc.data()));
         }
       }
-      return {'docs': docs};
+      return {'users': users};
     } catch (error) {
-      printPrettyJson({'method': 'getAllUsers - error', 'error': error});
+      log.errorObj(
+          {'method': 'getAllUsers - error', 'error': error.toString()});
       return {'error': error};
     }
   }
@@ -41,26 +44,26 @@ class AdminDbService {
   // Querying for an user with the specific id. Successful result
   //  can be accessed via the 'user' key
   Future<Map<String, dynamic>> getUserById(String id) async {
-    printPrettyJson({'method': 'getUserById', 'id': id});
+    log.infoObj({'method': 'getUserById', 'id': id});
     DocumentSnapshot userSnapshot;
     try {
       userSnapshot = await usersCollection.doc(id).get();
 
       // User does not exist
       if (!userSnapshot.exists) {
-        printPrettyJson({
+        log.errorObj({
           'method': 'getUserById - error',
-          'message': 'User with ${id} does not exist'
-        });
+          'error': 'User with ${id} does not exist'
+        }, 1);
         return {'error': 'User with ${id} does not exist'};
       }
 
       User newUser = new User.fromData(userSnapshot.data());
-      printPrettyJson(
-          {'method': 'getUserById - success', 'user': newUser.toJson()});
+      log.successObj({'method': 'getUserById - success', 'user': newUser});
       return {'user': newUser};
     } catch (error) {
-      printPrettyJson({'method': 'getUserById - error', 'error': error});
+      log.errorObj(
+          {'method': 'getUserById - error', 'error': error.toString()});
       return {'error': error};
     }
   }
