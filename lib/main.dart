@@ -1,5 +1,4 @@
 import 'package:curiosity_flutter/services/log_service.dart';
-import 'package:curiosity_flutter/services/meta_task_db_service.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -92,8 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
         //Getting user hashed email example
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          String hashedEmail =
-              sha256.convert(utf8.encode(currentUser.email)).toString();
+          String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
           db = UserDbService(hashedEmail);
           log.infoString('user has log in successfully', 0);
         }
