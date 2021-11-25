@@ -1,67 +1,70 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curiosity_flutter/models/user.dart';
+import 'package:curiosity_flutter/services/log_service.dart';
 import 'package:pretty_json/pretty_json.dart';
 
 /* 
-1) Admin Firestore Service - the service is for admin to use to retrieve all 
+1) AdminDbService - the service is for admin to use to retrieve all 
 users or search an user by their id
 2) At each call to the service, the return type is of type map
   a) If the key 'error' exist inside the return value -> there is an error from the method
   b) If the key 'error' does not exist -> the call is successful
 */
 
-class AdminFireStoreService {
+class AdminDbService {
   final String USER_DB_NAME = 'tb-test';
   final String NIGHTLY_EVALUATION_DB_NAME = 'nightlyEval';
+  final LogService log = new LogService();
   CollectionReference usersCollection;
 
-  AdminFireStoreService() {
+  AdminDbService() {
     usersCollection = FirebaseFirestore.instance.collection(USER_DB_NAME);
   }
-  // Read and return all data from the users database, result can be accessed
-  // inside the 'docs' key
+
+  // Read and return all data from the users database, succesful
+  // result can be accessed inside the 'docs' key
   Future<Map<String, dynamic>> getAllUsers() async {
-    printPrettyJson({'method': 'getAllUsers'});
-    QuerySnapshot querySnapshot;
-    List<dynamic> docs = [];
+    log.infoObj({'method': 'getAllUsers'});
     try {
-      querySnapshot = await usersCollection.get();
+      List<User> users = [];
+      QuerySnapshot querySnapshot = await usersCollection.get();
       if (querySnapshot.docs.isNotEmpty) {
         for (var doc in querySnapshot.docs.toList()) {
-          docs.add(new User.fromData(doc.data()));
+          users.add(new User.fromData(doc.data()));
         }
       }
-      return {'docs': docs};
+      return {'users': users};
     } catch (error) {
-      printPrettyJson({'method': 'getAllUsers - error', 'error': error});
-      return {'error': error, 'docs': docs};
+      log.errorObj(
+          {'method': 'getAllUsers - error', 'error': error.toString()});
+      return {'error': error};
     }
   }
 
-  // Querying for an user with the specific id. Result can be accessed
-  // via the 'user' key
+  // Querying for an user with the specific id. Successful result
+  //  can be accessed via the 'user' key
   Future<Map<String, dynamic>> getUserById(String id) async {
-    printPrettyJson({'method': 'getUserById', 'id': id});
+    log.infoObj({'method': 'getUserById', 'id': id});
     DocumentSnapshot userSnapshot;
     try {
       userSnapshot = await usersCollection.doc(id).get();
 
       // User does not exist
       if (!userSnapshot.exists) {
-        printPrettyJson({
+        log.errorObj({
           'method': 'getUserById - error',
-          'message': 'User with ${id} does not exist'
-        });
-        return {'error': 'User with ${id} does not exist', 'user': new User()};
+          'error': 'User with ${id} does not exist'
+        }, 1);
+        return {'error': 'User with ${id} does not exist'};
       }
 
       User newUser = new User.fromData(userSnapshot.data());
-      printPrettyJson(
-          {'method': 'getUserById - success', 'user': newUser.toJson()});
+      log.successObj({'method': 'getUserById - success', 'user': newUser});
       return {'user': newUser};
     } catch (error) {
-      printPrettyJson({'method': 'getUserById - error', 'error': error});
-      return {'error': error, 'user': new User()};
+      log.errorObj(
+          {'method': 'getUserById - error', 'error': error.toString()});
+      return {'error': error};
     }
   }
 }
