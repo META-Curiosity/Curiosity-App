@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>49671142207-fnv5ofpjpfvpidgdob7udhbjb6qmr80i.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.49671142207-fnv5ofpjpfvpidgdob7udhbjb6qmr80i</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>49671142207-18dndk2f4se2ioj1ih73uavd7qedl25m.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAsrfcd7X5gj-20jKnspciIkaklG4jMtcs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>49671142207</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.meta-curiosity.meta-curiosity</string>
+	<key>PROJECT_ID</key>
+	<string>curiosity-e1f26</string>
+	<key>STORAGE_BUCKET</key>
+	<string>curiosity-e1f26.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:49671142207:ios:7fd1d916a8788fd935718a</string>
+	<key>DATABASE_URL</key>
+	<string>https://curiosity-e1f26.firebaseio.com</string>
+</dict>
+</plist>

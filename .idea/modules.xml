@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ProjectModuleManager">
@@ -5,4 +6,13 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/Curiosity-App.iml" filepath="$PROJECT_DIR$/.idea/Curiosity-App.iml" />
     </modules>
   </component>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/curiosity.iml" filepath="$PROJECT_DIR$/.idea/curiosity.iml" />
+    </modules>
+  </component>
+>>>>>>> ba3aee0ba284fb030eabb3bb6727f7a8e2e6079f
 </project>

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'onboarding_page.dart';
 import 'screens/set_custom_tasks_screen.dart';
+import 'screens/welcome_back.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 
 void main() {
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/',
+      initialRoute: '/welcome_back',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -32,6 +33,16 @@ class MyApp extends StatelessWidget {
               ),
               body: Container(
                 child: SetCustomTasksScreen(),
+              ),
+            ),
+        '/welcome_back': (context) => Scaffold(
+              appBar: AppBar(
+                leading: BackButton(),
+                backgroundColor: Color(0xFFF6C344),
+                centerTitle: true,
+              ),
+              body: Container(
+                child: WelcomeBackScreen(),
               ),
             ),
       },

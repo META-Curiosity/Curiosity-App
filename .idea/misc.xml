@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="FrameworkDetectionExcludesConfiguration">
     <type id="android" />
   </component>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <type id="android" />
+  </component>
+>>>>>>> ba3aee0ba284fb030eabb3bb6727f7a8e2e6079f
 </project>
