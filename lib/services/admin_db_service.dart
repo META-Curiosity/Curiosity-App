@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
-import 'package:pretty_json/pretty_json.dart';
 
 /* 
 1) AdminDbService - the service is for admin to use to retrieve all 

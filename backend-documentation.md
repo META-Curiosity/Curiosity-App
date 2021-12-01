@@ -1,5 +1,26 @@
 # META Curiosity Backend Documentation
 
+## Starting application via terminal
+1. For web browsers (Chrome)
+```html
+<!-- Uncomment out the 3 scripts tag line below inside /web/index.html file-->
+  <!-- <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-auth.js"></script> -->
+
+<!-- Comment out the 3 scripts tag line below inside /web/index.html file-->
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+```
+- Once finish remember to revert the changes back inside /web/index.html file as the old change allows Google OAuth
+```
+// Run the following command inside terminal to start application on chrome
+flutter run -d chrome --web-port 8000
+```
+
+-----------------------------------------------------------------------------------------------
+
 ## Back-end return format
 - At each call to the service, the return type will be of Future<Map<String, dynamic>> 
   - Future type due to an asynchronous call the the database
@@ -65,7 +86,7 @@ db.updateTask('1', new CustomTask.fromData(data), oldTask);
 Input: 
   - Map<String, dynamic> data:
     - String taskTitle: title of the choosen task
-    - String id: the current date (DD-MM-YY)
+    - String id: the current date (MM-DD-YY)
     - Boolean isCustomTask: True = task created from user and False = task created by META
 Ouput:
     - Map<String, dynamic> response:
@@ -73,7 +94,7 @@ Ouput:
     
 '''
 Map<String, dynamic> data = {
-    'id': '20-11-21',
+    'id': '11-20-21',
     'taskTitle': 'jogging in the morning',
     'isCustomTask': true
 };
@@ -84,7 +105,7 @@ await userDbService.addNightlyEvalMorningEvent(data);
 ```dart
 '''
   - Map<String, dynamic> data:
-    - String id: the current date (DD-MM-YY)
+    - String id: the current date (MM-DD-YY)
     - Boolean isSuccessful: True = nightly evaluation is successful | False = night evaluation is unsuccessful
     - String imageProof: Base64 encoding of the uploaded proof provided by the user | if empty can leave as null
     - String reflection: user nightly reflection
@@ -92,7 +113,7 @@ await userDbService.addNightlyEvalMorningEvent(data);
       - NightlyEvaluation nightlyEvalRecord: the nightly evaluation record after user chose their task for the day
 '''
 Map<String, dynamic> data = {
-    'id': '20-11-21',
+    'id': '11-20-21',
     'isSuccessful': true,
     'imageProof': 'hello',
     'reflection': 'it went pretty well i would say'
@@ -104,12 +125,12 @@ await userDbService.updateNightlyEval(data);
 ```dart
 '''
 Input:
-  - String date: Specific date of user nightly evaluation (DD-MM-YY)
+  - String date: Specific date of user nightly evaluation (MM-DD-YY)
 Ouput:
   - Map<String, dynamic> response:
       - NightlyEvaluation nightlyEvalRecord: the nightly evaluation record queried
 '''
-await userDbService.getUserNightlyEvalByDate('29-11-21');
+await userDbService.getUserNightlyEvalByDate('11-29-21');
 ```
 
 7. getUserNightlyEvalDatesByMonth(endDate) -> response
@@ -121,7 +142,7 @@ Ouput:
   - Map<String, dynamic> response:
     - List<NightlyEvaluation> nightEvalRecords:a list of all inputted nightly evaluation records of the whole month
 '''
-await userDbService.getUserNightlyEvalDatesByMonth('29-11-21');
+await userDbService.getUserNightlyEvalDatesByMonth('11-30-21');
 ```
 -----------------------------------------------------------------------------------------------
 ## Admin Database Service - AdminDbService
