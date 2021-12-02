@@ -1,0 +1,91 @@
+{
+  "project_info": {
+    "project_number": "49671142207",
+    "firebase_url": "https://curiosity-e1f26.firebaseio.com",
+    "project_id": "curiosity-e1f26",
+    "storage_bucket": "curiosity-e1f26.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:49671142207:android:4cfacc108a0036a035718a",
+        "android_client_info": {
+          "package_name": "com.example.curiosity_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "49671142207-jm1pg86930ssnk4abpurac6137654c57.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtkCMH-w6tiVmSPcurD7sBnqbOSwpMhKw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "49671142207-jm1pg86930ssnk4abpurac6137654c57.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "49671142207-193gc6ij9fd7umgbools647ricec7d3e.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "META.Curiosity-iOS"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:49671142207:android:0bc0e1e9be3ba6f335718a",
+        "android_client_info": {
+          "package_name": "com.meta_curiosity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "49671142207-18dndk2f4se2ioj1ih73uavd7qedl25m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.meta_curiosity",
+            "certificate_hash": "a663dbcf61f50c9a42b070745f337d4804191cd2"
+          }
+        },
+        {
+          "client_id": "49671142207-jm1pg86930ssnk4abpurac6137654c57.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtkCMH-w6tiVmSPcurD7sBnqbOSwpMhKw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "49671142207-jm1pg86930ssnk4abpurac6137654c57.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "49671142207-193gc6ij9fd7umgbools647ricec7d3e.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "META.Curiosity-iOS"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
