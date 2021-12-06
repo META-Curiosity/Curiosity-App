@@ -13,12 +13,16 @@
           "package_name": "com.example.curiosity_flutter"
         }
       },
+<<<<<<< HEAD
       "oauth_client": [
         {
           "client_id": "49671142207-jm1pg86930ssnk4abpurac6137654c57.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
+=======
+      "oauth_client": [],
+>>>>>>> master
       "api_key": [
         {
           "current_key": "AIzaSyCtkCMH-w6tiVmSPcurD7sBnqbOSwpMhKw"
@@ -59,8 +63,17 @@
           }
         },
         {
+<<<<<<< HEAD
           "client_id": "49671142207-jm1pg86930ssnk4abpurac6137654c57.apps.googleusercontent.com",
           "client_type": 3
+=======
+          "client_id": "49671142207-lro3vqgf68dpueu1o3d5jh2dt04v8v4k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.meta_curiosity",
+            "certificate_hash": "8c8cca362582a51d21e67952f6843a94ec34418e"
+          }
+>>>>>>> master
         }
       ],
       "api_key": [

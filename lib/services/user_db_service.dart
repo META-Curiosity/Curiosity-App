@@ -93,7 +93,7 @@ class UserDbService {
   // for a specific task that the user have choosen for that day
   // Expecting the field:
   //  1. taskTitle (title of the choosen task)
-  //  2. id - the current date (DD-MM-YY)
+  //  2. id - the current date (MM-DD-YY)
   //  3. isCustomTask (a task from experiment or from user)
   Future<Map<String, dynamic>> addNightlyEvalMorningEvent(
       Map<String, dynamic> data) async {
@@ -203,7 +203,6 @@ class UserDbService {
           .where('hashedDate', isGreaterThanOrEqualTo: hashedStartDate)
           .where('hashedDate', isLessThanOrEqualTo: calculateDateHash(endDate))
           .get();
-
       if (querySnapshot.docs.isNotEmpty) {
         for (var doc in querySnapshot.docs.toList()) {
           nightEvalRecords.add(new NightlyEvaluation.fromData(doc.data()));
@@ -224,7 +223,7 @@ class UserDbService {
   }
 
   // Hashing the date for each nightly evaluation to help with retrieving
-  // dates within a certain range
+  // dates within a certain range - format: MM-DD-YY
   int calculateDateHash(String date) {
     List<String> dateSplit = date.split('-');
     final int initialYear = 20;

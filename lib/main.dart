@@ -99,9 +99,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> initialize() async {
     //Change page once user is logged in
-    db = UserDbService("wdaw");
-    var v = await db.registerUser({'labId': '-1', 'contributeData': false});
-    print("DATA: ${v}");
     FirebaseAuth.instance.authStateChanges().listen((User user) async {
       if (user == null) {
         log.infoString('User is currently signed out!', 0);
@@ -114,7 +111,6 @@ class _MyHomePageState extends State<MyHomePage> {
           db = UserDbService(hashedEmail);
           log.infoString('user has log in successfully', 0);
         }
-        //}
       }
     });
   }
@@ -179,9 +175,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: GestureDetector(
                   onTap: () {
                     signInWithGoogle();
-                    // if (signedIn) {
-                    //   Navigator.pushNamed(context, '/set_custom_tasks');
-                    // }
                   },
                   child: Container(
                     margin: EdgeInsets.all(50),
@@ -261,7 +254,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 // PrimaryButton(btnText: "Login"),
                 // OutlineBtn(btnText: "Create an Account")
-                //Lottie.asset('assets/cat.json')
+
+                Lottie.asset('assets/cat.json')
               ],
             ),
           ),

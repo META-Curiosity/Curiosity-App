@@ -3,7 +3,7 @@ import 'package:curiosity_flutter/models/user.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
 import 'package:pretty_json/pretty_json.dart';
 
-/* 
+/*
 1) AdminDbService - the service is for admin to use to retrieve all 
 users or search an user by their id
 2) At each call to the service, the return type is of type map
