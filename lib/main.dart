@@ -8,6 +8,8 @@ import 'screens/set_custom_tasks_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'screens/input_tasks_screen.dart';
 import 'screens/central_dashboard_screen.dart';
+import 'screens/mindful_sessions_screen.dart';
+import 'screens/play_audio_screen.dart';
 //firebase
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -75,6 +77,30 @@ class MyApp extends StatelessWidget {
                 child: CentralDashboardScreen(),
               ),
             ),
+        '/mindful_sessions': (context) => Scaffold(
+              appBar: AppBar(
+                //centerTitle: true,
+                leading: BackButton(),
+                //title: Text('New Task'),
+                backgroundColor: Color(0xFFF6C344),
+              ),
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: MindfulSessionsScreen(),
+              ),
+            ),
+        '/play_audio': (context) => Scaffold(
+              appBar: AppBar(
+                //centerTitle: true,
+                leading: BackButton(),
+                //title: Text('New Task'),
+                backgroundColor: Color(0xFFF6C344),
+              ),
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: AudioPlayer(),
+              ),
+            )
       },
     );
   }

@@ -66,7 +66,6 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
   }
 
   void initState() {
-    print("INITIALIZING..");
     //get list of nightly evaluations
     getDates(today).then((result) {
       setState(() {
