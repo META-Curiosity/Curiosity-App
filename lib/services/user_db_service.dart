@@ -22,7 +22,8 @@ class UserDbService {
   UserDbService(String uid) {
     this.uid = uid;
     usersCollection = FirebaseFirestore.instance.collection(USER_DB_NAME);
-    nightlyEvalCollection = usersCollection.doc(uid).collection(NIGHT_EVAL_DB_NAME);
+    nightlyEvalCollection =
+        usersCollection.doc(uid).collection(NIGHT_EVAL_DB_NAME);
   }
 
   // Adding new user to the database, if successful the new user data can be
@@ -49,11 +50,8 @@ class UserDbService {
   // Update user task via the position passed in and new values -
   // Upon successful update - a new custom task array will be returned
   // NOTE: 2 tasks cannot have the same title
-  Future<Map<String, dynamic>> updateTask(
-    String taskId, 
-    CustomTask newTask, 
-    Map<String, CustomTask> oldTask
-  ) async {
+  Future<Map<String, dynamic>> updateTask(String taskId, CustomTask newTask,
+      Map<String, CustomTask> oldTask) async {
     log.infoObj({'method': 'updateTask', 'taskId': taskId, 'newTask': newTask});
     try {
       Map<String, Map<String, dynamic>> sharedObject = {
@@ -71,8 +69,11 @@ class UserDbService {
       });
 
       if (hasDuplicateTitle) {
-        log.errorObj({'method': 'updateTask - error', 'message': 'duplicate title key'});
-        return {'error': 'Two tasks cannot have the same title, please try again'};
+        log.errorObj(
+            {'method': 'updateTask - error', 'message': 'duplicate title key'});
+        return {
+          'error': 'Two tasks cannot have the same title, please try again'
+        };
       }
       await usersCollection.doc(uid).update(sharedObject);
 
@@ -119,12 +120,14 @@ class UserDbService {
   // Creating a nightly evaluation for an user and store in user db
   // date format: MM-DD-YY. Expecting photo to be a base64 encoding
   // of user proof image
-  Future<Map<String, dynamic>> updateNightlyEval(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> updateNightlyEval(
+      Map<String, dynamic> data) async {
     log.infoObj({'method': 'updateNightlyEval', 'data': data});
     try {
       String id = data.remove('id');
       await nightlyEvalCollection.doc(id).update(data);
-      DocumentSnapshot nightlyEvalSnapshot = await nightlyEvalCollection.doc(id).get();
+      DocumentSnapshot nightlyEvalSnapshot =
+          await nightlyEvalCollection.doc(id).get();
 
       if (!nightlyEvalSnapshot.exists) {
         String message = 'Nightly evaluation with date = ${id} does not exist';
@@ -132,14 +135,17 @@ class UserDbService {
         return {'error': message};
       }
 
-      NightlyEvaluation nightlyEvalRecord = new NightlyEvaluation.fromData(nightlyEvalSnapshot.data());
+      NightlyEvaluation nightlyEvalRecord =
+          new NightlyEvaluation.fromData(nightlyEvalSnapshot.data());
       log.successObj({
         'method': 'updateNightlyEval - success',
         'nightlyEvalRecord': nightlyEvalRecord
       });
       return {'nightlyEvalRecord': nightlyEvalRecord};
     } catch (error) {
-      log.errorObj({'method': 'updateNightlyEval - error', 'error': error.toString()},2);
+      log.errorObj(
+          {'method': 'updateNightlyEval - error', 'error': error.toString()},
+          2);
       return {'error': error};
     }
   }
@@ -154,12 +160,14 @@ class UserDbService {
 
       // User does not exist
       if (!nightlyEvalSnapshot.exists) {
-        String message = 'Nightly evaluation with date = ${date} does not exist';
+        String message =
+            'Nightly evaluation with date = ${date} does not exist';
         log.errorObj({'method': 'getUserNightlyEvalByDate', 'error': message});
         return {'error': message};
       }
 
-      NightlyEvaluation nightlyEvalRecord = new NightlyEvaluation.fromData(nightlyEvalSnapshot.data());
+      NightlyEvaluation nightlyEvalRecord =
+          new NightlyEvaluation.fromData(nightlyEvalSnapshot.data());
       log.successObj({
         'method': 'getUserNightlyEvalByDate - success',
         'nightlyEvalRecord': nightlyEvalRecord
@@ -188,7 +196,6 @@ class UserDbService {
     List<String> endDateSplit = endDate.split('-');
     int hashedStartDate =
         calculateDateHash(endDateSplit[0] + '-01-' + endDateSplit[2]);
-
     QuerySnapshot querySnapshot;
     List<NightlyEvaluation> nightEvalRecords = [];
     try {

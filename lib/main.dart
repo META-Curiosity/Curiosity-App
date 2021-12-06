@@ -2,10 +2,15 @@ import 'package:curiosity_flutter/services/log_service.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+//screens
 import 'onboarding_page.dart';
 import 'screens/set_custom_tasks_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'screens/input_tasks_screen.dart';
+import 'screens/central_dashboard_screen.dart';
+import 'screens/mindful_sessions_screen.dart';
+import 'screens/play_audio_screen.dart';
+//firebase
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -60,6 +65,42 @@ class MyApp extends StatelessWidget {
                 child: InputTasksScreen(),
               ),
             ),
+        '/central_dashboard': (context) => Scaffold(
+              appBar: AppBar(
+                //centerTitle: true,
+                leading: BackButton(),
+                //title: Text('New Task'),
+                backgroundColor: Color(0xFFF6C344),
+              ),
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: CentralDashboardScreen(),
+              ),
+            ),
+        '/mindful_sessions': (context) => Scaffold(
+              appBar: AppBar(
+                //centerTitle: true,
+                leading: BackButton(),
+                //title: Text('New Task'),
+                backgroundColor: Color(0xFFF6C344),
+              ),
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: MindfulSessionsScreen(),
+              ),
+            ),
+        '/play_audio': (context) => Scaffold(
+              appBar: AppBar(
+                //centerTitle: true,
+                leading: BackButton(),
+                //title: Text('New Task'),
+                backgroundColor: Color(0xFFF6C344),
+              ),
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: AudioPlayer(),
+              ),
+            )
       },
     );
   }
@@ -91,7 +132,8 @@ class _MyHomePageState extends State<MyHomePage> {
         //Getting user hashed email example
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
+          String hashedEmail =
+              sha256.convert(utf8.encode(currentUser.email)).toString();
           db = UserDbService(hashedEmail);
           log.infoString('user has log in successfully', 0);
         }
@@ -238,6 +280,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 // PrimaryButton(btnText: "Login"),
                 // OutlineBtn(btnText: "Create an Account")
+
                 Lottie.asset('assets/cat.json')
               ],
             ),

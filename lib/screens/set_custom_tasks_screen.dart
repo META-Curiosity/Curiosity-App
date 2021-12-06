@@ -45,7 +45,9 @@ class SetCustomTasksScreen extends StatelessWidget {
               width: 330,
               height: 60,
               child: RaisedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/central_dashboard');
+                },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0)),
                 color: Color(0xFF8E8E92),
