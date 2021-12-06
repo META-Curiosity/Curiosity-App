@@ -16,8 +16,7 @@ class CentralDashboardScreen extends StatefulWidget {
 class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _selectedDay;
-  List<NightlyEvaluation> _ne = [];
-  List<DateTime> _dates = [];
+  Map<DateTime, List<NightlyEvaluation>> _dates = {};
   bool _dataRecieved = false;
 
   final PageController _pageController = PageController();
@@ -31,32 +30,39 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
         '${currentMonth.month.toString().padLeft(2, '0')}-31-${currentMonth.year.toString().substring(2, 4)}'; //MM-DD-YYYY
     Map<String, dynamic> datesObj =
         await UDS.getUserNightlyEvalDatesByMonth(convertedTime);
+
     return datesObj['nightEvalRecords'];
   }
 
   //Takes a String date in the form MM-DD-YY and converts it into a DateTime object.
   DateTime stringToDateTime(String date) {
     List<String> dateSplit = date.split('-');
-    return DateTime.utc(int.parse(dateSplit[2]), int.parse(dateSplit[0]),
+    return DateTime.utc(int.parse(dateSplit[2]) + 2000, int.parse(dateSplit[0]),
         int.parse(dateSplit[1]));
   }
 
   //Takes in a List of Nightly Evaluations and returns a list of extracted DateTime
-  List<DateTime> listOfNightlyEvaluationsToListOfDateTime(
+  Map<DateTime, List<NightlyEvaluation>> listOfNightlyEvaluationsToMap(
       List<NightlyEvaluation> neList) {
-    List<DateTime> dates = [];
+    Map<DateTime, List<NightlyEvaluation>> res = {};
     for (NightlyEvaluation ne in neList) {
-      dates.add(stringToDateTime(ne.id));
+      DateTime neDate = stringToDateTime(ne.id);
+      if (res[neDate] == null) res[neDate] = [];
+      res[neDate].add(ne);
     }
-    return dates;
+    return res;
   }
 
-  //
-  List<DateTime> getEvents(DateTime d) {
-    print("From getEvents: _dates${d}\n");
-    if (_dates.contains(d)) print("HERE");
-    //return null;
-    return _dates;
+  //For each day, returns the nightly evaluation for that day.
+  List<NightlyEvaluation> getEvents(DateTime d) {
+    if (d.day <= DateTime.now().day) {
+      if (_dates[d] == null) {
+        Map<String, dynamic> data = {'id': 'failed'};
+        List<NightlyEvaluation> temp = [new NightlyEvaluation.fromData(data)];
+        return temp;
+      }
+      return _dates[d];
+    }
   }
 
   void initState() {
@@ -64,9 +70,7 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
     //get list of nightly evaluations
     getDates(today).then((result) {
       setState(() {
-        _ne = result; //Set list of nightly Evaluations
-        _dates = listOfNightlyEvaluationsToListOfDateTime(
-            result); //Set list of dates
+        _dates = listOfNightlyEvaluationsToMap(result); //Set list of dates
         _dataRecieved = true; //Set Data Recieved to true
       });
     });
@@ -103,10 +107,10 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
                   onDaySelected: (selectedDay, focusedDay) {
                     if (!isSameDay(_selectedDay, selectedDay)) {
                       // Call `setState()` when updating the selected day
-                      print("test: ${_dates ?? 'null'}");
                       setState(() {
                         _selectedDay = selectedDay;
                       });
+                      print("Day Log: ${_dates[selectedDay]}");
                     }
                   },
                   onFormatChanged: (format) {
@@ -122,6 +126,16 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
                     //_focusedDay = focusedDay;
                   },
                   onCalendarCreated: (_pageController) {},
+                  calendarBuilders: CalendarBuilders(
+                      singleMarkerBuilder: (context, date, event) {
+                    //Market is green or red depending on task completion that day.
+                    return Container(
+                      width: 10.0,
+                      height: 10.0,
+                      color: (event.id == "failed") ? Colors.red : Colors.green,
+                      margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                    );
+                  }),
                   eventLoader: (d) {
                     //return _dates;
                     return getEvents(d);

@@ -99,6 +99,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> initialize() async {
     //Change page once user is logged in
+    db = UserDbService("wdaw");
+    var v = await db.registerUser({'labId': '-1', 'contributeData': false});
+    print("DATA: ${v}");
     FirebaseAuth.instance.authStateChanges().listen((User user) async {
       if (user == null) {
         log.infoString('User is currently signed out!', 0);
