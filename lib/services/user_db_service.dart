@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curiosity_flutter/models/custom_task.dart';
 import 'package:curiosity_flutter/models/nightly_evaluation.dart';
 import 'package:curiosity_flutter/models/user.dart';
+import 'package:curiosity_flutter/services/admin_db_service.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
 
 /* 
@@ -23,6 +24,21 @@ class UserDbService {
     this.uid = uid;
     usersCollection = FirebaseFirestore.instance.collection(USER_DB_NAME);
     nightlyEvalCollection = usersCollection.doc(uid).collection(NIGHT_EVAL_DB_NAME);
+  }
+
+  Future<Map<String, dynamic>> getUserData() async {
+    try {
+      log.infoObj({'method': 'getUserData', 'id': uid});
+      Map<String, dynamic> response = await AdminDbService().getUserById(uid);
+      if (response['error'] != null) {
+        return { 'error': response['error']};
+      }
+      log.successObj({'method': 'getUserData - success'});
+      return {'user': response['user']} ;
+    } catch (error) {
+      log.errorObj({'method': 'getUserData', 'error': error.toString()});
+      return {'error': error.toString()};
+    }
   }
 
   // Adding new user to the database, if successful the new user data can be
