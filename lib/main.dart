@@ -10,6 +10,7 @@ import 'screens/input_tasks_screen.dart';
 import 'screens/central_dashboard_screen.dart';
 import 'screens/mindful_sessions_screen.dart';
 import 'screens/play_audio_screen.dart';
+import 'screens/good_morning_screen.dart';
 //firebase
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/set_custom_tasks',
+      initialRoute: '/onboarding',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -43,6 +44,26 @@ class MyApp extends StatelessWidget {
               ),
             ),
         // When navigating to the "/second" route, build the SecondScreen widget.
+        '/good_morning': (context) => Scaffold(
+              appBar: AppBar(
+                leading: BackButton(),
+                backgroundColor: Color(0xFFF6C344),
+                centerTitle: true,
+              ),
+              body: Container(
+                child: GoodMorningScreen(),
+              ),
+            ),
+        '/onboarding': (context) => Scaffold(
+              appBar: AppBar(
+                leading: BackButton(),
+                backgroundColor: Color(0xFFF6C344),
+                centerTitle: true,
+              ),
+              body: Container(
+                child: OnboardingPage(),
+              ),
+            ),
         '/set_custom_tasks': (context) => Scaffold(
               appBar: AppBar(
                 leading: BackButton(),
