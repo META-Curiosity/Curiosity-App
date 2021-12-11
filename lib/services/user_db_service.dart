@@ -96,8 +96,10 @@ class UserDbService {
       log.successObj({'method': 'updateTask - success', 'customTask': oldTask});
       return {'customTask': oldTask};
     } catch (error) {
-      log.errorObj(
-          {'method': 'updateTask - error', 'error': error.toString()}, 2);
+      log.errorObj({
+        'method': 'updateTask - error', 
+        'error': error.toString()
+      }, 2);
       return {'error': error};
     }
   }
