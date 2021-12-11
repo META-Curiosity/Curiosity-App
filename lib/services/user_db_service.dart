@@ -4,6 +4,7 @@ import 'package:curiosity_flutter/models/nightly_evaluation.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'package:curiosity_flutter/services/admin_db_service.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
+import '../helper/dateHelper.dart';
 
 /* 
 1) UserDbService - the service expects an authenticated user id to perform neccessary operations 
@@ -49,6 +50,7 @@ class UserDbService {
     try {
       User user = new User();
       data['id'] = uid;
+      data['registerDateTime'] = DateTime.now().toUtc().toString();
       user.fromData(data);
 
       // Put the new user id into the db
@@ -65,13 +67,9 @@ class UserDbService {
   // Update user task via the position passed in and new values -
   // Upon successful update - a new custom task array will be returned
   // NOTE: 2 tasks cannot have the same title
-  Future<Map<String, dynamic>> updateTask(
-    String taskId, 
-    CustomTask newTask, 
-    Map<String, CustomTask> oldTask
-  ) async {
-    log.infoObj({'method': 'updateTask', 'taskId': taskId, 'newTask': newTask});
+  Future<Map<String, dynamic>> updateTask(String taskId, CustomTask newTask, Map<String, CustomTask> oldTask) async {
     try {
+      log.infoObj({'method': 'updateTask', 'taskId': taskId, 'newTask': newTask});
       Map<String, Map<String, dynamic>> sharedObject = {
         'customTasks.${taskId}': newTask.toJson()
       };
@@ -110,10 +108,9 @@ class UserDbService {
   //  1. taskTitle (title of the choosen task)
   //  2. id - the current date (MM-DD-YY)
   //  3. isCustomTask (a task from experiment or from user)
-  Future<Map<String, dynamic>> addNightlyEvalMorningEvent(
-      Map<String, dynamic> data) async {
-    log.infoObj({'method': 'addNightlyEvalMorningEvent', 'data': data});
+  Future<Map<String, dynamic>> addNightlyEvalMorningEvent(Map<String, dynamic> data) async {
     try {
+      log.infoObj({'method': 'addNightlyEvalMorningEvent', 'data': data});
       NightlyEvaluation userInputEval = new NightlyEvaluation.fromData(data);
       userInputEval.hashedDate = calculateDateHash(data['id']);
       await nightlyEvalCollection.doc(data['id']).set(userInputEval.toJson());
@@ -140,11 +137,65 @@ class UserDbService {
     try {
       String id = data.remove('id');
       await nightlyEvalCollection.doc(id).update(data);
-      DocumentSnapshot nightlyEvalSnapshot = await nightlyEvalCollection.doc(id).get();
 
+      // Retrieving user information to update their streak and days successful
+      Map<String, dynamic> userData = await getUserData();
+      
+      if (userData['error'] != null) {
+        log.errorObj({'method': 'updateNightlyEval - error', 'error': userData['error']},2);
+        return { 'error': userData['error'] };
+      }
+      
+      User user = userData['user'];      
+      if (data['isSuccessful']) {
+        if (user.prevSucessDateTime != null) {
+          DateTime crntLocalDateTime = DateTime.now().toLocal();
+          DateTime prevSuccessLocalTime = DateTime.parse(user.prevSucessDateTime).toLocal();
+          int daysBetween = DateHelper.daysBetween(prevSuccessLocalTime, crntLocalDateTime);
+          log.infoObj({
+            'method': 'updateNightlyEval',
+            'crntLocalDateTime': crntLocalDateTime.toString(),
+            'prevSuccessLocalTime': prevSuccessLocalTime.toString(),
+            'daysBetween': daysBetween
+          });
+          // More than a day since task is marked as successful -> user lose their streak
+          if (daysBetween != 1) {
+            user.currentStreak = 0;
+          }
+        }
+        user.currentStreak += 1;
+        user.totalSuccessfulDays += 1;
+        user.prevSucessDateTime = DateTime.now().toUtc().toString();
+      } else {
+        // Task was not completed successfully -> lose streak
+        user.currentStreak = 0;
+      }
+
+      log.infoObj({
+        'currentStreak': user.currentStreak,
+        'totalSuccessfulDays': user.totalSuccessfulDays,
+        'prevSuccessDateTime': user.prevSucessDateTime
+      });
+
+      await usersCollection.doc(uid).update({
+        'currentStreak': user.currentStreak, 
+        'totalSuccessfulDays': user.totalSuccessfulDays, 
+        'prevSucessDateTime': user.prevSucessDateTime
+      });
+
+      log.infoObj({
+        'method': 'updateNightlyEval', 
+        'message': 'update user streaks successful'
+      });
+
+      // Returning the nightly evaluation document
+      DocumentSnapshot nightlyEvalSnapshot = await nightlyEvalCollection.doc(id).get();
       if (!nightlyEvalSnapshot.exists) {
         String message = 'Nightly evaluation with date = ${id} does not exist';
-        log.errorObj({'method': 'updateNightlyEval', 'error': message});
+        log.errorObj({
+          'method': 'updateNightlyEval', 
+          'error': message
+        });
         return {'error': message};
       }
 
@@ -190,11 +241,9 @@ class UserDbService {
     }
   }
 
-  // Retrieving a list of all nightly evaluation dates of an user
-  // within a month. Need to receive the ending date of a month
-  // in the format: MM-DD-YY
-  Future<Map<String, dynamic>> getUserNightlyEvalDatesByMonth(
-      String endDate) async {
+  // Retrieving a list of all nightly evaluation dates of an user within a month.
+  // Need to receive the ending date of a month in the format: MM-DD-YY
+  Future<Map<String, dynamic>> getUserNightlyEvalDatesByMonth(String endDate) async {
     log.infoObj({
       'method': 'getUserNightlyEvalDatesByMonth',
       'id': uid,
@@ -202,8 +251,7 @@ class UserDbService {
     });
 
     List<String> endDateSplit = endDate.split('-');
-    int hashedStartDate =
-        calculateDateHash(endDateSplit[0] + '-01-' + endDateSplit[2]);
+    int hashedStartDate = calculateDateHash(endDateSplit[0] + '-01-' + endDateSplit[2]);
 
     QuerySnapshot querySnapshot;
     List<NightlyEvaluation> nightEvalRecords = [];
@@ -225,6 +273,49 @@ class UserDbService {
     } catch (error) {
       log.errorObj({
         'method': 'getUserNightlyEvalDatesByMonth - error',
+        'error': error.toString()
+      }, 2);
+      return {'error': error};
+    }
+  }
+
+  // Getting the user current streak and the number of days that they
+  // have successfully completed a task
+  Future<Map<String, dynamic>> getUserStreakAndTotalDaysCompleted() async {
+    log.infoObj({'method': 'getUserStreakAndTotalDaysCompleted'});
+    try {
+       Map<String, dynamic> userData = await getUserData();
+      
+      if (userData['error'] != null) {
+        log.errorObj({
+          'method': 'getUserStreakAndTotalDaysCompleted - error', 
+          'error': userData['error']
+        },2);
+        return {'error': userData['error'] };
+      }
+
+      User user = userData['user'];
+      // Calculating total number of days registered IN LOCAL DEVICE TIME
+      DateTime currentLocalDateTime = DateTime.now().toLocal();
+      DateTime registeredLocalDateTime = DateTime.parse(user.registerDateTime).toLocal();
+      int totalDaysRegistered = DateHelper.daysBetween(currentLocalDateTime, registeredLocalDateTime);
+
+      log.successObj({
+        'method': 'getUserStreakAndTotalDaysCompleted - successful',
+        'totalDaysRegistered': totalDaysRegistered,
+        'totalSuccessfulDays': user.totalSuccessfulDays,
+        'currentStreak': user.currentStreak
+      });
+
+      return {
+        'totalDaysRegistered': totalDaysRegistered,
+        'totalSuccessfulDays': user.totalSuccessfulDays,
+        'currentStreak': user.currentStreak
+      };
+    
+    } catch (error) {
+      log.errorObj({
+        'method': 'getUserStreakAndTotalDaysCompleted - error',
         'error': error.toString()
       }, 2);
       return {'error': error};

@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
   double windowWidth = 0;
   double windowHeight = 0;
 
-  UserDbService db;
+  UserDbService userDbService;
   LogService log = new LogService();
   int first = 0;
 
@@ -94,11 +94,10 @@ class _MyHomePageState extends State<MyHomePage> {
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
           String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
-          db = UserDbService('newHashEmail');
+          userDbService = UserDbService(hashedEmail);
           log.infoString('user has log in successfully', 0);
-          // Map<String, dynamic> data = {'labId': '-1', 'contributeData': true};
-          // await db.registerUser(data);
-          await db.getUserData();
+          Map<String, dynamic> data = {'labId': '-1', 'contributeData': true};
+          await userDbService.registerUser(data);
         }
       }
     });

@@ -140,9 +140,31 @@ Input:
   - String endDate: the ending date of the month to retrieve all the nightly evaluation records within that month
 Ouput:
   - Map<String, dynamic> response:
-    - List<NightlyEvaluation> nightEvalRecords:a list of all inputted nightly evaluation records of the whole month
+    - List<NightlyEvaluation> nightEvalRecords: a list of all inputted nightly evaluation records of the whole month
 '''
 await userDbService.getUserNightlyEvalDatesByMonth('11-30-21');
+```
+
+8. getUserData() -> response
+```dart
+'''
+Ouput:
+  - Map<String, dynamic> response:
+    - User user: User information
+'''
+await userDbService.getUserData();
+```
+
+9. getUserStreakAndTotalDaysCompleted() -> response
+```dart
+'''
+Ouput:
+  - Map<String, dynamic> response:
+    - int totalDaysRegistered: Number of days user have registered using the app,
+    - int totalSuccessfulDays: Number of days the user successfully completed a task,
+    - int currentStreak: Number of days in a row that the user completed a task
+'''
+await userDbService.getUserStreakAndTotalDaysCompleted();
 ```
 -----------------------------------------------------------------------------------------------
 ## Admin Database Service - AdminDbService
