@@ -17,15 +17,29 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _selectedDay;
   Map<DateTime, List<NightlyEvaluation>> _dates = {};
-  bool _dataRecieved = false;
-
+  bool _datesRecieved = false;
+  bool _recordsRecieved = false;
+  UserDbService UDS = UserDbService('hashedEmail');
   final PageController _pageController = PageController();
   DateTime today = DateTime.now();
+  Map<String, dynamic> _records = {};
 
   //Takes the currentMonth and returns a list of nightly evaluation from firestore under the user's collection.
   Future<List<NightlyEvaluation>> getDates(DateTime currentMonth) async {
-    UserDbService UDS = UserDbService(
-        '22528fa0c5fb066c90c256cc2113a5f6a74012ff6240a3fca6f74343525645dd');
+    Map<String, dynamic> data1 = {
+      'id': '12-02-21',
+      'taskTitle': 'jogging in the morning',
+      'isCustomTask': true
+    };
+    await UDS.addNightlyEvalMorningEvent(data1);
+    Map<String, dynamic> data2 = {
+      'id': '12-03-21',
+      'isSuccessful': true,
+      'imageProof': 'hello',
+      'reflection': 'it went pretty well i would say'
+    };
+    await UDS.updateNightlyEval(data2);
+
     String convertedTime =
         '${currentMonth.month.toString().padLeft(2, '0')}-31-${currentMonth.year.toString().substring(2, 4)}'; //MM-DD-YYYY
     Map<String, dynamic> datesObj =
@@ -65,15 +79,25 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
     }
   }
 
+  Future<Map<String, dynamic>> getStreaksAndTotalDaysCompleted() async {
+    return await UDS.getUserStreakAndTotalDaysCompleted();
+  }
+
   void initState() {
     //get list of nightly evaluations
     getDates(today).then((result) {
       setState(() {
         _dates = listOfNightlyEvaluationsToMap(result); //Set list of dates
-        _dataRecieved = true; //Set Data Recieved to true
+        _datesRecieved = true; //Set Data Recieved to true
       });
     });
 
+    getStreaksAndTotalDaysCompleted().then((result) {
+      setState(() {
+        _records = result;
+        _recordsRecieved = true;
+      });
+    });
     super.initState();
   }
 
@@ -88,7 +112,7 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
   Widget build(BuildContext context) {
     return Container(
       child: SingleChildScrollView(
-        child: _dataRecieved
+        child: _datesRecieved & _recordsRecieved
             ? Column(children: <Widget>[
                 TableCalendar(
                   firstDay: DateTime.utc(2021, 12, 1),
@@ -163,19 +187,21 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
                   recordCard(
                       icon: Icon(MaterialCommunityIcons.calendar_check,
                           color: Colors.pink[300], size: 52),
-                      stat: '18',
+                      stat: "18",
                       title: "Days in November"),
                   recordCard(
                       icon: Icon(Icons.check_circle,
                           color: Colors.green[400], size: 52),
-                      stat: '18',
+                      stat: _records["totalSuccessfulDays"].toString(),
+                      //stat: "2",
                       title: "Total Days Done"),
                 ]),
                 Row(children: <Widget>[
                   recordCard(
                       icon: Icon(MaterialCommunityIcons.fire,
                           color: Colors.orange[700], size: 52),
-                      stat: '0',
+                      stat: _records["currentStreak"].toString(),
+                      //stat: "2",
                       title: "Current Streak"),
                   recordCard(
                       icon: Icon(MaterialCommunityIcons.crown,

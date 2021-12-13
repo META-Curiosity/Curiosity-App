@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:curiosity_flutter/services/user_db_service.dart';
 
 class InputTasksScreen extends StatefulWidget {
   const InputTasksScreen({Key key}) : super(key: key);
@@ -17,7 +18,7 @@ String validatorFunction(value) {
 
 class _InputTasksScreenState extends State<InputTasksScreen> {
   final _formKey = GlobalKey<FormState>();
-
+  UserDbService UDS = UserDbService('hashedEmail');
   // Create a text controller and use it to retrieve the current value
   // of the TextField.
   TextEditingController titleController;

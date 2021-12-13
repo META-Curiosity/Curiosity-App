@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/onboarding',
+      initialRoute: '/set_custom_tasks',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -155,7 +155,8 @@ class _MyHomePageState extends State<MyHomePage> {
         //Getting user hashed email example
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
+          String hashedEmail =
+              sha256.convert(utf8.encode(currentUser.email)).toString();
           userDbService = UserDbService(hashedEmail);
           log.infoString('user has log in successfully', 0);
           Map<String, dynamic> data = {'labId': '-1', 'contributeData': true};

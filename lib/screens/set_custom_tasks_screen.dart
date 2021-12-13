@@ -24,22 +24,34 @@ class SetCustomTasksScreen extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             GradientButton(
-                startColor: Color(0xFFF6744B), endColor: Color(0xFFDA3401)),
+                startColor: Color(0xFFF6744B),
+                endColor: Color(0xFFDA3401),
+                id: "0"),
             const SizedBox(height: 15),
             GradientButton(
-                startColor: Color(0xFFC34FE5), endColor: Color(0xFF8302A7)),
+                startColor: Color(0xFFC34FE5),
+                endColor: Color(0xFF8302A7),
+                id: "1"),
             const SizedBox(height: 15),
             GradientButton(
-                startColor: Color(0xFF74D5BF), endColor: Color(0xFF1B9D8D)),
+                startColor: Color(0xFF74D5BF),
+                endColor: Color(0xFF1B9D8D),
+                id: "2"),
             const SizedBox(height: 15),
             GradientButton(
-                startColor: Color(0xFFED9440), endColor: Color(0xFFDA5D03)),
+                startColor: Color(0xFFED9440),
+                endColor: Color(0xFFDA5D03),
+                id: "3"),
             const SizedBox(height: 15),
             GradientButton(
-                startColor: Color(0xFFE9C216), endColor: Color(0xFFE2810B)),
+                startColor: Color(0xFFE9C216),
+                endColor: Color(0xFFE2810B),
+                id: "4"),
             const SizedBox(height: 15),
             GradientButton(
-                startColor: Color(0xFF5C7CCA), endColor: Color(0xFF2741A6)),
+                startColor: Color(0xFF5C7CCA),
+                endColor: Color(0xFF2741A6),
+                id: "5"),
             const SizedBox(height: 50),
             SizedBox(
               width: 330,
@@ -81,11 +93,8 @@ class SetCustomTasksScreen extends StatelessWidget {
 class GradientButton extends StatefulWidget {
   Color startColor, endColor;
 
-  GradientButton({
-    Color startColor,
-    Color endColor,
-    Key key,
-  }) : super(key: key) {
+  GradientButton({Color startColor, Color endColor, Key key, String id})
+      : super(key: key) {
     this.startColor = startColor;
     this.endColor = endColor;
   }
