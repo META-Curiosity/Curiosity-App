@@ -12,8 +12,8 @@ users or search an user by their id
 */
 
 class AdminDbService {
-  final String USER_DB_NAME = 'tb-test';
-  final String NIGHTLY_EVALUATION_DB_NAME = 'nightlyEval';
+  final String USER_DB_NAME = 'users-dev';
+  final String NIGHTLY_EVALUATION_DB_NAME = 'meta-task-dev';
   final LogService log = new LogService();
   CollectionReference usersCollection;
 

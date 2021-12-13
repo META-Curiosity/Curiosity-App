@@ -141,22 +141,25 @@ class _MyHomePageState extends State<MyHomePage> {
   double windowWidth = 0;
   double windowHeight = 0;
 
-  UserDbService db;
+  UserDbService userDbService;
   LogService log = new LogService();
+  int first = 0;
 
   Future<void> initialize() async {
     //Change page once user is logged in
     FirebaseAuth.instance.authStateChanges().listen((User user) async {
       if (user == null) {
         log.infoString('User is currently signed out!', 0);
-      } else {
+      } else if (first == 0) {
+        first += 1;
         //Getting user hashed email example
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          String hashedEmail =
-              sha256.convert(utf8.encode(currentUser.email)).toString();
-          db = UserDbService(hashedEmail);
+          String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
+          userDbService = UserDbService(hashedEmail);
           log.infoString('user has log in successfully', 0);
+          Map<String, dynamic> data = {'labId': '-1', 'contributeData': true};
+          await userDbService.registerUser(data);
         }
       }
     });
