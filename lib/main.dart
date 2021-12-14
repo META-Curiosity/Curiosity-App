@@ -1,4 +1,3 @@
-import 'package:curiosity_flutter/screens/start_journey_screen.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +11,7 @@ import 'screens/central_dashboard_screen.dart';
 import 'screens/mindful_sessions_screen.dart';
 import 'screens/play_audio_screen.dart';
 import 'screens/good_morning_screen.dart';
+import 'screens/firebase_test_screen.dart';
 //firebase
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -117,7 +117,19 @@ class MyApp extends StatelessWidget {
               body: Container(
                 child: AudioPlayer(),
               ),
-            )
+            ),
+        '/firebase_test': (context) => Scaffold(
+              appBar: AppBar(
+                //centerTitle: true,
+                leading: BackButton(),
+                //title: Text('New Task'),
+                backgroundColor: Color(0xFFF6C344),
+              ),
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: FirebaseTest(),
+              ),
+            ),
       },
     );
   }

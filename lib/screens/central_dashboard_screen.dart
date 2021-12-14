@@ -92,12 +92,14 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
       });
     });
 
+    //get Streaks and Total Days Completed
     getStreaksAndTotalDaysCompleted().then((result) {
       setState(() {
         _records = result;
         _recordsRecieved = true;
       });
     });
+
     super.initState();
   }
 

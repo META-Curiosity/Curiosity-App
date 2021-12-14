@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
+import 'package:curiosity_flutter/models/custom_task.dart';
+import 'package:curiosity_flutter/models/custom_task.dart';
 
 class InputTasksScreen extends StatefulWidget {
   const InputTasksScreen({Key key}) : super(key: key);
@@ -18,7 +20,6 @@ String validatorFunction(value) {
 
 class _InputTasksScreenState extends State<InputTasksScreen> {
   final _formKey = GlobalKey<FormState>();
-  UserDbService UDS = UserDbService('hashedEmail');
   // Create a text controller and use it to retrieve the current value
   // of the TextField.
   TextEditingController titleController;
@@ -37,13 +38,12 @@ class _InputTasksScreenState extends State<InputTasksScreen> {
 
   @override
   void didChangeDependencies() {
-    final arg =
-        ModalRoute.of(context).settings.arguments as Map<String, String>;
+    final arg = ModalRoute.of(context).settings.arguments as CustomTask;
     if (arg != null) {
-      titleController.text = arg['title'];
-      whenIController.text = arg['one'];
-      iWillController.text = arg['two'];
-      andProveItByController.text = arg['three'];
+      titleController.text = arg.title;
+      whenIController.text = arg.moment;
+      iWillController.text = arg.method;
+      andProveItByController.text = arg.proof;
     }
     super.didChangeDependencies();
   }
@@ -59,8 +59,7 @@ class _InputTasksScreenState extends State<InputTasksScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routeData =
-        ModalRoute.of(context).settings.arguments as Map<String, String>;
+    final routeData = ModalRoute.of(context).settings.arguments as CustomTask;
 
     return Form(
       key: _formKey,
@@ -78,7 +77,7 @@ class _InputTasksScreenState extends State<InputTasksScreen> {
                   controller: titleController,
                   validator: validatorFunction,
                   textAlign: TextAlign.center,
-                  autofocus: (routeData != null && routeData.isEmpty),
+                  autofocus: (routeData != null),
                   decoration: InputDecoration(
                     hintText: 'Title',
                     counterText: "",

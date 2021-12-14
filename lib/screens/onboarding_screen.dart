@@ -3,38 +3,65 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:curiosity_flutter/services/user_db_service.dart';
+import 'package:curiosity_flutter/models/user.dart';
+import 'package:curiosity_flutter/models/custom_task.dart';
 
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends StatefulWidget {
+  OnboardingScreen({Key key}) : super(key: key);
+
+  @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  UserDbService UDS = UserDbService('hashedEmail');
+  User user = User();
+  //get User object to pass into the set_custom_tasks screen
+  Future<User> getUser() async {
+    Map<String, dynamic> userData = await UDS.getUserData();
+    return userData['user'];
+  }
+
+  void initState() {
+    getUser().then((result) {
+      setState(() {
+        user = result;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-            color: Colors.amber,
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[StartJourneyScreen()],
-            )),
-      ),
-      bottomNavigationBar: CurvedNavigationBar(
-        color: Colors.white,
-        backgroundColor: Colors.amber,
-        height: 65,
-        items: <Widget>[
-          Icon(Icons.home, size: 20, color: Colors.black),
-          Icon(Icons.today, size: 20, color: Colors.black),
-          Icon(Icons.list, size: 20, color: Colors.black),
-        ],
-        animationDuration: Duration(milliseconds: 200),
-        animationCurve: Curves.bounceInOut,
-        onTap: (index) {
-          // debugPrint("Current index is $index");
-        },
-      ),
-    );
+    return (user.id != null)
+        ? Scaffold(
+            body: Container(
+                color: Colors.amber,
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[StartJourneyScreen(user: user)],
+                )),
+            bottomNavigationBar: CurvedNavigationBar(
+              color: Colors.white,
+              backgroundColor: Colors.amber,
+              height: 65,
+              items: <Widget>[
+                Icon(Icons.home, size: 20, color: Colors.black),
+                Icon(Icons.today, size: 20, color: Colors.black),
+                Icon(Icons.list, size: 20, color: Colors.black),
+              ],
+              animationDuration: Duration(milliseconds: 200),
+              animationCurve: Curves.bounceInOut,
+              onTap: (index) {
+                // debugPrint("Current index is $index");
+              },
+            ),
+          )
+        : Text(' ');
     //   body: PageView.builder(
     //       itemCount: 3,
     //       itemBuilder: (_, i) {
@@ -72,12 +99,13 @@ class OnboardingScreen extends StatelessWidget {
 }
 
 class StartJourneyScreen extends StatelessWidget {
-  const StartJourneyScreen({Key key}) : super(key: key);
+  final User user; //user
+  const StartJourneyScreen({Key key, @required this.user}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Center(
         child: Container(
-      padding: const EdgeInsets.only(top: 30, left: 30, right: 30, bottom: 30),
+      padding: const EdgeInsets.only(top: 100, left: 30, right: 30, bottom: 30),
       child: Column(
         children: <Widget>[
           const Text(
@@ -102,7 +130,8 @@ class StartJourneyScreen extends StatelessWidget {
               ),
               onPressed: () {
                 // Navigate to the second screen using a named route.
-                Navigator.pushNamed(context, '/set_custom_tasks');
+                Navigator.pushNamed(context, '/set_custom_tasks',
+                    arguments: user);
               },
               child: const Text("Set Custom Task"),
             ),
