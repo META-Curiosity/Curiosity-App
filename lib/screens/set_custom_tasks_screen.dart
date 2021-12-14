@@ -3,8 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:collection';
 
-class SetCustomTasksScreen extends StatelessWidget {
+class SetCustomTasksScreen extends StatefulWidget {
   const SetCustomTasksScreen({Key key}) : super(key: key);
+
+  @override
+  State<SetCustomTasksScreen> createState() => _SetCustomTasksScreenState();
+}
+
+class _SetCustomTasksScreenState extends State<SetCustomTasksScreen> {
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(

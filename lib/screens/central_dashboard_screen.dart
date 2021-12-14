@@ -101,13 +101,6 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
     super.initState();
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //
-  //   print("length2: ${ne ?? 'null'}");
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Container(

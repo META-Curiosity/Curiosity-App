@@ -1,9 +1,10 @@
+import 'package:curiosity_flutter/screens/start_journey_screen.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 //screens
-import 'onboarding_page.dart';
+import 'screens/onboarding_screen.dart';
 import 'screens/set_custom_tasks_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'screens/input_tasks_screen.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/set_custom_tasks',
+      initialRoute: '/onboarding',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -55,13 +56,8 @@ class MyApp extends StatelessWidget {
               ),
             ),
         '/onboarding': (context) => Scaffold(
-              appBar: AppBar(
-                leading: BackButton(),
-                backgroundColor: Color(0xFFF6C344),
-                centerTitle: true,
-              ),
               body: Container(
-                child: OnboardingPage(),
+                child: OnboardingScreen(),
               ),
             ),
         '/set_custom_tasks': (context) => Scaffold(
@@ -293,7 +289,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     print('HI');
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => OnboardingPage()),
+                      MaterialPageRoute(
+                          builder: (context) => OnboardingScreen()),
                     );
                     // final snackbar = SnackBar(content: Text("HI"));
                     // ScaffoldMessenger.of(context).showSnackBar(snackbar);
