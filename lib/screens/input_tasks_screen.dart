@@ -20,9 +20,9 @@ String validatorFunction(value) {
 }
 
 void updateCustomTask(UserDbService UDS, String taskId, CustomTask newTask,
-    Map<String, CustomTask> oldTask, BuildContext context) {
-  UDS.updateTask(taskId, newTask, oldTask);
-  Navigator.pop(context);
+    Map<String, CustomTask> oldTask, BuildContext context) async {
+  await UDS.updateTask(taskId, newTask, oldTask);
+  Navigator.pop(context, true);
 }
 
 class _InputTasksScreenState extends State<InputTasksScreen> {

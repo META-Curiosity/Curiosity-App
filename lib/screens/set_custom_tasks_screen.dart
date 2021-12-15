@@ -146,14 +146,15 @@ class _GradientButtonState extends State<GradientButton> {
         child: RaisedButton(
             onPressed: () async {
               //Push the inputting task screen on top
-              if (widget.user.customTasks != null) {
-                Navigator.pushNamed(context, '/input_tasks',
-                    arguments: dataToBePushed(widget.user, widget.id));
+              if (widget.user.customTasks[widget.id].title != null) {
+                await Navigator.pushNamed(context, '/input_tasks',
+                        arguments: dataToBePushed(widget.user, widget.id))
+                    .then((_) => setState(() {}));
               } else {
                 await Navigator.pushNamed(
                   context,
                   '/input_tasks',
-                );
+                ).then((_) => setState(() {}));
               }
             },
             shape: RoundedRectangleBorder(
@@ -178,7 +179,7 @@ class _GradientButtonState extends State<GradientButton> {
                     minWidth: 88.0,
                     minHeight: 36.0), // min sizes for Material buttons
                 alignment: Alignment.center,
-                child: widget.user.customTasks == null
+                child: widget.user.customTasks[widget.id].title == null
                     ? SvgPicture.asset(
                         "assets/images/plus.svg",
                         semanticsLabel: 'Plus',

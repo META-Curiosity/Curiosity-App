@@ -25,16 +25,16 @@ class _FirebaseTestState extends State<FirebaseTest> {
 
   void initState() {
     Map<String, dynamic> data = {
-      "method": "Practice piano for 20 minutes",
-      "title": "Piano",
-      "moment": "every day",
-      "proof": "A short clip of the measure I practiced."
+      "method": null,
+      "title": null,
+      "moment": null,
+      "proof": null
     };
     CustomTask zero = new CustomTask.fromData(data);
 // To be replace by the user original tasks dictionary in the database
     getUser().then((result) {
       Map<String, CustomTask> oldTask = result.customTasks;
-      UDS.updateTask('2', new CustomTask.fromData(data), oldTask);
+      UDS.updateTask('5', new CustomTask.fromData(data), oldTask);
     });
     super.initState();
   }
