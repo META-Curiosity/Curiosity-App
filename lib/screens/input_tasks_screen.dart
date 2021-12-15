@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:curiosity_flutter/models/custom_task.dart';
-import 'package:curiosity_flutter/models/custom_task.dart';
+import 'package:curiosity_flutter/models/user.dart';
+import 'package:curiosity_flutter/screens/set_custom_tasks_screen.dart';
 
 class InputTasksScreen extends StatefulWidget {
   const InputTasksScreen({Key key}) : super(key: key);
@@ -16,6 +17,12 @@ String validatorFunction(value) {
   if (value.isEmpty) {
     return "Please enter some text.";
   }
+}
+
+void updateCustomTask(UserDbService UDS, String taskId, CustomTask newTask,
+    Map<String, CustomTask> oldTask, BuildContext context) {
+  UDS.updateTask(taskId, newTask, oldTask);
+  Navigator.pop(context);
 }
 
 class _InputTasksScreenState extends State<InputTasksScreen> {
@@ -38,12 +45,14 @@ class _InputTasksScreenState extends State<InputTasksScreen> {
 
   @override
   void didChangeDependencies() {
-    final arg = ModalRoute.of(context).settings.arguments as CustomTask;
+    final arg = ModalRoute.of(context).settings.arguments as dataToBePushed;
+    final id = arg.id;
+    UserDbService UDS = UserDbService(arg.id);
     if (arg != null) {
-      titleController.text = arg.title;
-      whenIController.text = arg.moment;
-      iWillController.text = arg.method;
-      andProveItByController.text = arg.proof;
+      titleController.text = arg.user.customTasks[id].title;
+      whenIController.text = arg.user.customTasks[id].moment;
+      iWillController.text = arg.user.customTasks[id].method;
+      andProveItByController.text = arg.user.customTasks[id].proof;
     }
     super.didChangeDependencies();
   }
@@ -59,8 +68,9 @@ class _InputTasksScreenState extends State<InputTasksScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routeData = ModalRoute.of(context).settings.arguments as CustomTask;
-
+    final arg = ModalRoute.of(context).settings.arguments as dataToBePushed;
+    final id = arg.id;
+    UserDbService UDS = UserDbService(arg.user.id);
     return Form(
       key: _formKey,
       child: Container(
@@ -77,7 +87,7 @@ class _InputTasksScreenState extends State<InputTasksScreen> {
                   controller: titleController,
                   validator: validatorFunction,
                   textAlign: TextAlign.center,
-                  autofocus: (routeData != null),
+                  autofocus: (arg != null),
                   decoration: InputDecoration(
                     hintText: 'Title',
                     counterText: "",
@@ -129,20 +139,22 @@ class _InputTasksScreenState extends State<InputTasksScreen> {
                 ElevatedButton.icon(
                     onPressed: () {
                       _formKey.currentState.validate()
-                          ?
-                          // final res = {
-                          //   'title': titleController.text,
-                          //   'one': whenIController.text,
-                          //   'two': iWillController.text,
-                          //   'three': andProveItByController.text
-                          // };
-                          //print('popped');
-                          Navigator.pop(context, <String, String>{
-                              'title': titleController.text,
-                              'one': whenIController.text,
-                              'two': iWillController.text,
-                              'three': andProveItByController.text
-                            })
+                          ? updateCustomTask(
+                              UDS,
+                              id,
+                              CustomTask.fromData(Map.fromIterables([
+                                "title",
+                                "moment",
+                                "method",
+                                "proof"
+                              ], [
+                                titleController.text,
+                                whenIController.text,
+                                iWillController.text,
+                                andProveItByController.text
+                              ])),
+                              arg.user.customTasks,
+                              context)
                           : print('not valid');
                     },
                     icon: Icon(IconData(57424, fontFamily: 'MaterialIcons')),

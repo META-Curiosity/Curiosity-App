@@ -41,32 +41,38 @@ class _SetCustomTasksScreenState extends State<SetCustomTasksScreen> {
             GradientButton(
                 startColor: Color(0xFFF6744B),
                 endColor: Color(0xFFDA3401),
-                content: customTasks['0']),
+                user: user,
+                id: '0'),
             const SizedBox(height: 15),
             GradientButton(
                 startColor: Color(0xFFC34FE5),
                 endColor: Color(0xFF8302A7),
-                content: customTasks['1']),
+                user: user,
+                id: '1'),
             const SizedBox(height: 15),
             GradientButton(
                 startColor: Color(0xFF74D5BF),
                 endColor: Color(0xFF1B9D8D),
-                content: customTasks['2']),
+                user: user,
+                id: '2'),
             const SizedBox(height: 15),
             GradientButton(
                 startColor: Color(0xFFED9440),
                 endColor: Color(0xFFDA5D03),
-                content: customTasks['3']),
+                user: user,
+                id: '3'),
             const SizedBox(height: 15),
             GradientButton(
                 startColor: Color(0xFFE9C216),
                 endColor: Color(0xFFE2810B),
-                content: customTasks['4']),
+                user: user,
+                id: '4'),
             const SizedBox(height: 15),
             GradientButton(
                 startColor: Color(0xFF5C7CCA),
                 endColor: Color(0xFF2741A6),
-                content: customTasks['5']),
+                user: user,
+                id: '5'),
             const SizedBox(height: 50),
             SizedBox(
               width: 330,
@@ -105,19 +111,24 @@ class _SetCustomTasksScreenState extends State<SetCustomTasksScreen> {
   }
 }
 
+class dataToBePushed {
+  final User user;
+  final String id;
+
+  const dataToBePushed(this.user, this.id);
+}
+
 class GradientButton extends StatefulWidget {
   Color startColor, endColor;
-  CustomTask content;
+  User user;
+  String id;
   GradientButton(
-      {Color startColor,
-      Color endColor,
-      Key key,
-      String id,
-      CustomTask content})
+      {Color startColor, Color endColor, Key key, String id, User user})
       : super(key: key) {
     this.startColor = startColor;
     this.endColor = endColor;
-    this.content = content;
+    this.user = user;
+    this.id = id;
   }
 
   @override
@@ -126,19 +137,18 @@ class GradientButton extends StatefulWidget {
 
 class _GradientButtonState extends State<GradientButton> {
   var title;
+
   @override
   Widget build(BuildContext context) {
-    print(
-        "content: ${widget.content.toString()}\n startColor: ${widget.startColor}");
     return SizedBox(
         width: 330,
         height: 60,
         child: RaisedButton(
             onPressed: () async {
               //Push the inputting task screen on top
-              if (widget.content != null) {
+              if (widget.user.customTasks != null) {
                 Navigator.pushNamed(context, '/input_tasks',
-                    arguments: widget.content);
+                    arguments: dataToBePushed(widget.user, widget.id));
               } else {
                 await Navigator.pushNamed(
                   context,
@@ -168,7 +178,7 @@ class _GradientButtonState extends State<GradientButton> {
                     minWidth: 88.0,
                     minHeight: 36.0), // min sizes for Material buttons
                 alignment: Alignment.center,
-                child: widget.content == null
+                child: widget.user.customTasks == null
                     ? SvgPicture.asset(
                         "assets/images/plus.svg",
                         semanticsLabel: 'Plus',
@@ -176,7 +186,7 @@ class _GradientButtonState extends State<GradientButton> {
                     : Row(children: <Widget>[
                         SizedBox(width: 15),
                         Text(
-                          widget.content.title,
+                          widget.user.customTasks[widget.id].title,
                           textAlign: TextAlign.start,
                           style: TextStyle(
                             color: Color(0xFFFFFFFF),
