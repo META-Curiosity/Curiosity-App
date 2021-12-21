@@ -287,7 +287,7 @@ class _OutlineBtnState extends State<OutlineBtn> {
           widget.btnText,
           style: TextStyle(color: Color(0xFF3a82f7), fontSize: 16),
         ),
-      ),
+      ),  
     );
   }
 }
