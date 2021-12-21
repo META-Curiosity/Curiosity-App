@@ -3,6 +3,7 @@ import 'package:curiosity_flutter/models/custom_task.dart';
 import 'package:curiosity_flutter/models/nightly_evaluation.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
+import 'package:curiosity_flutter/services/meta_task_db_services.dart';
 
 /* 
 1) UserDbService - the service expects an authenticated user id to perform neccessary operations 
@@ -84,6 +85,33 @@ class UserDbService {
     } catch (error) {
       log.errorObj(
           {'method': 'updateTask - error', 'error': error.toString()}, 2);
+      return {'error': error};
+    }
+  }
+
+
+  // Update user task via the position passed in and new values -
+  // Upon successful update - a new custom task array will be returned
+  // NOTE: 2 tasks cannot have the same title
+  Future<Map<String, dynamic>> getRandomMetaTask(
+      String difficulty,
+      ) async {
+    log.infoObj({'method': 'getRandomMetaTask', 'difficulty': difficulty});
+    try {
+      DocumentSnapshot user = await usersCollection.doc(uid).get();
+      MetaTaskDbServices metaTasks = MetaTaskDbServices();
+      try {
+        dynamic nested = user.get(FieldPath([difficulty]));
+      } on StateError catch(e) {
+        print('No nested field exists!');
+        //Creating stuff
+
+
+      }      usersCollection.doc(uid);
+      //return {'customTask': oldTask};
+    } catch (error) {
+      log.errorObj(
+          {'method': 'getRandomMetaTask - error', 'error': error.toString()}, 2);
       return {'error': error};
     }
   }
