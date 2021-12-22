@@ -133,7 +133,7 @@ class StartJourneyScreen extends StatelessWidget {
                 Navigator.pushNamed(context, '/set_custom_tasks',
                     arguments: user);
               },
-              child: const Text("Set Custom Task"),
+              child: const Text("Set Custom Goals"),
             ),
           )
         ],

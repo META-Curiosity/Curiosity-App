@@ -13,6 +13,8 @@ class SetCustomTasksScreen extends StatefulWidget {
 }
 
 class _SetCustomTasksScreenState extends State<SetCustomTasksScreen> {
+  bool _sixTasks = false;
+
   void initState() {
     super.initState();
   }
@@ -29,7 +31,7 @@ class _SetCustomTasksScreenState extends State<SetCustomTasksScreen> {
         child: Column(
           children: <Widget>[
             const Text(
-              'Set Your Custom Tasks',
+              'Set Your Custom Goals',
               style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
@@ -73,7 +75,7 @@ class _SetCustomTasksScreenState extends State<SetCustomTasksScreen> {
                 endColor: Color(0xFF2741A6),
                 user: user,
                 id: '5'),
-            const SizedBox(height: 50),
+            const SizedBox(height: 40),
             SizedBox(
               width: 330,
               height: 60,

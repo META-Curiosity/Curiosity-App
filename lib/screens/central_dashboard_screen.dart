@@ -180,29 +180,17 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
                 ),
                 Row(children: <Widget>[
                   recordCard(
-                      icon: Icon(MaterialCommunityIcons.calendar_check,
-                          color: Colors.pink[300], size: 52),
-                      stat: "18",
-                      title: "Days in November"),
-                  recordCard(
-                      icon: Icon(Icons.check_circle,
-                          color: Colors.green[400], size: 52),
-                      stat: _records["totalSuccessfulDays"].toString(),
-                      //stat: "2",
-                      title: "Total Days Done"),
-                ]),
-                Row(children: <Widget>[
-                  recordCard(
                       icon: Icon(MaterialCommunityIcons.fire,
                           color: Colors.orange[700], size: 52),
                       stat: _records["currentStreak"].toString(),
                       //stat: "2",
                       title: "Current Streak"),
                   recordCard(
-                      icon: Icon(MaterialCommunityIcons.crown,
-                          color: Colors.yellow[600], size: 52),
-                      stat: '18',
-                      title: "Best Streak"),
+                      icon: Icon(Icons.check_circle,
+                          color: Colors.green[400], size: 52),
+                      stat: _records["totalSuccessfulDays"].toString(),
+                      //stat: "2",
+                      title: "Total Days Done"),
                 ]),
               ])
             : Text(''),
@@ -274,3 +262,15 @@ class _recordCardState extends State<recordCard> {
     );
   }
 }
+
+//Unused RecordCards
+//   recordCard(
+//       icon: Icon(MaterialCommunityIcons.crown,
+//           color: Colors.yellow[600], size: 52),
+//       stat: '18',
+//       title: "Best Streak"),
+// recordCard(
+//     icon: Icon(MaterialCommunityIcons.calendar_check,
+//         color: Colors.pink[300], size: 52),
+//     stat: "18",
+//     title: "Days in November"),
