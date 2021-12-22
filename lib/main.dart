@@ -143,12 +143,11 @@ class _MyHomePageState extends State<MyHomePage> {
           Map<String, dynamic> data = {'labId': '-1', 'contributeData': true};
           await userDbService.registerUser(data);
         }
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => OnboardingPage()),
+        );
       }
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => OnboardingPage()),
-      );
-
     });
   }
 
