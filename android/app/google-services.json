@@ -13,7 +13,32 @@
           "package_name": "com.example.curiosity_flutter"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "49671142207-cqbrbmtjaj87i3fc3rn1t86gc1a6vftv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.curiosity_flutter",
+            "certificate_hash": "8c8cca362582a51d21e67952f6843a94ec34418e"
+          }
+        },
+        {
+          "client_id": "49671142207-ophje2525veqtr4f33igmhqq7hht4csk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.curiosity_flutter",
+            "certificate_hash": "aecdb63f17c6efb13bfb26f44dcca717a6b893d6"
+          }
+        },
+        {
+          "client_id": "49671142207-vd2r7v2sgs0nib7gtlq8uhgumejhtmeu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.curiosity_flutter",
+            "certificate_hash": "a663dbcf61f50c9a42b070745f337d4804191cd2"
+          }
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCtkCMH-w6tiVmSPcurD7sBnqbOSwpMhKw"
