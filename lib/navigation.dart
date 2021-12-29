@@ -34,9 +34,9 @@ class _NavigationState extends State<Navigation> {
   bool _datesRecieved = false;
   bool _recordsRecieved = false;
   bool _dataRecieved = false;
-  final PageController _pageController = PageController();
   DateTime today = DateTime.now();
   Map<String, dynamic> _records = {};
+  PageController _pageController;
 
   //get User object to pass into the set_custom_tasks screen
   Future<User> getUser() async {
@@ -127,7 +127,14 @@ class _NavigationState extends State<Navigation> {
         print("DONE $_dataRecieved");
       });
     });
+    _pageController = PageController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -140,7 +147,16 @@ class _NavigationState extends State<Navigation> {
     return !_dataRecieved
         ? Loading()
         : Scaffold(
-            body: screens[index],
+            body: SizedBox.expand(
+              child: PageView(
+                controller: _pageController,
+                scrollDirection: Axis.horizontal,
+                onPageChanged: (i) {
+                  setState(() => index = i);
+                },
+                children: screens,
+              ),
+            ),
             bottomNavigationBar: CurvedNavigationBar(
                 key: navigationKey,
                 color: Colors.white,
@@ -150,7 +166,14 @@ class _NavigationState extends State<Navigation> {
                 index: index,
                 animationDuration: Duration(milliseconds: 300),
                 animationCurve: Curves.easeInOut,
-                onTap: (index) => setState(() => this.index = index)));
+                onTap: (index) {
+                  setState(() => this.index = index);
+                  _pageController.animateToPage(
+                    index,
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  );
+                }));
   }
 }
 
