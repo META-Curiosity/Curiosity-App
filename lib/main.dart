@@ -1,3 +1,4 @@
+import 'package:curiosity_flutter/navigation.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'screens/mindful_sessions_screen.dart';
 import 'screens/play_audio_screen.dart';
 import 'screens/good_morning_screen.dart';
 import 'screens/firebase_test_screen.dart';
+import 'package:curiosity_flutter/navigation.dart';
 //firebase
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,7 +38,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/onboarding',
+      initialRoute: '/navigation',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -83,12 +85,12 @@ class MyApp extends StatelessWidget {
               ),
             ),
         '/central_dashboard': (context) => Scaffold(
-              appBar: AppBar(
-                //centerTitle: true,
-                leading: BackButton(),
-                //title: Text('New Task'),
-                backgroundColor: Color(0xFFF6C344),
-              ),
+              // appBar: AppBar(
+              //   //centerTitle: true,
+              //   leading: BackButton(),
+              //   //title: Text('New Task'),
+              //   backgroundColor: Color(0xFFF6C344),
+              // ),
               resizeToAvoidBottomInset: true,
               body: Container(
                 child: CentralDashboardScreen(),
@@ -128,6 +130,12 @@ class MyApp extends StatelessWidget {
               resizeToAvoidBottomInset: true,
               body: Container(
                 child: FirebaseTest(),
+              ),
+            ),
+        '/navigation': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: Navigation(),
               ),
             ),
       },
