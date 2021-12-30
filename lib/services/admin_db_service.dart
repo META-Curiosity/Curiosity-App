@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
+import 'package:pretty_json/pretty_json.dart';
 
-/* 
+/*
 1) AdminDbService - the service is for admin to use to retrieve all 
 users or search an user by their id
 2) At each call to the service, the return type is of type map
@@ -11,8 +12,8 @@ users or search an user by their id
 */
 
 class AdminDbService {
-  final String USER_DB_NAME = 'tb-test';
-  final String NIGHTLY_EVALUATION_DB_NAME = 'nightlyEval';
+  final String USER_DB_NAME = 'users-dev';
+  final String NIGHTLY_EVALUATION_DB_NAME = 'meta-task-dev';
   final LogService log = new LogService();
   CollectionReference usersCollection;
 

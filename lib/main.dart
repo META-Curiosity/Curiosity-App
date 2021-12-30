@@ -2,10 +2,17 @@ import 'package:curiosity_flutter/services/log_service.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'onboarding_page.dart';
+//screens
+import 'screens/onboarding_screen.dart';
 import 'screens/set_custom_tasks_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'screens/input_tasks_screen.dart';
+import 'screens/central_dashboard_screen.dart';
+import 'screens/mindful_sessions_screen.dart';
+import 'screens/play_audio_screen.dart';
+import 'screens/good_morning_screen.dart';
+import 'screens/firebase_test_screen.dart';
+//firebase
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -37,7 +44,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/set_custom_tasks',
+      initialRoute: '/onboarding',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -46,6 +53,21 @@ class MyApp extends StatelessWidget {
               ),
             ),
         // When navigating to the "/second" route, build the SecondScreen widget.
+        '/good_morning': (context) => Scaffold(
+              appBar: AppBar(
+                leading: BackButton(),
+                backgroundColor: Color(0xFFF6C344),
+                centerTitle: true,
+              ),
+              body: Container(
+                child: GoodMorningScreen(),
+              ),
+            ),
+        '/onboarding': (context) => Scaffold(
+              body: Container(
+                child: OnboardingScreen(),
+              ),
+            ),
         '/set_custom_tasks': (context) => Scaffold(
               appBar: AppBar(
                 leading: BackButton(),
@@ -68,6 +90,54 @@ class MyApp extends StatelessWidget {
                 child: InputTasksScreen(),
               ),
             ),
+        '/central_dashboard': (context) => Scaffold(
+              appBar: AppBar(
+                //centerTitle: true,
+                leading: BackButton(),
+                //title: Text('New Task'),
+                backgroundColor: Color(0xFFF6C344),
+              ),
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: CentralDashboardScreen(),
+              ),
+            ),
+        '/mindful_sessions': (context) => Scaffold(
+              appBar: AppBar(
+                //centerTitle: true,
+                leading: BackButton(),
+                //title: Text('New Task'),
+                backgroundColor: Color(0xFFF6C344),
+              ),
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: MindfulSessionsScreen(),
+              ),
+            ),
+        '/play_audio': (context) => Scaffold(
+              appBar: AppBar(
+                //centerTitle: true,
+                leading: BackButton(),
+                //title: Text('New Task'),
+                backgroundColor: Color(0xFFF6C344),
+              ),
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: AudioPlayer(),
+              ),
+            ),
+        '/firebase_test': (context) => Scaffold(
+              appBar: AppBar(
+                //centerTitle: true,
+                leading: BackButton(),
+                //title: Text('New Task'),
+                backgroundColor: Color(0xFFF6C344),
+              ),
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: FirebaseTest(),
+              ),
+            ),
       },
     );
   }
@@ -87,21 +157,26 @@ class _MyHomePageState extends State<MyHomePage> {
   double windowWidth = 0;
   double windowHeight = 0;
 
-  UserDbService db;
+  UserDbService userDbService;
   LogService log = new LogService();
+  int first = 0;
 
   Future<void> initialize() async {
     //Change page once user is logged in
     FirebaseAuth.instance.authStateChanges().listen((User user) async {
       if (user == null) {
         log.infoString('User is currently signed out!', 0);
-      } else {
+      } else if (first == 0) {
+        first += 1;
         //Getting user hashed email example
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
-          db = UserDbService(hashedEmail);
+          String hashedEmail =
+              sha256.convert(utf8.encode(currentUser.email)).toString();
+          userDbService = UserDbService(hashedEmail);
           log.infoString('user has log in successfully', 0);
+          Map<String, dynamic> data = {'labId': '-1', 'contributeData': true};
+          await userDbService.registerUser(data);
         }
       }
     });
@@ -234,7 +309,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     print('HI');
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => OnboardingPage()),
+                      MaterialPageRoute(
+                          builder: (context) => OnboardingScreen()),
                     );
                     // final snackbar = SnackBar(content: Text("HI"));
                     // ScaffoldMessenger.of(context).showSnackBar(snackbar);
@@ -246,6 +322,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 // PrimaryButton(btnText: "Login"),
                 // OutlineBtn(btnText: "Create an Account")
+
                 Lottie.asset('assets/cat.json')
               ],
             ),
