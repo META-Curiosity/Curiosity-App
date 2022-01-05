@@ -13,6 +13,8 @@ import 'screens/mindful_sessions_screen.dart';
 import 'screens/play_audio_screen.dart';
 import 'screens/good_morning_screen.dart';
 import 'screens/firebase_test_screen.dart';
+import 'screens/consent_screen.dart';
+import 'screens/study_id_screen.dart';
 import 'package:curiosity_flutter/navigation.dart';
 //firebase
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
@@ -38,7 +40,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/onboarding',
+      initialRoute: '/consent',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -136,6 +138,18 @@ class MyApp extends StatelessWidget {
               resizeToAvoidBottomInset: true,
               body: Container(
                 child: Navigation(),
+              ),
+            ),
+        '/consent': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: Consent(),
+              ),
+            ),
+        '/study_id': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: StudyId(),
               ),
             ),
       },
