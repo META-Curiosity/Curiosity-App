@@ -4,6 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:collection';
 import 'package:curiosity_flutter/models/user.dart';
 import 'package:curiosity_flutter/models/custom_task.dart';
+import 'package:curiosity_flutter/models/props.dart';
+import 'package:curiosity_flutter/navigation.dart';
 
 class SetCustomTasksScreen extends StatefulWidget {
   const SetCustomTasksScreen({Key key}) : super(key: key);
@@ -103,7 +105,7 @@ class _SetCustomTasksScreenState extends State<SetCustomTasksScreen> {
               child: check()
                   ? RaisedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/central_dashboard');
+                        Navigator.pushNamed(context, '/navigation');
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0)),
@@ -164,13 +166,6 @@ class _SetCustomTasksScreenState extends State<SetCustomTasksScreen> {
       ),
     ));
   }
-}
-
-class dataToBePushed {
-  final User user;
-  final String id;
-
-  const dataToBePushed(this.user, this.id);
 }
 
 class GradientButton extends StatefulWidget {

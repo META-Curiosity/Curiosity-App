@@ -50,27 +50,29 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
             Container(
               padding: EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 20.0),
               child: TableCalendar(
-                firstDay: DateTime.utc(2021, 12, 1),
-                lastDay: DateTime.utc(2021, 12, 30),
+                firstDay:
+                    DateTime.utc(DateTime.now().year, DateTime.now().month, 1),
+                lastDay:
+                    DateTime.utc(DateTime.now().year, DateTime.now().month, 31),
                 focusedDay: DateTime.now(),
                 calendarFormat: _calendarFormat,
-                selectedDayPredicate: (day) {
-                  // Use `selectedDayPredicate` to determine which day is currently selected.
-                  // If this returns true, then `day` will be marked as selected.
-
-                  // Using `isSameDay` is recommended to disregard
-                  // the time-part of compared DateTime objects.
-                  return isSameDay(_selectedDay, day);
-                },
-                onDaySelected: (selectedDay, focusedDay) {
-                  if (!isSameDay(_selectedDay, selectedDay)) {
-                    // Call `setState()` when updating the selected day
-                    setState(() {
-                      _selectedDay = selectedDay;
-                    });
-                    print("Day Log: ${widget.dates[selectedDay]}");
-                  }
-                },
+                // selectedDayPredicate: (day) {
+                //   // Use `selectedDayPredicate` to determine which day is currently selected.
+                //   // If this returns true, then `day` will be marked as selected.
+                //
+                //   // Using `isSameDay` is recommended to disregard
+                //   // the time-part of compared DateTime objects.
+                //   return isSameDay(_selectedDay, day);
+                // },
+                // onDaySelected: (selectedDay, focusedDay) {
+                //   if (!isSameDay(_selectedDay, selectedDay)) {
+                //     // Call `setState()` when updating the selected day
+                //     setState(() {
+                //       _selectedDay = selectedDay;
+                //     });
+                //     print("Day Log: ${widget.dates[selectedDay]}");
+                //   }
+                // },
                 onFormatChanged: (format) {
                   if (_calendarFormat != format) {
                     // Call `setState()` when updating calendar format

@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:collection';
 import 'package:curiosity_flutter/models/user.dart';
 import 'package:curiosity_flutter/models/custom_task.dart';
+import 'package:curiosity_flutter/models/props.dart';
 
 class EditCustomTasksScreen extends StatefulWidget {
   final User user; //user
@@ -92,13 +93,6 @@ class EditCustomTasksScreenState extends State<EditCustomTasksScreen> {
       ),
     ));
   }
-}
-
-class dataToBePushed {
-  final User user;
-  final String id;
-
-  const dataToBePushed(this.user, this.id);
 }
 
 class GradientButton extends StatefulWidget {

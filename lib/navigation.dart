@@ -127,7 +127,7 @@ class _NavigationState extends State<Navigation> {
         print("DONE $_dataRecieved");
       });
     });
-    _pageController = PageController();
+    _pageController = PageController(initialPage: 1);
     super.initState();
   }
 
