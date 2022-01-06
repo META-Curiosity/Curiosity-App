@@ -20,24 +20,12 @@ import 'firebase_options.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
-import 'package:curiosity_flutter/services/meta_task_db_services.dart';
-//
-// //get one random task from 3 options
-// Future<void> main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp();
-//   MetaTaskDbServices db = MetaTaskDbServices();
-//   UserDbService user = UserDbService("22528fa0c5fb066c90c256cc2113a5f6a74012ff6240a3fca6f74343525645dd");
-//   user.getRandomMetaTask("hard");
-//   //db.addMetaTask({"title": "test", "difficulty":"hard","description":"asdf", "proofDescription": "asdf"});
-//   //db.getTaskByDifficultyAndID("hard",1);
-//   runApp(App());
-
   void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(MyApp());
 }
 

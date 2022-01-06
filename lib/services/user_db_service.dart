@@ -4,8 +4,9 @@ import 'package:curiosity_flutter/models/nightly_evaluation.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'package:curiosity_flutter/services/admin_db_service.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
-import 'package:curiosity_flutter/services/meta_task_db_services.dart';
+import 'package:curiosity_flutter/services/meta_task_db_service.dart';
 import '../helper/dateHelper.dart';
+import 'dart:math';
 
 /* 
 1) UserDbService - the service expects an authenticated user id to perform necessary operations
@@ -110,9 +111,10 @@ class UserDbService {
   }
 
 
-  // Update user task via the position passed in and new values -
-  // Upon successful update - a new custom task array will be returned
-  // NOTE: 2 tasks cannot have the same title
+
+  // Gets the a random meta task id for a given difficulty for a user.
+  // Returns metaTaskId which can be used to query for the specific task
+  // Returns userIndex which is the index in the user array that can be used to later update remaining tasks for the user
   Future<Map<String, dynamic>> getRandomMetaTask(
       String difficulty,
       ) async {
@@ -121,17 +123,70 @@ class UserDbService {
       DocumentSnapshot user = await usersCollection.doc(uid).get();
       MetaTaskDbServices metaTasks = MetaTaskDbServices();
       try {
-        dynamic nested = user.get(FieldPath([difficulty]));
+        final random = new Random();
+
+        // If we don't have an array or if it is empty, repopulate the array
+        if (!user.data().toString().contains(difficulty) || user[difficulty].length == 0) {
+          var currentCount = await metaTasks.getCountForDifficulty(difficulty);
+          var list = [for (var i = 1; i <= currentCount['count']; i++) i];
+          usersCollection.doc(uid).update({difficulty: list});
+
+          int index = random.nextInt(currentCount['count']);
+
+
+          log.successObj({
+            'method': 'getRandomMetaTask - success',
+            'metaTaskId': index+1,
+            'userIndex':index,
+          });
+
+          return {"taskId":index+1, "userIndex":index};
+        } else { //array exists in db, so we can pull random task out
+          int len = user[difficulty].length;
+          int index = random.nextInt(len);
+          int metaTaskId = user[difficulty][index];
+          log.successObj({
+            'method': 'getRandomMetaTask - success',
+            'metaTaskId': metaTaskId,
+            'userIndex':index,
+          });
+          return {"taskId":metaTaskId, "userIndex":index};
+        }
       } on StateError catch(e) {
-        print('No nested field exists!');
-        //Creating stuff
-
-
-      }      usersCollection.doc(uid);
-      //return {'customTask': oldTask};
+        print(e);
+      };
     } catch (error) {
       log.errorObj(
           {'method': 'getRandomMetaTask - error', 'error': error.toString()}, 2);
+      return {'error': error};
+    }
+  }
+
+
+  //Removes a metaTask from a user's remaining list of meta tasks.
+  Future<Map<String, dynamic>> removeMetaTask(
+      String difficulty,
+      int index,
+      ) async {
+    log.infoObj({'method': 'removeMetaTask', 'difficulty': difficulty, 'index': index});
+    try {
+      DocumentSnapshot user = await usersCollection.doc(uid).get();
+      MetaTaskDbServices metaTasks = MetaTaskDbServices();
+      try {
+        var list = user[difficulty];
+        list.removeAt(index);
+        print(list);
+        usersCollection.doc(uid).update({difficulty: list});
+        log.successObj({
+          'method': 'removeMetaTask - success',
+        });
+
+      } on StateError catch(e) {
+        print(e);
+      };
+    } catch (error) {
+      log.errorObj(
+          {'method': 'removeMetaTask - error', 'error': error.toString()}, 2);
       return {'error': error};
     }
   }
