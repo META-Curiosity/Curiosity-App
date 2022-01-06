@@ -5,7 +5,6 @@ import 'package:lottie/lottie.dart';
 //screens
 import 'screens/onboarding_screen.dart';
 import 'screens/set_custom_tasks_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'screens/input_tasks_screen.dart';
 import 'screens/central_dashboard_screen.dart';
 import 'screens/mindful_sessions_screen.dart';
@@ -13,24 +12,33 @@ import 'screens/play_audio_screen.dart';
 import 'screens/good_morning_screen.dart';
 import 'screens/firebase_test_screen.dart';
 //firebase
+import 'package:firebase_core/firebase_core.dart';
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase_options.dart';
 
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
 import 'package:curiosity_flutter/services/meta_task_db_services.dart';
+//
+// //get one random task from 3 options
+// Future<void> main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp();
+//   MetaTaskDbServices db = MetaTaskDbServices();
+//   UserDbService user = UserDbService("22528fa0c5fb066c90c256cc2113a5f6a74012ff6240a3fca6f74343525645dd");
+//   user.getRandomMetaTask("hard");
+//   //db.addMetaTask({"title": "test", "difficulty":"hard","description":"asdf", "proofDescription": "asdf"});
+//   //db.getTaskByDifficultyAndID("hard",1);
+//   runApp(App());
 
-//get one random task from 3 options
-Future<void> main() async {
+  void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  MetaTaskDbServices db = MetaTaskDbServices();
-  UserDbService user = UserDbService("22528fa0c5fb066c90c256cc2113a5f6a74012ff6240a3fca6f74343525645dd");
-  user.getRandomMetaTask("hard");
-  //db.addMetaTask({"title": "test", "difficulty":"hard","description":"asdf", "proofDescription": "asdf"});
-  //db.getTaskByDifficultyAndID("hard",1);
-  runApp(App());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
 }
 
 class App extends StatefulWidget {
@@ -44,7 +52,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/onboarding',
+      initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -178,6 +186,11 @@ class _MyHomePageState extends State<MyHomePage> {
           Map<String, dynamic> data = {'labId': '-1', 'contributeData': true};
           await userDbService.registerUser(data);
         }
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => OnboardingScreen()),
+        );
       }
     });
   }
