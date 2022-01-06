@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/onboarding',
+      initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -175,7 +175,8 @@ class _MyHomePageState extends State<MyHomePage> {
         }
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => OnboardingPage()),
+          MaterialPageRoute(
+              builder: (context) => OnboardingScreen()),
         );
       }
     });
