@@ -28,7 +28,9 @@ class Consent extends StatelessWidget {
         SizedBox(
           width: MediaQuery.of(context).size.width - 50.0,
           child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/onboarding');
+              },
               child: Text('Allow'),
               style: ElevatedButton.styleFrom(
                 primary: Colors.blue[700],
