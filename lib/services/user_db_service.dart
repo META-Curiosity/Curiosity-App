@@ -8,7 +8,7 @@ import 'package:curiosity_flutter/services/meta_task_db_services.dart';
 import '../helper/dateHelper.dart';
 
 /* 
-1) UserDbService - the service expects an authenticated user id to perform neccessary operations 
+1) UserDbService - the service expects an authenticated user id to perform necessary operations
 2) At each call to the service, the return type is of type map
   a) If the key 'error' exist inside the return value -> there is an error from the method
   b) If the key 'error' does not exist -> the call is successful
