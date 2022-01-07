@@ -6,7 +6,6 @@ import 'package:lottie/lottie.dart';
 //screens
 import 'screens/onboarding_screen.dart';
 import 'screens/set_custom_tasks_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'screens/input_tasks_screen.dart';
 import 'screens/central_dashboard_screen.dart';
 import 'screens/mindful_sessions_screen.dart';
@@ -18,16 +17,20 @@ import 'screens/study_id_screen.dart';
 import 'screens/choose_mindfulness_session_screen.dart';
 import 'package:curiosity_flutter/navigation.dart';
 //firebase
+import 'package:firebase_core/firebase_core.dart';
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase_options.dart';
 
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(App());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
 }
 
 class App extends StatefulWidget {
@@ -41,7 +44,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/choose_mindfulness',
+      initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -199,6 +202,10 @@ class _MyHomePageState extends State<MyHomePage> {
           Map<String, dynamic> data = {'labId': '-1', 'contributeData': true};
           await userDbService.registerUser(data);
         }
+        Navigator.pushReplacementNamed(
+          context,
+          '/study_id',
+        );
       }
     });
   }
@@ -330,8 +337,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     print('HI');
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => OnboardingScreen()),
+                      MaterialPageRoute(builder: (context) => StudyId()),
                     );
                     // final snackbar = SnackBar(content: Text("HI"));
                     // ScaffoldMessenger.of(context).showSnackBar(snackbar);
