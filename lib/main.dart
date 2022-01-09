@@ -1,3 +1,4 @@
+import 'package:curiosity_flutter/navigation.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,10 @@ import 'screens/mindful_sessions_screen.dart';
 import 'screens/play_audio_screen.dart';
 import 'screens/good_morning_screen.dart';
 import 'screens/firebase_test_screen.dart';
+import 'screens/consent_screen.dart';
+import 'screens/study_id_screen.dart';
+import 'screens/choose_mindfulness_session_screen.dart';
+import 'package:curiosity_flutter/navigation.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
@@ -39,7 +44,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/',
+      initialRoute: '/choose_mindfulness_session',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -86,12 +91,12 @@ class MyApp extends StatelessWidget {
               ),
             ),
         '/central_dashboard': (context) => Scaffold(
-              appBar: AppBar(
-                //centerTitle: true,
-                leading: BackButton(),
-                //title: Text('New Task'),
-                backgroundColor: Color(0xFFF6C344),
-              ),
+              // appBar: AppBar(
+              //   //centerTitle: true,
+              //   leading: BackButton(),
+              //   //title: Text('New Task'),
+              //   backgroundColor: Color(0xFFF6C344),
+              // ),
               resizeToAvoidBottomInset: true,
               body: Container(
                 child: CentralDashboardScreen(),
@@ -131,6 +136,30 @@ class MyApp extends StatelessWidget {
               resizeToAvoidBottomInset: true,
               body: Container(
                 child: FirebaseTest(),
+              ),
+            ),
+        '/navigation': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: Navigation(),
+              ),
+            ),
+        '/consent': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: Consent(),
+              ),
+            ),
+        '/study_id': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: StudyId(),
+              ),
+            ),
+        '/choose_mindfulness_session': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: ChooseMindfulnessSession(),
               ),
             ),
       },
@@ -173,10 +202,9 @@ class _MyHomePageState extends State<MyHomePage> {
           Map<String, dynamic> data = {'labId': '-1', 'contributeData': true};
           await userDbService.registerUser(data);
         }
-        Navigator.push(
+        Navigator.pushReplacementNamed(
           context,
-          MaterialPageRoute(
-              builder: (context) => OnboardingScreen()),
+          '/study_id',
         );
       }
     });
@@ -309,8 +337,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     print('HI');
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => OnboardingScreen()),
+                      MaterialPageRoute(builder: (context) => StudyId()),
                     );
                     // final snackbar = SnackBar(content: Text("HI"));
                     // ScaffoldMessenger.of(context).showSnackBar(snackbar);
