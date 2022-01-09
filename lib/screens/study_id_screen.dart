@@ -37,7 +37,7 @@ class _StudyIdState extends State<StudyId> {
                     child: Text('Submit'),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        Navigator.pushReplacementNamed(context, '/consent');
+                        Navigator.pushNamed(context, '/consent');
                       }
                     })
               ]);
@@ -76,7 +76,7 @@ class _StudyIdState extends State<StudyId> {
             width: MediaQuery.of(context).size.width - 50.0,
             child: ElevatedButton(
                 onPressed: () async {
-                  await showInformationDialog(context);
+                  return await showInformationDialog(context);
                 },
                 child: Text('Enter Study ID'),
                 style: ElevatedButton.styleFrom(
@@ -89,7 +89,7 @@ class _StudyIdState extends State<StudyId> {
               width: MediaQuery.of(context).size.width - 50.0,
               child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/consent');
+                    Navigator.pushNamed(context, '/consent');
                   },
                   child: Text(
                     'I\'m not participating in the study',

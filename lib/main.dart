@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/',
+      initialRoute: '/choose_mindfulness_session',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -156,7 +156,7 @@ class MyApp extends StatelessWidget {
                 child: StudyId(),
               ),
             ),
-        '/choose_mindfulness': (context) => Scaffold(
+        '/choose_mindfulness_session': (context) => Scaffold(
               resizeToAvoidBottomInset: true,
               body: Container(
                 child: ChooseMindfulnessSession(),

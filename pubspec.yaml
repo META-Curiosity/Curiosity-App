@@ -66,6 +66,10 @@ flutter:
     - assets/images/dataIcon.jpg
     - assets/images/circleData.png
     - assets/images/lightbulb.png
+    - assets/images/morning.jpeg
+    - assets/images/noon.jpeg
+    - assets/images/night.jpeg
+    - assets/images/city.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

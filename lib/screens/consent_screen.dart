@@ -29,7 +29,8 @@ class Consent extends StatelessWidget {
           width: MediaQuery.of(context).size.width - 50.0,
           child: ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/onboarding');
+                Navigator.pushReplacementNamed(
+                    context, '/choose_mindfulness_session');
               },
               child: Text('Allow'),
               style: ElevatedButton.styleFrom(
@@ -41,7 +42,10 @@ class Consent extends StatelessWidget {
           child: SizedBox(
             width: MediaQuery.of(context).size.width - 50.0,
             child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushReplacementNamed(
+                      context, '/choose_mindfulness_session');
+                },
                 child: Text(
                   'Decline',
                   style: TextStyle(color: Colors.grey[700]),
