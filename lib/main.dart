@@ -196,10 +196,11 @@ class _MyHomePageState extends State<MyHomePage> {
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
           String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
-          userDbService = UserDbService(hashedEmail);
-          log.infoString('user has log in successfully', 0);
-          Map<String, dynamic> data = {'labId': 2, 'contributeData': true};
-          await userDbService.registerUser(data);
+          userDbService = UserDbService('trung-email');
+          // log.infoString('user has log in successfully', 0);
+          // Map<String, dynamic> data = {'labId': 2, 'contributeData': true};
+          await userDbService.updateUserLabId(1);
+          await userDbService.updateUserConsent(false);
         }
         Navigator.pushReplacementNamed(context,'/study_id',);
       }

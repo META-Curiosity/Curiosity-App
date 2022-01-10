@@ -41,13 +41,9 @@ Output:
 UserDbService userDbService = new UserDbService('HASHED_EMAIL');
 ```
 
-2. registerUser(data) -> response
+2. registerUserId() -> response
 ```dart
 '''
-Input:
-  - Map<String, dynamic> data:
-    - int labId: The lab id given by the META lab
-    - Boolean contributeData: Determine whether a given user wants to contribte their data to the study
 Ouput:
   - Map<String, dynamic> response:
     - User user: an user object representing the user who just registered

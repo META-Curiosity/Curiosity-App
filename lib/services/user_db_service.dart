@@ -45,59 +45,80 @@ class UserDbService {
   // Adding new user to the database, if successful the new user data can be
   // accessed via the 'user' key of the response. Expecting data to contain:
   // the field labId and contributeData.
-  Future<Map<String, dynamic>> registerUser(Map<String, dynamic> data) async {
-    log.infoObj({'method': 'registerUser', 'data': data});
+  Future<Map<String, dynamic>> registerUserId() async {
+    log.infoObj({'method': 'registerUser'});
     try {
       User user = new User();
-      data['id'] = uid;
-      data['registerDateTime'] = DateTime.now().toUtc().toString();
 
-      // Even number lab id will get access to the mindfulness screen
-      if (data['labId'] >= 0 && data['labId'] % 2 == 0) {
-        data['mindfulEligibility'] = true;
-      } else {
-        data['mindfulEligibility'] = false;
-      }
-      user.fromData(data);
-
+      user.fromData({
+        'id': uid,
+        'registerDateTime': DateTime.now().toUtc().toString()
+      });
       // Put the new user id into the db
       await usersCollection.doc(uid).set(user.toJson());
       log.successObj({'method': 'registerUser - success', 'user': user});
       return {'user': user};
     } catch (error) {
-      log.errorObj(
-          {'method': 'registerUser - error', 'error': error.toString()}, 2);
-      return {'error': error};
+      log.errorObj({'method': 'registerUser - error', 'error': error.toString()}, 2);
+      return {'error': error, 'success': false };
+    }
+  }
+
+  // Update user lab id
+  Future<Map<String, dynamic>> updateUserLabId(int labId) async {
+    try {
+      log.infoObj({'method': 'updateUserLabId', 'labId': labId});
+      await usersCollection.doc(uid).update({'labId': labId});
+      // Even number lab id will get access to the mindfulness screen
+      if (labId >= 0 && labId % 2 == 0) {
+        await usersCollection.doc(uid).update({'mindfulEligibility': true});
+      } else {
+        await usersCollection.doc(uid).update({'mindfulEligibility': false});
+      }
+      log.successObj({'method': 'updateUserLabId - success'});
+      return { 'success': true };
+    } catch (error) {
+      log.errorObj({'method': 'updateUserLabId - error', 'error': error.toString()}, 2);
+      return {'error': error, 'success': false };
+    }
+  }
+
+  // Update user consent to share data
+  Future<Map<String, dynamic>> updateUserConsent(bool agreed) async {
+    try {
+      log.infoObj({'method': 'updateUserConsent', 'agreed': agreed});
+      await usersCollection.doc(uid).update({'contributeData': agreed});
+      log.successObj({'method': 'updateUserConsent - success'});
+      return { 'success': true };
+    } catch (error) {
+      log.errorObj({'method': 'updateUserConsent - error', 'error': error.toString()}, 2);
+      return {'error': error, 'success': false };
     }
   }
 
   // Updating reminders for when the user would like to get reminded to finish their mindfulness
-  Future<Map<String, dynamic>> updateMindfulReminders(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> updateMindfulReminders(List<int> reminders) async {
     try {
-      log.infoObj({'method': 'updateMindfulReminders', 'data': data});
-      await usersCollection.doc(uid).update({'mindfulReminders': data['reminders']});
-      log.successObj({'method': 'updateMindfulReminders - success', 'data': data});
-      return {
-        'msg': 'Update mindful reminders successful'
-      };
+      log.infoObj({'method': 'updateMindfulReminders', 'reminders': reminders});
+      await usersCollection.doc(uid).update({'mindfulReminders': reminders});
+      log.successObj({'method': 'updateMindfulReminders - success'});
+      return { 'success': true };
     } catch (error) {
       log.errorObj({'method': 'updateMindfulReminders - error', 'error': error.toString()}, 2);
-      return {'error': error};
+      return {'error': error, 'success': false };
     }
   }
 
   // Updating reminders for when the user would like to get reminded to complete their activity
-  Future<Map<String, dynamic>> updateCompleteActivityReminder(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> updateCompleteActivityReminders(List<int> reminders) async {
     try {
-      log.infoObj({'method': 'updateCompleteActivityReminder', 'data': data});
-      await usersCollection.doc(uid).update({'completeActivityReminders': data['reminders']});
-      log.successObj({'method': 'updateCompleteActivityReminder - success', 'data': data});
-      return {
-        'msg': 'Update activity completion reminder successful'
-      };
+      log.infoObj({'method': 'updateCompleteActivityReminder', 'reminders': reminders});
+      await usersCollection.doc(uid).update({'completeActivityReminders': reminders});
+      log.successObj({'method': 'updateCompleteActivityReminder - success'});
+      return { 'success': true };
     } catch (error) {
       log.errorObj({'method': 'updateCompleteActivityReminder - error', 'error': error.toString()}, 2);
-      return {'error': error};
+      return {'error': error, 'success': false };
     }
   }
 
