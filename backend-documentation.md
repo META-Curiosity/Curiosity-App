@@ -166,6 +166,35 @@ Ouput:
 '''
 await userDbService.getUserStreakAndTotalDaysCompleted();
 ```
+
+10. updateCompleteActivityReminder(data) -> response
+```dart
+'''
+Input:
+  - Map<String, dynamic> data:
+    - List<int> reminders: An array representing the interval of when users would like to be reminded to complete their daily activity.
+Ouput:
+  - Map<String, dynamic> response:
+    - String msg: Indicating to the front-end that updating users daily activity reminder is successful
+'''
+// Representing the interval from 12PM - 4PM
+Map<String, dynamic> data = {'reminders': [12, 13, 14, 15, 16]};
+await userDbService.updateCompleteActivityReminder(data);
+
+11. updateCompleteActivityReminder(data) -> response
+```dart
+'''
+Input:
+  - Map<String, dynamic> data:
+    - List<int> reminders: An array representing the interval of when users would like to be reminded to complete their daily activity.
+Ouput:
+  - Map<String, dynamic> response:
+    - String msg: Indicating to the front-end that updating users daily activity reminder is successful
+'''
+// Representing the interval from 8AM - 12PM
+Map<String, dynamic> data = { 'reminders': [8, 9, 10, 11, 12]};
+await userDbService.updateCompleteActivityReminder(data);
+```
 -----------------------------------------------------------------------------------------------
 ## Admin Database Service - AdminDbService
 1. Constructor
