@@ -205,9 +205,8 @@ class _MyHomePageState extends State<MyHomePage> {
           String hashedEmail =
               sha256.convert(utf8.encode(currentUser.email)).toString();
           userDbService = UserDbService(hashedEmail);
+          await userDbService.registerUserId();
           log.infoString('user has log in successfully', 0);
-          Map<String, dynamic> data = {'labId': 2, 'contributeData': true};
-          await userDbService.registerUser(data);
         }
         Navigator.pushReplacementNamed(
           context,

@@ -155,33 +155,14 @@ class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
                                               elevation: 5.0),
                                           onPressed: () async {
                                             //TODO BACKEND: MORNING: 0, AFTERNOON: 1, EVENiNG:
-                                            Map<String, dynamic> data =
-                                                new Map();
-                                            data["Reminder"] = [];
+
+                                            List<int> data = [];
                                             if (index == 0) {
-                                              data["reminders"] = [
-                                                9,
-                                                10,
-                                                11,
-                                                12
-                                              ];
+                                              data = [9, 10, 11, 12];
                                             } else if (index == 1) {
-                                              data["reminders"] = [
-                                                12,
-                                                13,
-                                                14,
-                                                15,
-                                                16
-                                              ];
+                                              data = [12, 13, 14, 15, 16];
                                             } else {
-                                              data["reminders"] = [
-                                                16,
-                                                17,
-                                                18,
-                                                19,
-                                                20,
-                                                21
-                                              ];
+                                              data = [16, 17, 18, 19, 20, 21];
                                             }
                                             await UDS
                                                 .updateMindfulReminders(data);

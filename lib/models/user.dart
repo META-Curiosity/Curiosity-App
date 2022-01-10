@@ -35,8 +35,8 @@ class User {
     mindfulEligibility = null;
     currentStreak = 0;
     totalSuccessfulDays = 0;
-    mindfulReminders = List<int>.filled(4, null);
-    completeActivityReminders = List<int>.filled(4, null);
+    mindfulReminders = null;
+    completeActivityReminders = null;
   }
 
   // Created from the data retrieved from firestore

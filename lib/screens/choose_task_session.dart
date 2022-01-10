@@ -146,39 +146,25 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
                                               primary: Colors.white,
                                               elevation: 5.0),
                                           onPressed: () async {
-                                            Map<String, dynamic> data =
-                                                new Map();
-                                            data["Reminder"] = [];
+                                            List<int> data = [];
                                             if (index == 0) {
-                                              data["reminders"] = [
-                                                9,
-                                                10,
-                                                11,
-                                                12
-                                              ];
+                                              data = [9, 10, 11, 12];
                                             } else if (index == 1) {
-                                              data["reminders"] = [
-                                                12,
-                                                13,
-                                                14,
-                                                15,
-                                                16
-                                              ];
+                                              data = [12, 13, 14, 15, 16];
                                             } else {
-                                              data["reminders"] = [
-                                                16,
-                                                17,
-                                                18,
-                                                19,
-                                                20,
-                                                21
-                                              ];
+                                              data = [16, 17, 18, 19, 20, 21];
                                             }
                                             await UDS
-                                                .updateCompleteActivityReminders(
-                                                    data);
-                                            Navigator.pushNamed(context,
-                                                '/choose_mindfulness_session');
+                                                .updateMindfulReminders(data);
+                                            Map<String, dynamic> d =
+                                                await UDS.getUserData();
+                                            if (d["user"].mindfulEligibility) {
+                                              Navigator.pushNamed(context,
+                                                  '/choose_mindfulness_session');
+                                            } else {
+                                              Navigator.pushNamed(
+                                                  context, '/onboarding');
+                                            }
                                           },
                                           child: Row(
                                             children: <Widget>[

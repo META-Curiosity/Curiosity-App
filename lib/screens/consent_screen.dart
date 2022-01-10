@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:curiosity_flutter/services/user_db_service.dart';
+import 'package:curiosity_flutter/models/user.dart';
+import 'dart:async';
 
 class Consent extends StatelessWidget {
+  UserDbService UDS = UserDbService('hashedEmail');
+  User user = User();
   @override
   Widget build(BuildContext context) {
     final studyId = ModalRoute.of(context).settings.arguments as String;
@@ -30,7 +35,8 @@ class Consent extends StatelessWidget {
         SizedBox(
           width: MediaQuery.of(context).size.width - 50.0,
           child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                await UDS.updateUserConsent(true);
                 Navigator.pushReplacementNamed(context, '/choose_task_session');
               },
               child: Text('Allow'),
@@ -43,7 +49,8 @@ class Consent extends StatelessWidget {
           child: SizedBox(
             width: MediaQuery.of(context).size.width - 50.0,
             child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  await UDS.updateUserConsent(false);
                   Navigator.pushReplacementNamed(
                       context, '/choose_task_session');
                 },
