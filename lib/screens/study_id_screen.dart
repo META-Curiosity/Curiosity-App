@@ -37,7 +37,8 @@ class _StudyIdState extends State<StudyId> {
                     child: Text('Submit'),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        Navigator.pushNamed(context, '/consent');
+                        Navigator.pushNamed(context, '/consent',
+                            arguments: _textEditingController.text);
                       }
                     })
               ]);
@@ -89,7 +90,10 @@ class _StudyIdState extends State<StudyId> {
               width: MediaQuery.of(context).size.width - 50.0,
               child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/consent');
+                    Navigator.pushNamed(
+                      context,
+                      '/consent',
+                    );
                   },
                   child: Text(
                     'I\'m not participating in the study',

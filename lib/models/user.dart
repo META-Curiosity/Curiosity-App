@@ -57,7 +57,8 @@ class User {
     totalSuccessfulDays = data['totalSuccessfulDays'] ?? totalSuccessfulDays;
     mindfulEligibility = data['mindfulEligibility'] ?? mindfulEligibility;
     mindfulReminders = data['mindfulReminders'] ?? mindfulReminders;
-    completeActivityReminders = data['completeActivityReminders'] ?? completeActivityReminders;
+    completeActivityReminders =
+        data['completeActivityReminders'] ?? completeActivityReminders;
   }
 
   Map<String, dynamic> toJson() {

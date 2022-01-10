@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class Consent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final studyId = ModalRoute.of(context).settings.arguments as String;
+    print(studyId);
     return Container(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -29,8 +31,7 @@ class Consent extends StatelessWidget {
           width: MediaQuery.of(context).size.width - 50.0,
           child: ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(
-                    context, '/choose_mindfulness_session');
+                Navigator.pushReplacementNamed(context, '/choose_task_session');
               },
               child: Text('Allow'),
               style: ElevatedButton.styleFrom(
@@ -44,7 +45,7 @@ class Consent extends StatelessWidget {
             child: ElevatedButton(
                 onPressed: () {
                   Navigator.pushReplacementNamed(
-                      context, '/choose_mindfulness_session');
+                      context, '/choose_task_session');
                 },
                 child: Text(
                   'Decline',
