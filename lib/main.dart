@@ -15,6 +15,7 @@ import 'screens/firebase_test_screen.dart';
 import 'screens/consent_screen.dart';
 import 'screens/study_id_screen.dart';
 import 'screens/choose_mindfulness_session_screen.dart';
+import 'screens/choose_task_session.dart';
 import 'package:curiosity_flutter/navigation.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/',
+      initialRoute: '/choose_task_session',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -162,6 +163,12 @@ class MyApp extends StatelessWidget {
                 child: ChooseMindfulnessSession(),
               ),
             ),
+        '/choose_task_session': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: ChooseTaskSession(),
+              ),
+            ),
       },
     );
   }
@@ -195,13 +202,16 @@ class _MyHomePageState extends State<MyHomePage> {
         //Getting user hashed email example
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
+          String hashedEmail =
+              sha256.convert(utf8.encode(currentUser.email)).toString();
           userDbService = UserDbService(hashedEmail);
+          await userDbService.registerUserId();
           log.infoString('user has log in successfully', 0);
-          Map<String, dynamic> data = {'labId': 2, 'contributeData': true};
-          await userDbService.registerUser(data);
         }
-        Navigator.pushReplacementNamed(context,'/study_id',);
+        Navigator.pushReplacementNamed(
+          context,
+          '/study_id',
+        );
       }
     });
   }

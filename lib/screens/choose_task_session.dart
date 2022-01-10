@@ -3,19 +3,19 @@ import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'dart:async';
 
-class ChooseMindfulnessSession extends StatefulWidget {
-  const ChooseMindfulnessSession({Key key}) : super(key: key);
+class ChooseTaskSession extends StatefulWidget {
+  const ChooseTaskSession({Key key}) : super(key: key);
 
   @override
   _ChooseMindfulnessSessionState createState() =>
       _ChooseMindfulnessSessionState();
 }
 
-class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
+class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
   final List<String> images = <String>[
-    "assets/images/morning.jpeg",
-    "assets/images/noon.jpeg",
-    "assets/images/night.jpeg"
+    "assets/images/morningCity.jpeg",
+    "assets/images/noonCity.jpeg",
+    "assets/images/eveningCity.jpeg"
   ];
   final List<String> info = <String>[
     "Morning: 9am - 12pm",
@@ -45,7 +45,7 @@ class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
                       ],
                     ),
                     Text(
-                        "   In this app, you will be asked to complete mindfulness activities.  Please choose when you would like to complete mindfulness sessions!",
+                        "   Remembering is pain, so the app will do it for you!  Choose when you would like to be reminded to complete your tasks!",
                         style: TextStyle(
                           fontSize: 18,
                         ))
@@ -97,17 +97,9 @@ class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
                       ),
                       SizedBox(height: 20.0),
                       Text(
-                        "Choose your",
+                        "Choose when you would like to be reminded to complete tasks",
                         style: TextStyle(
-                          fontSize: 32,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: 5.0),
-                      Text(
-                        "mindfulness session",
-                        style: TextStyle(
-                          fontSize: 32,
+                          fontSize: 28,
                           color: Colors.white,
                         ),
                       ),
@@ -126,7 +118,7 @@ class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
                       children: <Widget>[
                         SizedBox(width: 30.0),
                         Text(
-                          "Mindfulness Sessions",
+                          "Task Reminder Sessions",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20),
                         ),
@@ -154,8 +146,6 @@ class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
                                               primary: Colors.white,
                                               elevation: 5.0),
                                           onPressed: () async {
-                                            //TODO BACKEND: MORNING: 0, AFTERNOON: 1, EVENiNG:
-
                                             List<int> data = [];
                                             if (index == 0) {
                                               data = [9, 10, 11, 12];
@@ -166,8 +156,15 @@ class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
                                             }
                                             await UDS
                                                 .updateMindfulReminders(data);
-                                            Navigator.pushReplacementNamed(
-                                                context, '/onboarding');
+                                            Map<String, dynamic> d =
+                                                await UDS.getUserData();
+                                            if (d["user"].mindfulEligibility) {
+                                              Navigator.pushNamed(context,
+                                                  '/choose_mindfulness_session');
+                                            } else {
+                                              Navigator.pushNamed(
+                                                  context, '/onboarding');
+                                            }
                                           },
                                           child: Row(
                                             children: <Widget>[

@@ -48,7 +48,6 @@ class AdminDbService {
     DocumentSnapshot userSnapshot;
     try {
       userSnapshot = await usersCollection.doc(id).get();
-
       // User does not exist
       if (!userSnapshot.exists) {
         log.errorObj({
@@ -57,7 +56,6 @@ class AdminDbService {
         }, 1);
         return {'error': 'User with ${id} does not exist'};
       }
-
       User newUser = new User.fromData(userSnapshot.data());
       log.successObj({'method': 'getUserById - success', 'user': newUser});
       return {'user': newUser};

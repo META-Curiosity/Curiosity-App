@@ -35,8 +35,8 @@ class User {
     mindfulEligibility = null;
     currentStreak = 0;
     totalSuccessfulDays = 0;
-    mindfulReminders = List<int>.filled(4, null);
-    completeActivityReminders = List<int>.filled(4, null);
+    mindfulReminders = null;
+    completeActivityReminders = null;
   }
 
   // Created from the data retrieved from firestore
@@ -57,7 +57,8 @@ class User {
     totalSuccessfulDays = data['totalSuccessfulDays'] ?? totalSuccessfulDays;
     mindfulEligibility = data['mindfulEligibility'] ?? mindfulEligibility;
     mindfulReminders = data['mindfulReminders'] ?? mindfulReminders;
-    completeActivityReminders = data['completeActivityReminders'] ?? completeActivityReminders;
+    completeActivityReminders =
+        data['completeActivityReminders'] ?? completeActivityReminders;
   }
 
   Map<String, dynamic> toJson() {

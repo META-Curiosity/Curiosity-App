@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:curiosity_flutter/screens/consent_screen.dart';
+import 'package:curiosity_flutter/services/user_db_service.dart';
+import 'package:curiosity_flutter/models/user.dart';
+import 'dart:async';
 
 class StudyId extends StatefulWidget {
   const StudyId({Key key}) : super(key: key);
@@ -9,6 +12,8 @@ class StudyId extends StatefulWidget {
 }
 
 class _StudyIdState extends State<StudyId> {
+  UserDbService UDS = UserDbService('hashedEmail');
+  User user = User();
   Future<void> showInformationDialog(BuildContext context) async {
     GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -35,9 +40,14 @@ class _StudyIdState extends State<StudyId> {
                     }),
                 TextButton(
                     child: Text('Submit'),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState.validate()) {
-                        Navigator.pushNamed(context, '/consent');
+                        await UDS.updateUserLabId(
+                            int.parse(_textEditingController.text));
+                        Navigator.pushNamed(
+                          context,
+                          '/consent',
+                        );
                       }
                     })
               ]);
@@ -88,8 +98,12 @@ class _StudyIdState extends State<StudyId> {
             child: SizedBox(
               width: MediaQuery.of(context).size.width - 50.0,
               child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/consent');
+                  onPressed: () async {
+                    await UDS.updateUserLabId(-1);
+                    Navigator.pushNamed(
+                      context,
+                      '/consent',
+                    );
                   },
                   child: Text(
                     'I\'m not participating in the study',
