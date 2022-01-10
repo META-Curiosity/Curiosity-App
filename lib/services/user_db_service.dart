@@ -24,8 +24,7 @@ class UserDbService {
   UserDbService(String uid) {
     this.uid = uid;
     usersCollection = FirebaseFirestore.instance.collection(USER_DB_NAME);
-    nightlyEvalCollection =
-        usersCollection.doc(uid).collection(NIGHT_EVAL_DB_NAME);
+    nightlyEvalCollection = usersCollection.doc(uid).collection(NIGHT_EVAL_DB_NAME);
   }
 
   Future<Map<String, dynamic>> getUserData() async {
@@ -52,6 +51,13 @@ class UserDbService {
       User user = new User();
       data['id'] = uid;
       data['registerDateTime'] = DateTime.now().toUtc().toString();
+
+      // Even number lab id will get access to the mindfulness screen
+      if (data['labId'] >= 0 && data['labId'] % 2 == 0) {
+        data['mindfulEligibility'] = true;
+      } else {
+        data['mindfulEligibility'] = false;
+      }
       user.fromData(data);
 
       // Put the new user id into the db
@@ -61,6 +67,36 @@ class UserDbService {
     } catch (error) {
       log.errorObj(
           {'method': 'registerUser - error', 'error': error.toString()}, 2);
+      return {'error': error};
+    }
+  }
+
+  // Updating reminders for when the user would like to get reminded to finish their mindfulness
+  Future<Map<String, dynamic>> updateMindfulReminders(Map<String, dynamic> data) async {
+    try {
+      log.infoObj({'method': 'updateMindfulReminders', 'data': data});
+      await usersCollection.doc(uid).update({'mindfulReminders': data['reminders']});
+      log.successObj({'method': 'updateMindfulReminders - success', 'data': data});
+      return {
+        'msg': 'Update mindful reminders successful'
+      };
+    } catch (error) {
+      log.errorObj({'method': 'updateMindfulReminders - error', 'error': error.toString()}, 2);
+      return {'error': error};
+    }
+  }
+
+  // Updating reminders for when the user would like to get reminded to complete their activity
+  Future<Map<String, dynamic>> updateCompleteActivityReminder(Map<String, dynamic> data) async {
+    try {
+      log.infoObj({'method': 'updateCompleteActivityReminder', 'data': data});
+      await usersCollection.doc(uid).update({'completeActivityReminders': data['reminders']});
+      log.successObj({'method': 'updateCompleteActivityReminder - success', 'data': data});
+      return {
+        'msg': 'Update activity completion reminder successful'
+      };
+    } catch (error) {
+      log.errorObj({'method': 'updateCompleteActivityReminder - error', 'error': error.toString()}, 2);
       return {'error': error};
     }
   }
@@ -86,8 +122,7 @@ class UserDbService {
       });
 
       if (hasDuplicateTitle) {
-        log.errorObj(
-            {'method': 'updateTask - error', 'message': 'duplicate title key'});
+        log.errorObj({'method': 'updateTask - error', 'message': 'duplicate title key'});
         return {
           'error': 'Two tasks cannot have the same title, please try again'
         };

@@ -46,13 +46,13 @@ UserDbService userDbService = new UserDbService('HASHED_EMAIL');
 '''
 Input:
   - Map<String, dynamic> data:
-    - String labId: The lab id given by the META lab
+    - int labId: The lab id given by the META lab
     - Boolean contributeData: Determine whether a given user wants to contribte their data to the study
 Ouput:
   - Map<String, dynamic> response:
     - User user: an user object representing the user who just registered
 '''
-Map<String, dynamic> data = {'labId': '-1', 'contributeData': true};
+Map<String, dynamic> data = {'labId': -1, 'contributeData': true};
 await userDbService.registerUser(data);
 ```
 
