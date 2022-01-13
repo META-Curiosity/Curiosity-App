@@ -19,7 +19,6 @@ class MetaTaskDbServices {
   Future<Map<String, dynamic>> addMetaTask(Map<String, String> data) async {
     log.infoObj({'method': 'addMetaTask', 'data': data});
     try {
-      // id created by hashing the title and difficulty of a task
       DocumentSnapshot documents = await taskCollection.doc(data['difficulty']).get();
       int count = documents.get("count");
 
