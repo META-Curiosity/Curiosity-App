@@ -175,7 +175,6 @@ class UserDbService {
       try {
         var list = user[difficulty];
         list.removeAt(index);
-        print(list);
         usersCollection.doc(uid).update({difficulty: list});
         log.successObj({
           'method': 'removeMetaTask - success',
