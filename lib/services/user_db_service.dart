@@ -152,9 +152,10 @@ class UserDbService {
           });
           return {"taskId":metaTaskId, "userIndex":index};
         }
-      } on StateError catch(e) {
-        print(e);
-      };
+      } on StateError catch(error) {
+        log.errorObj(
+            {'method': 'getRandomMetaTask - error', 'error': error.toString()}, 2);
+        return {'error': error};      };
     } catch (error) {
       log.errorObj(
           {'method': 'getRandomMetaTask - error', 'error': error.toString()}, 2);
@@ -171,7 +172,7 @@ class UserDbService {
     log.infoObj({'method': 'removeMetaTask', 'difficulty': difficulty, 'index': index});
     try {
       DocumentSnapshot user = await usersCollection.doc(uid).get();
-      MetaTaskDbServices metaTasks = MetaTaskDbServices();
+      //MetaTaskDbServices metaTasks = MetaTaskDbServices();
       try {
         var list = user[difficulty];
         list.removeAt(index);
@@ -180,8 +181,10 @@ class UserDbService {
           'method': 'removeMetaTask - success',
         });
 
-      } on StateError catch(e) {
-        print(e);
+      } on StateError catch(error) {
+        log.errorObj(
+            {'method': 'removeMetaTask - error', 'error': error.toString()}, 2);
+        return {'error': error};
       };
     } catch (error) {
       log.errorObj(
