@@ -3,8 +3,9 @@ import 'package:pretty_json/pretty_json.dart';
 
 class User {
   final int CUSTOM_TASK_LENGTH = 6; // indicate how many task we currently have
+
   String id; // User hashed email
-  String labId; // -1 if the user does not have lab id
+  int labId; // -1 if the user does not have lab id
   // Toggle option to get user consent to use their data
   bool contributeData;
   Map<String, CustomTask> customTasks = {};
@@ -12,6 +13,9 @@ class User {
   int totalSuccessfulDays;
   String prevSucessDateTime;
   String registerDateTime;
+  bool mindfulEligibility; // whether users can view the mindfulness screen
+  var mindfulReminders;
+  var completeActivityReminders;
 
   // Default constructor to initialize everthing to null equivalent
   User() {
@@ -28,11 +32,14 @@ class User {
     contributeData = null;
     prevSucessDateTime = null;
     registerDateTime = null;
+    mindfulEligibility = null;
     currentStreak = 0;
     totalSuccessfulDays = 0;
+    mindfulReminders = null;
+    completeActivityReminders = null;
   }
 
-  // Created from the data retrieved from firestore as
+  // Created from the data retrieved from firestore
   User.fromData(Map<String, dynamic> data) {
     fromData(data);
     data['customTasks'].forEach((key, value) {
@@ -43,11 +50,15 @@ class User {
   fromData(Map<String, dynamic> data) {
     id = data['id'];
     labId = data['labId'];
-    contributeData = data['contributeData'];
-    prevSucessDateTime = data['prevSucessDateTime'];
+    contributeData = data['contributeData'] ?? contributeData;
+    prevSucessDateTime = data['prevSucessDateTime'] ?? prevSucessDateTime;
     currentStreak = data['currentStreak'] ?? currentStreak;
-    registerDateTime = data['registerDateTime'];
+    registerDateTime = data['registerDateTime'] ?? registerDateTime;
     totalSuccessfulDays = data['totalSuccessfulDays'] ?? totalSuccessfulDays;
+    mindfulEligibility = data['mindfulEligibility'] ?? mindfulEligibility;
+    mindfulReminders = data['mindfulReminders'] ?? mindfulReminders;
+    completeActivityReminders =
+        data['completeActivityReminders'] ?? completeActivityReminders;
   }
 
   Map<String, dynamic> toJson() {
@@ -63,7 +74,10 @@ class User {
       'currentStreak': currentStreak,
       'prevSucessDateTime': prevSucessDateTime,
       'registerDateTime': registerDateTime,
-      'totalSuccessfulDays': totalSuccessfulDays
+      'totalSuccessfulDays': totalSuccessfulDays,
+      'mindfulEligibility': mindfulEligibility,
+      'completeActivityReminders': completeActivityReminders,
+      'mindfulReminders': mindfulReminders
     };
   }
 

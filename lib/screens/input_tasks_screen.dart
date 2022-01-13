@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:curiosity_flutter/models/custom_task.dart';
 import 'package:curiosity_flutter/models/user.dart';
-import 'package:curiosity_flutter/screens/set_custom_tasks_screen.dart';
+import 'package:curiosity_flutter/models/props.dart';
 
 class InputTasksScreen extends StatefulWidget {
   const InputTasksScreen({Key key}) : super(key: key);
