@@ -4,10 +4,12 @@ import 'package:curiosity_flutter/models/nightly_evaluation.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'package:curiosity_flutter/services/admin_db_service.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
+import 'package:curiosity_flutter/services/meta_task_db_service.dart';
 import '../helper/dateHelper.dart';
+import 'dart:math';
 
 /* 
-1) UserDbService - the service expects an authenticated user id to perform neccessary operations 
+1) UserDbService - the service expects an authenticated user id to perform necessary operations
 2) At each call to the service, the return type is of type map
   a) If the key 'error' exist inside the return value -> there is an error from the method
   b) If the key 'error' does not exist -> the call is successful
@@ -160,6 +162,89 @@ class UserDbService {
         'method': 'updateTask - error', 
         'error': error.toString()
       }, 2);
+      return {'error': error};
+    }
+  }
+
+
+
+  // Gets the a random meta task id for a given difficulty for a user.
+  // Returns metaTaskId which can be used to query for the specific task
+  // Returns userIndex which is the index in the user array that can be used to later update remaining tasks for the user
+  Future<Map<String, dynamic>> getRandomMetaTask(
+      String difficulty,
+      ) async {
+    log.infoObj({'method': 'getRandomMetaTask', 'difficulty': difficulty});
+    try {
+      DocumentSnapshot user = await usersCollection.doc(uid).get();
+      MetaTaskDbServices metaTasks = MetaTaskDbServices();
+      try {
+        final random = new Random();
+
+        // If we don't have an array or if it is empty, repopulate the array
+        if (!user.data().toString().contains(difficulty) || user[difficulty].length == 0) {
+          var currentCount = await metaTasks.getCountForDifficulty(difficulty);
+          var list = [for (var i = 1; i <= currentCount['count']; i++) i];
+          usersCollection.doc(uid).update({difficulty: list});
+
+          int index = random.nextInt(currentCount['count']);
+
+
+          log.successObj({
+            'method': 'getRandomMetaTask - success',
+            'metaTaskId': index+1,
+            'userIndex':index,
+          });
+
+          return {"taskId":index+1, "userIndex":index};
+        } else { //array exists in db, so we can pull random task out
+          int len = user[difficulty].length;
+          int index = random.nextInt(len);
+          int metaTaskId = user[difficulty][index];
+          log.successObj({
+            'method': 'getRandomMetaTask - success',
+            'metaTaskId': metaTaskId,
+            'userIndex':index,
+          });
+          return {"taskId":metaTaskId, "userIndex":index};
+        }
+      } on StateError catch(error) {
+        log.errorObj(
+            {'method': 'getRandomMetaTask - error', 'error': error.toString()}, 2);
+        return {'error': error};      };
+    } catch (error) {
+      log.errorObj(
+          {'method': 'getRandomMetaTask - error', 'error': error.toString()}, 2);
+      return {'error': error};
+    }
+  }
+
+
+  //Removes a metaTask from a user's remaining list of meta tasks.
+  Future<Map<String, dynamic>> removeMetaTask(
+      String difficulty,
+      int index,
+      ) async {
+    log.infoObj({'method': 'removeMetaTask', 'difficulty': difficulty, 'index': index});
+    try {
+      DocumentSnapshot user = await usersCollection.doc(uid).get();
+      //MetaTaskDbServices metaTasks = MetaTaskDbServices();
+      try {
+        var list = user[difficulty];
+        list.removeAt(index);
+        usersCollection.doc(uid).update({difficulty: list});
+        log.successObj({
+          'method': 'removeMetaTask - success',
+        });
+
+      } on StateError catch(error) {
+        log.errorObj(
+            {'method': 'removeMetaTask - error', 'error': error.toString()}, 2);
+        return {'error': error};
+      };
+    } catch (error) {
+      log.errorObj(
+          {'method': 'removeMetaTask - error', 'error': error.toString()}, 2);
       return {'error': error};
     }
   }
