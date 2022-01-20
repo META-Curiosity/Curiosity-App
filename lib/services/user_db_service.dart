@@ -26,8 +26,7 @@ class UserDbService {
   UserDbService(String uid) {
     this.uid = uid;
     usersCollection = FirebaseFirestore.instance.collection(USER_DB_NAME);
-    nightlyEvalCollection =
-        usersCollection.doc(uid).collection(NIGHT_EVAL_DB_NAME);
+    nightlyEvalCollection = usersCollection.doc(uid).collection(NIGHT_EVAL_DB_NAME);
   }
 
   Future<Map<String, dynamic>> getUserData() async {
@@ -53,16 +52,17 @@ class UserDbService {
     try {
       User user = new User();
 
-      user.fromData(
-          {'id': uid, 'registerDateTime': DateTime.now().toUtc().toString()});
+      user.fromData({
+        'id': uid,
+        'registerDateTime': DateTime.now().toUtc().toString()
+      });
       // Put the new user id into the db
       await usersCollection.doc(uid).set(user.toJson());
       log.successObj({'method': 'registerUser - success', 'user': user});
       return {'user': user};
     } catch (error) {
-      log.errorObj(
-          {'method': 'registerUser - error', 'error': error.toString()}, 2);
-      return {'error': error, 'success': false};
+      log.errorObj({'method': 'registerUser - error', 'error': error.toString()}, 2);
+      return {'error': error, 'success': false };
     }
   }
 
@@ -78,11 +78,10 @@ class UserDbService {
         await usersCollection.doc(uid).update({'mindfulEligibility': false});
       }
       log.successObj({'method': 'updateUserLabId - success'});
-      return {'success': true};
+      return { 'success': true };
     } catch (error) {
-      log.errorObj(
-          {'method': 'updateUserLabId - error', 'error': error.toString()}, 2);
-      return {'error': error, 'success': false};
+      log.errorObj({'method': 'updateUserLabId - error', 'error': error.toString()}, 2);
+      return {'error': error, 'success': false };
     }
   }
 
@@ -92,60 +91,45 @@ class UserDbService {
       log.infoObj({'method': 'updateUserConsent', 'agreed': agreed});
       await usersCollection.doc(uid).update({'contributeData': agreed});
       log.successObj({'method': 'updateUserConsent - success'});
-      return {'success': true};
+      return { 'success': true };
     } catch (error) {
-      log.errorObj(
-          {'method': 'updateUserConsent - error', 'error': error.toString()},
-          2);
-      return {'error': error, 'success': false};
+      log.errorObj({'method': 'updateUserConsent - error', 'error': error.toString()}, 2);
+      return {'error': error, 'success': false };
     }
   }
 
   // Updating reminders for when the user would like to get reminded to finish their mindfulness
-  Future<Map<String, dynamic>> updateMindfulReminders(
-      List<int> reminders) async {
+  Future<Map<String, dynamic>> updateMindfulReminders(List<int> reminders) async {
     try {
       log.infoObj({'method': 'updateMindfulReminders', 'reminders': reminders});
       await usersCollection.doc(uid).update({'mindfulReminders': reminders});
       log.successObj({'method': 'updateMindfulReminders - success'});
-      return {'success': true};
+      return { 'success': true };
     } catch (error) {
-      log.errorObj({
-        'method': 'updateMindfulReminders - error',
-        'error': error.toString()
-      }, 2);
-      return {'error': error, 'success': false};
+      log.errorObj({'method': 'updateMindfulReminders - error', 'error': error.toString()}, 2);
+      return {'error': error, 'success': false };
     }
   }
 
   // Updating reminders for when the user would like to get reminded to complete their activity
-  Future<Map<String, dynamic>> updateCompleteActivityReminders(
-      List<int> reminders) async {
+  Future<Map<String, dynamic>> updateCompleteActivityReminders(List<int> reminders) async {
     try {
-      log.infoObj(
-          {'method': 'updateCompleteActivityReminder', 'reminders': reminders});
-      await usersCollection
-          .doc(uid)
-          .update({'completeActivityReminders': reminders});
+      log.infoObj({'method': 'updateCompleteActivityReminder', 'reminders': reminders});
+      await usersCollection.doc(uid).update({'completeActivityReminders': reminders});
       log.successObj({'method': 'updateCompleteActivityReminder - success'});
-      return {'success': true};
+      return { 'success': true };
     } catch (error) {
-      log.errorObj({
-        'method': 'updateCompleteActivityReminder - error',
-        'error': error.toString()
-      }, 2);
-      return {'error': error, 'success': false};
+      log.errorObj({'method': 'updateCompleteActivityReminder - error', 'error': error.toString()}, 2);
+      return {'error': error, 'success': false };
     }
   }
 
   // Update user task via the position passed in and new values -
   // Upon successful update - a new custom task array will be returned
   // NOTE: 2 tasks cannot have the same title
-  Future<Map<String, dynamic>> updateTask(String taskId, CustomTask newTask,
-      Map<String, CustomTask> oldTask) async {
+  Future<Map<String, dynamic>> updateTask(String taskId, CustomTask newTask, Map<String, CustomTask> oldTask) async {
     try {
-      log.infoObj(
-          {'method': 'updateTask', 'taskId': taskId, 'newTask': newTask});
+      log.infoObj({'method': 'updateTask', 'taskId': taskId, 'newTask': newTask});
       Map<String, Map<String, dynamic>> sharedObject = {
         'customTasks.${taskId}': newTask.toJson()
       };
@@ -161,8 +145,7 @@ class UserDbService {
       });
 
       if (hasDuplicateTitle) {
-        log.errorObj(
-            {'method': 'updateTask - error', 'message': 'duplicate title key'});
+        log.errorObj({'method': 'updateTask - error', 'message': 'duplicate title key'});
         return {
           'error': 'Two tasks cannot have the same title, please try again'
         };
@@ -175,8 +158,10 @@ class UserDbService {
       log.successObj({'method': 'updateTask - success', 'customTask': oldTask});
       return {'customTask': oldTask};
     } catch (error) {
-      log.errorObj(
-          {'method': 'updateTask - error', 'error': error.toString()}, 2);
+      log.errorObj({
+        'method': 'updateTask - error', 
+        'error': error.toString()
+      }, 2);
       return {'error': error};
     }
   }
@@ -270,8 +255,7 @@ class UserDbService {
   //  1. taskTitle (title of the choosen task)
   //  2. id - the current date (MM-DD-YY)
   //  3. isCustomTask (a task from experiment or from user)
-  Future<Map<String, dynamic>> addNightlyEvalMorningEvent(
-      Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> addNightlyEvalMorningEvent(Map<String, dynamic> data) async {
     try {
       log.infoObj({'method': 'addNightlyEvalMorningEvent', 'data': data});
       NightlyEvaluation userInputEval = new NightlyEvaluation.fromData(data);
@@ -304,22 +288,18 @@ class UserDbService {
 
       // Retrieving user information to update their streak and days successful
       Map<String, dynamic> userData = await getUserData();
-
+      
       if (userData['error'] != null) {
-        log.errorObj(
-            {'method': 'updateNightlyEval - error', 'error': userData['error']},
-            2);
-        return {'error': userData['error']};
+        log.errorObj({'method': 'updateNightlyEval - error', 'error': userData['error']},2);
+        return { 'error': userData['error'] };
       }
-
-      User user = userData['user'];
+      
+      User user = userData['user'];      
       if (data['isSuccessful']) {
         if (user.prevSucessDateTime != null) {
           DateTime crntLocalDateTime = DateTime.now().toLocal();
-          DateTime prevSuccessLocalTime =
-              DateTime.parse(user.prevSucessDateTime).toLocal();
-          int daysBetween =
-              DateHelper.daysBetween(prevSuccessLocalTime, crntLocalDateTime);
+          DateTime prevSuccessLocalTime = DateTime.parse(user.prevSucessDateTime).toLocal();
+          int daysBetween = DateHelper.daysBetween(prevSuccessLocalTime, crntLocalDateTime);
           log.infoObj({
             'method': 'updateNightlyEval',
             'crntLocalDateTime': crntLocalDateTime.toString(),
@@ -346,22 +326,24 @@ class UserDbService {
       });
 
       await usersCollection.doc(uid).update({
-        'currentStreak': user.currentStreak,
-        'totalSuccessfulDays': user.totalSuccessfulDays,
+        'currentStreak': user.currentStreak, 
+        'totalSuccessfulDays': user.totalSuccessfulDays, 
         'prevSucessDateTime': user.prevSucessDateTime
       });
 
       log.infoObj({
-        'method': 'updateNightlyEval',
+        'method': 'updateNightlyEval', 
         'message': 'update user streaks successful'
       });
 
       // Returning the nightly evaluation document
-      DocumentSnapshot nightlyEvalSnapshot =
-          await nightlyEvalCollection.doc(id).get();
+      DocumentSnapshot nightlyEvalSnapshot = await nightlyEvalCollection.doc(id).get();
       if (!nightlyEvalSnapshot.exists) {
         String message = 'Nightly evaluation with date = ${id} does not exist';
-        log.errorObj({'method': 'updateNightlyEval', 'error': message});
+        log.errorObj({
+          'method': 'updateNightlyEval', 
+          'error': message
+        });
         return {'error': message};
       }
 
@@ -414,8 +396,7 @@ class UserDbService {
 
   // Retrieving a list of all nightly evaluation dates of an user within a month.
   // Need to receive the ending date of a month in the format: MM-DD-YY
-  Future<Map<String, dynamic>> getUserNightlyEvalDatesByMonth(
-      String endDate) async {
+  Future<Map<String, dynamic>> getUserNightlyEvalDatesByMonth(String endDate) async {
     log.infoObj({
       'method': 'getUserNightlyEvalDatesByMonth',
       'id': uid,
@@ -423,8 +404,7 @@ class UserDbService {
     });
 
     List<String> endDateSplit = endDate.split('-');
-    int hashedStartDate =
-        calculateDateHash(endDateSplit[0] + '-01-' + endDateSplit[2]);
+    int hashedStartDate = calculateDateHash(endDateSplit[0] + '-01-' + endDateSplit[2]);
 
     QuerySnapshot querySnapshot;
     List<NightlyEvaluation> nightEvalRecords = [];
@@ -457,23 +437,21 @@ class UserDbService {
   Future<Map<String, dynamic>> getUserStreakAndTotalDaysCompleted() async {
     log.infoObj({'method': 'getUserStreakAndTotalDaysCompleted'});
     try {
-      Map<String, dynamic> userData = await getUserData();
-
+       Map<String, dynamic> userData = await getUserData();
+      
       if (userData['error'] != null) {
         log.errorObj({
-          'method': 'getUserStreakAndTotalDaysCompleted - error',
+          'method': 'getUserStreakAndTotalDaysCompleted - error', 
           'error': userData['error']
-        }, 2);
-        return {'error': userData['error']};
+        },2);
+        return {'error': userData['error'] };
       }
 
       User user = userData['user'];
       // Calculating total number of days registered IN LOCAL DEVICE TIME
       DateTime currentLocalDateTime = DateTime.now().toLocal();
-      DateTime registeredLocalDateTime =
-          DateTime.parse(user.registerDateTime).toLocal();
-      int totalDaysRegistered =
-          DateHelper.daysBetween(currentLocalDateTime, registeredLocalDateTime);
+      DateTime registeredLocalDateTime = DateTime.parse(user.registerDateTime).toLocal();
+      int totalDaysRegistered = DateHelper.daysBetween(currentLocalDateTime, registeredLocalDateTime);
 
       log.successObj({
         'method': 'getUserStreakAndTotalDaysCompleted - successful',
@@ -487,6 +465,7 @@ class UserDbService {
         'totalSuccessfulDays': user.totalSuccessfulDays,
         'currentStreak': user.currentStreak
       };
+    
     } catch (error) {
       log.errorObj({
         'method': 'getUserStreakAndTotalDaysCompleted - error',
