@@ -27,11 +27,12 @@ import 'firebase_options.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
-void main() async {
+  void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(MyApp());
 }
 

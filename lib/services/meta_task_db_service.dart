@@ -1,23 +1,13 @@
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curiosity_flutter/models/meta_task.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
-import 'package:crypto/crypto.dart';
 
-/* 
-1) AdminDbService - the service is for admin to use to retrieve all 
-users or search an user by their id
-2) At each call to the service, the return type is of type map
-  a) If the key 'error' exist inside the return value -> there is an error from the method
-  b) If the key 'error' does not exist -> the call is successful
-*/
-
-class MetaTaskDbService {
+class MetaTaskDbServices {
   final String META_TASK_DB_NAME = 'meta-task-dev';
   final LogService log = new LogService();
   CollectionReference taskCollection;
 
-  MetaTaskDbService() {
+  MetaTaskDbServices() {
     taskCollection = FirebaseFirestore.instance.collection(META_TASK_DB_NAME);
   }
 
@@ -29,19 +19,12 @@ class MetaTaskDbService {
   Future<Map<String, dynamic>> addMetaTask(Map<String, String> data) async {
     log.infoObj({'method': 'addMetaTask', 'data': data});
     try {
-      // id created by hashing the title and difficulty of a task
-      data['id'] = generateTaskId(data['title'] + data['difficulty']);
-
-      // Id cannot exist in the database
-      DocumentSnapshot dataInDb = await taskCollection.doc(data['id']).get();
-      if (dataInDb.exists) {
-        String message = 'A task with the same title and difficulty has already existed in the database';
-        log.errorObj({'method': 'addMetaTask', 'error': message});
-        return {'error': message};
-      }
+      DocumentSnapshot documents = await taskCollection.doc(data['difficulty']).get();
+      int count = documents.get("count");
 
       MetaTask newTask = new MetaTask.fromData(data);
-      await taskCollection.doc(newTask.id).set(newTask.toJson());
+      await taskCollection.doc(data['difficulty']).collection("tasks").doc((count+1).toString()).set(newTask.toJson());
+      await taskCollection.doc(data['difficulty']).update({"count": FieldValue.increment(1)});
       log.successObj({'method': 'addMetaTask - success', 'newTask': newTask});
       return {'newTask': newTask};
     } catch (error) {
@@ -50,59 +33,65 @@ class MetaTaskDbService {
     }
   }
 
-  // Retrieve all META-created task
-  Future<Map<String, dynamic>> getAllTasks() async {
-    log.infoObj({'method': 'getAllTasks'});
-    try {
-      List<MetaTask> metaTaskList = [];
-      QuerySnapshot querySnapshot = await taskCollection.get();
-      if (querySnapshot.docs.isNotEmpty) {
-        for (var doc in querySnapshot.docs.toList()) {
-          metaTaskList.add(new MetaTask.fromData(doc.data()));
-        }
-      }
-      log.infoObj({'method': 'getAllTasks - success', 'metaTaskList': metaTaskList});
-      return {'metaTaskList': metaTaskList};
-    } catch (error) {
-      log.errorObj({'method': 'getAllTasks - error', 'error': error.toString()});
-      return {'error': error};
-    }
-  }
-
-  // Retrieving a task by their difficulty level and the title
-  Future<Map<String, dynamic>> getTaskByTitleAndDifficulty(String title, String difficulty) async {
+  // Retrieving a task by their difficulty and id
+  Future<Map<String, dynamic>> getTaskByDifficultyAndID(String difficulty, int id) async {
     log.infoObj({
-      'method': 'getTaskByTitleAndDifficulty',
-      'title': title,
-      'difficulty': difficulty
+      'method': 'getTaskByDifficultyAndID',
+      'difficulty': difficulty,
+      'id' : id
     });
     try {
-      String id = generateTaskId(title + difficulty);
-      DocumentSnapshot task = await taskCollection.doc(id).get();
+      DocumentSnapshot task = await taskCollection.doc(difficulty).collection("tasks").doc(id.toString()).get();
 
-      // User does not exist
+      // Task does not exist
       if (!task.exists) {
         String message = 'Task does not exist';
-        log.errorObj({'method': 'getTaskByTitleAndDifficulty', 'error': message});
+        log.errorObj({'method': 'getTaskByDifficultyAndID', 'error': message});
         return {'error': message};
       }
       MetaTask metaTask = new MetaTask.fromData(task.data());
       log.successObj({
-        'method': 'getTaskByTitleAndDifficulty - success',
+        'method': 'getTaskByDifficultyAndID - success',
         'metaTask': metaTask
       });
       return {'metaTask': metaTask};
     } catch (error) {
       log.errorObj({
-        'method': 'getTaskByTitleAndDifficulty - error',
+        'method': 'getTaskByDifficultyAndID - error',
         'error': error.toString()
       });
       return {'error': error};
     }
   }
 
-  // Hashing the task title as unique id to store inside db
-  String generateTaskId(String titleDifficulty) {
-    return sha256.convert(utf8.encode(titleDifficulty)).toString();
+  // Gets the count of tasks for a difficulty
+  Future<Map<String, dynamic>> getCountForDifficulty(String difficulty) async {
+    log.infoObj({
+      'method': 'getCountForDifficulty',
+      'difficulty': difficulty,
+    });
+    try {
+      DocumentSnapshot document = await taskCollection.doc(difficulty).get();
+
+      // Task does not exist
+      if (!document.exists) {
+        String message = 'Difficulty does not exist';
+        log.errorObj({'method': 'getCountForDifficulty', 'error': message});
+        return {'error': message};
+      }
+
+      log.successObj({
+        'method': 'getCountForDifficulty - success',
+        'count': document['count']
+      });
+
+      return {'count': document['count']};
+    } catch (error) {
+      log.errorObj({
+        'method': 'getCountForDifficulty - error',
+        'error': error.toString()
+      });
+      return {'error': error};
+    }
   }
 }

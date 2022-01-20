@@ -16,7 +16,7 @@
 - Once finish remember to revert the changes back inside /web/index.html file as the old change allows Google OAuth
 ```
 // Run the following command inside terminal to start application on chrome
-flutter run -d chrome --web-port 8000
+flutter run -d web-server --web-port 8000
 ```
 
 -----------------------------------------------------------------------------------------------
@@ -48,11 +48,59 @@ Ouput:
   - Map<String, dynamic> response:
     - User user: an user object representing the user who just registered
 '''
-Map<String, dynamic> data = {'labId': -1, 'contributeData': true};
-await userDbService.registerUser(data);
+UserDbService userDbService = UserDbService(hashedEmail);
+await userDbService.registerUserId();
 ```
 
-3. updateTask(taskId, newTask, oldTask) -> response
+3. updateUserLabId(labId) -> response
+```dart
+'''
+Input:
+  - int labId: The participants lab id
+Ouput:
+  - Map<String, dynamic> response:
+    - Bool success: indicating if the operation has succeeded
+'''
+db.updateUserLabId(2);
+```
+
+4. updateUserConsent(agreed) -> response
+```dart
+'''
+Input:
+  - bool agreed: Shows consent to give data from participants
+Ouput:
+  - Map<String, dynamic> response:
+    - bool success: indicating if the operation has succeeded
+'''
+db.updateUserConsent(true);
+```
+
+5. updateMindfulReminders(reminders) -> response
+```dart
+'''
+Input:
+  - List<int> reminders: the intervals by hours of the reminders
+Output:
+  - Map<String, dynamic> response:
+    - bool success: indicating if the operation has succeeded
+'''
+db.updateMindfulReminders([9,10,11,12]);
+```
+
+6. updateCompleteActivityReminders(reminders) -> response
+```dart
+'''
+Input:
+  - List<int> reminders: the intervals by hours of the reminders
+Output:
+  - Map<String, dynamic> response:
+    - bool success: indicating if the operation has succeeded
+'''
+db.updateCompleteActivityReminders([9,10,11,12]);
+```
+
+7. updateTask(taskId, newTask, oldTask) -> response
 ```dart
 '''
 Note: No task with the same title
@@ -76,7 +124,7 @@ Map<String, CustomTask> oldTask = {'0': new CustomTask(), ..., '5': new CustomTa
 db.updateTask('1', new CustomTask.fromData(data), oldTask);
 ```
 
-4. addNightlyEvalMorningEvent(data) -> response
+8. addNightlyEvalMorningEvent(data) -> response
 ```dart
 '''
 Input: 
@@ -97,7 +145,7 @@ Map<String, dynamic> data = {
 await userDbService.addNightlyEvalMorningEvent(data);
 ```
 
-5. updateNightlyEval(data) -> response
+9. updateNightlyEval(data) -> response
 ```dart
 '''
   - Map<String, dynamic> data:
@@ -117,7 +165,7 @@ Map<String, dynamic> data = {
 await userDbService.updateNightlyEval(data);
 ```
 
-6. getUserNightlyEvalByDate(date) -> response
+10. getUserNightlyEvalByDate(date) -> response
 ```dart
 '''
 Input:
@@ -129,7 +177,7 @@ Ouput:
 await userDbService.getUserNightlyEvalByDate('11-29-21');
 ```
 
-7. getUserNightlyEvalDatesByMonth(endDate) -> response
+11. getUserNightlyEvalDatesByMonth(endDate) -> response
 ```dart
 '''
 Input:
@@ -141,7 +189,7 @@ Ouput:
 await userDbService.getUserNightlyEvalDatesByMonth('11-30-21');
 ```
 
-8. getUserData() -> response
+12. getUserData() -> response
 ```dart
 '''
 Ouput:
@@ -151,7 +199,7 @@ Ouput:
 await userDbService.getUserData();
 ```
 
-9. getUserStreakAndTotalDaysCompleted() -> response
+13. getUserStreakAndTotalDaysCompleted() -> response
 ```dart
 '''
 Ouput:
@@ -163,7 +211,7 @@ Ouput:
 await userDbService.getUserStreakAndTotalDaysCompleted();
 ```
 
-10. updateCompleteActivityReminder(data) -> response
+14. updateCompleteActivityReminder(data) -> response
 ```dart
 '''
 Input:
@@ -176,8 +224,9 @@ Ouput:
 // Representing the interval from 12PM - 4PM
 Map<String, dynamic> data = {'reminders': [12, 13, 14, 15, 16]};
 await userDbService.updateCompleteActivityReminder(data);
+```
 
-11. updateCompleteActivityReminder(data) -> response
+15. updateCompleteActivityReminder(data) -> response
 ```dart
 '''
 Input:
@@ -190,6 +239,31 @@ Ouput:
 // Representing the interval from 8AM - 12PM
 Map<String, dynamic> data = { 'reminders': [8, 9, 10, 11, 12]};
 await userDbService.updateCompleteActivityReminder(data);
+```
+
+16.getRandomMetaTask(String difficulty) -> response
+```dart
+'''
+Input:
+    - String difficulty: difficulty | easy, intermediate, hard
+Ouput:
+  - Map<String, dynamic> response:
+    -taskId: an integer representing the ID of a task within a given difficulty. This Id can be used with the MetaTaskDbService to obtain task details
+    -userIndex: an integer representing the index of the task, this number is needed to remove this task from the list of remaining tasks if the user decides to select it.
+'''
+await userDbService.getRandomMetaTask('easy');
+```
+
+17.removeMetaTask(String difficulty, int index)
+```dart
+'''
+Input:
+    - String difficulty: difficulty | easy, intermediate, hard
+    - Int index: the userIndex of the task that will be removed by this function
+Ouput:
+    - None
+'''
+await userDbService.removeMetaTask('easy', 5);
 ```
 -----------------------------------------------------------------------------------------------
 ## Admin Database Service - AdminDbService
@@ -248,51 +322,37 @@ Ouput:
     - MetaTask newTask: Newly created task by the META team
 '''
 Map<String, String> task = {
-    'title': 'Sleep challenge',
-    'difficulty': 'easy',
-    'description': 'to sleep 8 hours a day',
-    'proofDescription': 'timing yourself doing that',
+'title': 'Sleep challenge',
+'difficulty': 'easy',
+'description': 'to sleep 8 hours a day',
+'proofDescription': 'timing yourself doing that',
 };
 await metaTaskDbService.addMetaTask(task);
 ```
 
-3. getAllTasks() -> response
-```dart
-'''
-Ouput:
-  - Map<String, dynamic> response:
-    - List<MetaTask> metaTaskList: List of all task generated by META
-'''
-await metaTaskDbService.getAllTasks();
-```
-
-4. getTaskByTitleAndDifficulty(title, difficulty) -> response
+3. getTaskByDifficultyAndID(difficulty, id) -> response
 ```dart
 '''
 Input:
-  - String title: title of the task
   - String difficulty: task's difficulty | easy, intermediate, hard
+  - int id: id of the task
 Ouput:
   - Map<String, dynamic> response:
     - MetaTask metaTask: Queried task
 '''
-await metaTaskDbService.getTaskByTitleAndDifficulty('title', 'easy');
+await metaTaskDbService.getTaskByDifficultyAndID('easy', 1);
 ```
-5. Note
-- In order to delete or update a META task, can use the function here to get its ID and use that to query the correct document inside the META task database.
+
+4. getCountForDifficulty(String difficulty) -> response
 ```dart
 '''
 Input:
-  - String title: title of the task
   - String difficulty: task's difficulty | easy, intermediate, hard
 Ouput:
-  - String id: return the id of the task
+  - Map<String, dynamic> response:
+    - count: Integer that represents the number of tasks for a given difficulty 
 '''
-// Hashing the task title as unique id to store inside db
-String generateTaskId(String titleDifficulty) {
-  return sha256.convert(utf8.encode(titleDifficulty)).toString();
-}
-print(generateTaskId('TASK TITLE', 'TASK DIFFICULTY'));
+await metaTaskDbService.getCountForDifficulty('easy');
 ```
 -----------------------------------------------------------------------------------------------
 ## Log Service - Utilized to print logs in the console
