@@ -1,5 +1,6 @@
 import 'package:curiosity_flutter/navigation.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
+import 'package:curiosity_flutter/services/notification_service.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -22,15 +23,33 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/material.dart';
 
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
-  void main() async {
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  print("Handling a background message: ${message.messageId}");
+}
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // await FirebaseMessaging.instance.subscribeToTopic('temp');
+
 
   runApp(MyApp());
 }
@@ -42,9 +61,13 @@ class App extends StatefulWidget {
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   _AppState createState() => _AppState();
+  static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
 
   @override
   Widget build(BuildContext context) {
+    final pushNotificationService = PushNotificationService(_firebaseMessaging);
+    pushNotificationService.initialise();
     return MaterialApp(
       initialRoute: '/choose_task_session',
       routes: {
