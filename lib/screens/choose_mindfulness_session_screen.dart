@@ -167,7 +167,7 @@ class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
                                             await UDS
                                                 .updateMindfulReminders(data);
                                             Navigator.pushReplacementNamed(
-                                                context, '/onboarding');
+                                                context, '/introduction');
                                           },
                                           child: Row(
                                             children: <Widget>[

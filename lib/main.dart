@@ -16,6 +16,7 @@ import 'screens/consent_screen.dart';
 import 'screens/study_id_screen.dart';
 import 'screens/choose_mindfulness_session_screen.dart';
 import 'screens/choose_task_session.dart';
+import 'screens/introduction_screen.dart';
 import 'package:curiosity_flutter/navigation.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
@@ -45,7 +46,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/choose_task_session',
+      initialRoute: '/introduction',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -167,6 +168,12 @@ class MyApp extends StatelessWidget {
               resizeToAvoidBottomInset: true,
               body: Container(
                 child: ChooseTaskSession(),
+              ),
+            ),
+        '/introduction': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: Introduction(),
               ),
             ),
       },
