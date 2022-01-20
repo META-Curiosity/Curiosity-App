@@ -16,7 +16,7 @@
 - Once finish remember to revert the changes back inside /web/index.html file as the old change allows Google OAuth
 ```
 // Run the following command inside terminal to start application on chrome
-flutter run -d chrome --web-port 8000
+flutter run -d web-server --web-port 8000
 ```
 
 -----------------------------------------------------------------------------------------------
