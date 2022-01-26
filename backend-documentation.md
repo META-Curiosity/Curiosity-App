@@ -1,7 +1,7 @@
 # META Curiosity Backend Documentation
 
 ## Starting application via terminal
-1. For web browsers (Chrome)
+1. For web browsers
 ```html
 <!-- Uncomment out the 3 scripts tag line below inside /web/index.html file-->
   <!-- <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-app.js"></script>
