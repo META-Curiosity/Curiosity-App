@@ -75,6 +75,8 @@ flutter:
     - assets/images/eveningCity.jpeg
     - assets/images/goals.jpeg
     - assets/images/curiosity.jpeg
+    - assets/images/challenge.jpeg
+    - assets/images/attention.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

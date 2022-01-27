@@ -18,6 +18,7 @@ import 'screens/choose_mindfulness_session_screen.dart';
 import 'screens/choose_task_session.dart';
 import 'screens/introduction_screen.dart';
 import 'package:curiosity_flutter/navigation.dart';
+import 'screens/introduction_daily_challenge_screen.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
@@ -27,7 +28,7 @@ import 'firebase_options.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
-  void main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -177,6 +178,12 @@ class MyApp extends StatelessWidget {
                 child: Introduction(),
               ),
             ),
+        '/introduction_daily_challenge': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: IntroductionDailyChallenge(),
+              ),
+            ),
       },
     );
   }
@@ -198,15 +205,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   UserDbService userDbService;
   LogService log = new LogService();
-  int first = 0;
 
   Future<void> initialize() async {
     //Change page once user is logged in
     FirebaseAuth.instance.authStateChanges().listen((User user) async {
       if (user == null) {
         log.infoString('User is currently signed out!', 0);
-      } else if (first == 0) {
-        first += 1;
+      } else {
         //Getting user hashed email example
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
