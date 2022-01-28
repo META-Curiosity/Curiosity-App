@@ -13,10 +13,11 @@
   <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
 ```
-- Once finish remember to revert the changes back inside /web/index.html file as the old change allows Google OAuth
+- Once finish remember to revert the changes back inside /web/index.html file as the old change allows Google OAuth.
+- In order to view the logs from the backend service, user would need to use Chrome browser.
 ```
-// Run the following command inside terminal to start application on chrome
-flutter run -d web-server --web-port 8000
+// Run the following command inside terminal to start application on Chrome
+flutter run -d chrome --web-port 8000
 ```
 
 -----------------------------------------------------------------------------------------------
@@ -148,11 +149,13 @@ await userDbService.addNightlyEvalMorningEvent(data);
 9. updateNightlyEval(data) -> response
 ```dart
 '''
+Input:
   - Map<String, dynamic> data:
     - String id: the current date (MM-DD-YY)
     - Boolean isSuccessful: True = nightly evaluation is successful | False = night evaluation is unsuccessful
     - String imageProof: Base64 encoding of the uploaded proof provided by the user | if empty can leave as null
     - String reflection: user nightly reflection
+Output:
   - Map<String, dynamic> response:
       - NightlyEvaluation nightlyEvalRecord: the nightly evaluation record after user chose their task for the day
 '''
@@ -241,7 +244,7 @@ Map<String, dynamic> data = { 'reminders': [8, 9, 10, 11, 12]};
 await userDbService.updateCompleteActivityReminder(data);
 ```
 
-16.getRandomMetaTask(String difficulty) -> response
+16. getRandomMetaTask(String difficulty) -> response
 ```dart
 '''
 Input:
@@ -254,7 +257,7 @@ Ouput:
 await userDbService.getRandomMetaTask('easy');
 ```
 
-17.removeMetaTask(String difficulty, int index)
+17. removeMetaTask(String difficulty, int index)
 ```dart
 '''
 Input:
@@ -265,6 +268,25 @@ Ouput:
 '''
 await userDbService.removeMetaTask('easy', 5);
 ```
+
+18. addMindfulnessSessionCompletion(String difficulty, int index)
+```dart
+'''
+Input:
+  - Map<String, dynamic> data:
+    - String id: the current date (MM-DD-YY)
+    - Boolean hasCompleted: True = mindfulness session completed is successful | False = mindfulness ession was not completed
+Ouput:
+  - Map<String, dynamic> response:
+      - MindfulSession userMindfulInput: a record of the user entered mindfulness completion stored in the database
+'''
+Map<String, dynamic> data = {
+  'hasCompleted': false,
+  'id': '01-02-2022'
+}
+userDbService.addMindfulnessSessionCompletion(data);
+```
+
 -----------------------------------------------------------------------------------------------
 ## Admin Database Service - AdminDbService
 1. Constructor
