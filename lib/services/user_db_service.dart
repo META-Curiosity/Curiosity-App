@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curiosity_flutter/models/custom_task.dart';
+import 'package:curiosity_flutter/models/mindful_session.dart';
 import 'package:curiosity_flutter/models/nightly_evaluation.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'package:curiosity_flutter/services/admin_db_service.dart';
@@ -18,15 +19,18 @@ import 'dart:math';
 class UserDbService {
   final String USER_DB_NAME = 'users-dev';
   final String NIGHT_EVAL_DB_NAME = 'nightlyEval';
+  final String MINDFUL_SESSION_DB_NAME = 'mindful-session-completion';
   final LogService log = new LogService();
   String uid;
   CollectionReference usersCollection;
   CollectionReference nightlyEvalCollection;
+  CollectionReference mindfulSessionCollection;
 
   UserDbService(String uid) {
     this.uid = uid;
     usersCollection = FirebaseFirestore.instance.collection(USER_DB_NAME);
     nightlyEvalCollection = usersCollection.doc(uid).collection(NIGHT_EVAL_DB_NAME);
+    mindfulSessionCollection = usersCollection.doc(uid).collection(MINDFUL_SESSION_DB_NAME);
   }
 
   Future<Map<String, dynamic>> getUserData() async {
@@ -469,6 +473,31 @@ class UserDbService {
     } catch (error) {
       log.errorObj({
         'method': 'getUserStreakAndTotalDaysCompleted - error',
+        'error': error.toString()
+      }, 2);
+      return {'error': error};
+    }
+  }
+
+  // Keep track of user mindfulness session
+  // Expecting the field:
+  //  1. id - the current date (MM-DD-YY)
+  //  2. hasCompleted - whether the mindfulness session was completed
+  Future<Map<String, dynamic>> addMindfulnessSessionCompletion(Map<String, dynamic> data) async {
+    try {
+      log.infoObj({'method': 'addMindfulnessSessionCompletion', 'data': data});
+      MindfulSession userMindfulInput = new MindfulSession.fromData(data);
+      userMindfulInput.hashedDate = calculateDateHash(data['id']);
+      await mindfulSessionCollection.doc(data['id']).set(userMindfulInput.toJson());
+
+      log.successObj({
+        'method': 'addMindfulnessSessionCompletion - success',
+        'userMindfulInput': userMindfulInput
+      });
+      return {'userMindfulInput': userMindfulInput};
+    } catch (error) {
+      log.errorObj({
+        'method': 'addMindfulnessSessionCompletion - error',
         'error': error.toString()
       }, 2);
       return {'error': error};
