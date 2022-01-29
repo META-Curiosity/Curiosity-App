@@ -1,6 +1,6 @@
 import 'package:pretty_json/pretty_json.dart';
 
-class NightlyEvaluation {
+class DailyEvaluation {
   bool isSuccessful;
   bool isCustomTask;
   String id;
@@ -9,7 +9,7 @@ class NightlyEvaluation {
   int hashedDate; // comparison purpose
   String taskTitle;
 
-  NightlyEvaluation.fromData(Map<String, dynamic> data) {
+  DailyEvaluation.fromData(Map<String, dynamic> data) {
     isSuccessful = data['isSuccessful'];
     isCustomTask = data['isCustomTask'];
     taskTitle = data['taskTitle'];
@@ -20,7 +20,7 @@ class NightlyEvaluation {
   }
 
   // Default constructor for a nightly evaluation
-  NightlyEvaluation() {
+  DailyEvaluation() {
     id = '';
     reflection = '';
     imageProof = '';
