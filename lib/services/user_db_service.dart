@@ -281,8 +281,7 @@ class UserDbService {
   // Creating a daily evaluation for an user and store in user db
   // date format: MM-DD-YY. Expecting photo to be a base64 encoding
   // of user proof image
-  Future<Map<String, dynamic>> updateDailyEval(
-      Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> updateDailyEval(Map<String, dynamic> data) async {
     log.infoObj({'method': 'updateDailyEval', 'data': data});
     try {
       String id = data.remove('id');
@@ -349,8 +348,7 @@ class UserDbService {
         return {'error': message};
       }
 
-      DailyEvaluation dailyEvalRecord =
-          new DailyEvaluation.fromData(dailyEvalSnapshot.data());
+      DailyEvaluation dailyEvalRecord = new DailyEvaluation.fromData(dailyEvalSnapshot.data());
       log.successObj({
         'method': 'updateDailyEval - success',
         'dailyEvalRecord': dailyEvalRecord
@@ -361,6 +359,29 @@ class UserDbService {
           {'method': 'updateDailyEval - error', 'error': error.toString()},
           2);
       return {'error': error};
+    }
+  }
+
+  // Updating the daily evaluation enjoyment from participat
+  Future<Map<String, dynamic>> updateDailyEvalEnjoyment(String enjoyment, String id) async {
+    try {
+      log.infoObj({
+        'method': 'updateDailyEvalEnjoyment',
+        'enjoyment': enjoyment
+      });
+
+      // Only update the specific field activityEnjoyment of the daily eval record
+      await dailyEvalCollection.doc(id).update({'activityEnjoyment': enjoyment});
+      log.successObj({
+        'method': 'updateDailyEval - success'
+      });
+      return { 'success': true };
+    } catch (error) {
+      log.errorObj({
+        'method': 'updateDailyEvalEnjoyment',
+        'error': error.toString()
+      });
+      return {'error': error };
     }
   }
 

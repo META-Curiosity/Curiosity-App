@@ -5,9 +5,10 @@ class DailyEvaluation {
   bool isCustomTask;
   String id;
   String reflection;
+  String activityEnjoyment;
+  String taskTitle;
   String imageProof; // stored as base64 encoding
   int hashedDate; // comparison purpose
-  String taskTitle;
 
   DailyEvaluation.fromData(Map<String, dynamic> data) {
     isSuccessful = data['isSuccessful'];
@@ -17,6 +18,7 @@ class DailyEvaluation {
     reflection = data['reflection'];
     imageProof = data['imageProof'];
     hashedDate = data['hashedDate'];
+    activityEnjoyment = data['activityEnjoyment'];
   }
 
   // Default constructor for a daily evaluation
@@ -25,6 +27,7 @@ class DailyEvaluation {
     reflection = '';
     imageProof = '';
     taskTitle = '';
+    activityEnjoyment = '';
     hashedDate = null;
     isSuccessful = null;
     isCustomTask = null;
@@ -38,7 +41,8 @@ class DailyEvaluation {
       'imageProof': imageProof,
       'hashedDate': hashedDate,
       'taskTitle': taskTitle,
-      'isCustomTask': isCustomTask
+      'isCustomTask': isCustomTask,
+      'activityEnjoyment': activityEnjoyment
     };
   }
 
