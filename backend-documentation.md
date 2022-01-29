@@ -125,7 +125,7 @@ Map<String, CustomTask> oldTask = {'0': new CustomTask(), ..., '5': new CustomTa
 db.updateTask('1', new CustomTask.fromData(data), oldTask);
 ```
 
-8. addNightlyEvalMorningEvent(data) -> response
+8. addDailyEvalMorningEvent(data) -> response
 ```dart
 '''
 Input: 
@@ -135,7 +135,7 @@ Input:
     - Boolean isCustomTask: True = task created from user and False = task created by META
 Ouput:
     - Map<String, dynamic> response:
-      - NightlyEvaluation nightlyEvalRecord: the nightly evaluation record after user chose their task for the day
+      - DailyEvaluation dailyEvalRecord: the daily evaluation record after user chose their task for the day
     
 '''
 Map<String, dynamic> data = {
@@ -143,21 +143,21 @@ Map<String, dynamic> data = {
     'taskTitle': 'jogging in the morning',
     'isCustomTask': true
 };
-await userDbService.addNightlyEvalMorningEvent(data);
+await userDbService.addDailyEvalMorningEvent(data);
 ```
 
-9. updateNightlyEval(data) -> response
+9. updateDailyEval(data) -> response
 ```dart
 '''
 Input:
   - Map<String, dynamic> data:
     - String id: the current date (MM-DD-YY)
-    - Boolean isSuccessful: True = nightly evaluation is successful | False = night evaluation is unsuccessful
+    - Boolean isSuccessful: daily evalu successful/not successful
     - String imageProof: Base64 encoding of the uploaded proof provided by the user | if empty can leave as null
-    - String reflection: user nightly reflection
+    - String reflection: user daily reflection
 Output:
   - Map<String, dynamic> response:
-      - NightlyEvaluation nightlyEvalRecord: the nightly evaluation record after user chose their task for the day
+      - DailyEvaluation dailyEvalRecord: the daily evaluation record after user chose their task for the day
 '''
 Map<String, dynamic> data = {
     'id': '11-20-21',
@@ -165,31 +165,31 @@ Map<String, dynamic> data = {
     'imageProof': 'hello',
     'reflection': 'it went pretty well i would say'
 };
-await userDbService.updateNightlyEval(data);
+await userDbService.updateDailyEval(data);
 ```
 
-10. getUserNightlyEvalByDate(date) -> response
+10. getUserDailyEvalByDate(date) -> response
 ```dart
 '''
 Input:
-  - String date: Specific date of user nightly evaluation (MM-DD-YY)
+  - String date: Specific date of user daily evaluation (MM-DD-YY)
 Ouput:
   - Map<String, dynamic> response:
-      - NightlyEvaluation nightlyEvalRecord: the nightly evaluation record queried
+      - DailyEvaluation dailyEvalRecord: the daily evaluation record queried
 '''
-await userDbService.getUserNightlyEvalByDate('11-29-21');
+await userDbService.getUserDailyEvalByDate('11-29-21');
 ```
 
-11. getUserNightlyEvalDatesByMonth(endDate) -> response
+11. getUserDailyEvalDatesByMonth(endDate) -> response
 ```dart
 '''
 Input:
-  - String endDate: the ending date of the month to retrieve all the nightly evaluation records within that month
+  - String endDate: the ending date of the month to retrieve all the daily evaluation records within that month
 Ouput:
   - Map<String, dynamic> response:
-    - List<NightlyEvaluation> nightEvalRecords: a list of all inputted nightly evaluation records of the whole month
+    - List<DailyEvaluation> dailyEvalRecords: a list of all inputted daily evaluation records of the whole month
 '''
-await userDbService.getUserNightlyEvalDatesByMonth('11-30-21');
+await userDbService.getUserDailyEvalDatesByMonth('11-30-21');
 ```
 
 12. getUserData() -> response

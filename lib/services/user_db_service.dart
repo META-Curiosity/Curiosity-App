@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curiosity_flutter/models/custom_task.dart';
 import 'package:curiosity_flutter/models/mindful_session.dart';
-import 'package:curiosity_flutter/models/nightly_evaluation.dart';
+import 'package:curiosity_flutter/models/daily_evaluation.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'package:curiosity_flutter/services/admin_db_service.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
@@ -18,19 +18,19 @@ import 'dart:math';
 
 class UserDbService {
   final String USER_DB_NAME = 'users-dev';
-  final String NIGHT_EVAL_DB_NAME = 'nightlyEval';
+  final String DAILY_EVAL_DB_NAME = 'daily-eval-dev';
   final String MINDFUL_SESSION_DB_NAME = 'mindful-session-completion';
   final LogService log = new LogService();
   String uid;
   CollectionReference usersCollection;
-  CollectionReference nightlyEvalCollection;
-  CollectionReference mindfulSessionCollection;
+  CollectionReference dailyEvalCollection;
+  CollectionReference mindfulSesCollection;
 
   UserDbService(String uid) {
     this.uid = uid;
     usersCollection = FirebaseFirestore.instance.collection(USER_DB_NAME);
-    nightlyEvalCollection = usersCollection.doc(uid).collection(NIGHT_EVAL_DB_NAME);
-    mindfulSessionCollection = usersCollection.doc(uid).collection(MINDFUL_SESSION_DB_NAME);
+    dailyEvalCollection = usersCollection.doc(uid).collection(DAILY_EVAL_DB_NAME);
+    mindfulSesCollection = usersCollection.doc(uid).collection(MINDFUL_SESSION_DB_NAME);
   }
 
   Future<Map<String, dynamic>> getUserData() async {
@@ -170,8 +170,6 @@ class UserDbService {
     }
   }
 
-
-
   // Gets the a random meta task id for a given difficulty for a user.
   // Returns metaTaskId which can be used to query for the specific task
   // Returns userIndex which is the index in the user array that can be used to later update remaining tasks for the user
@@ -253,48 +251,48 @@ class UserDbService {
     }
   }
 
-  // Used at the beginning of the morning to create a nightly evaluation
+  // Used at the beginning of the morning to create a daily evaluation
   // for a specific task that the user have choosen for that day
   // Expecting the field:
   //  1. taskTitle (title of the choosen task)
   //  2. id - the current date (MM-DD-YY)
   //  3. isCustomTask (a task from experiment or from user)
-  Future<Map<String, dynamic>> addNightlyEvalMorningEvent(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> addDailyEvalMorningEvent(Map<String, dynamic> data) async {
     try {
-      log.infoObj({'method': 'addNightlyEvalMorningEvent', 'data': data});
-      NightlyEvaluation userInputEval = new NightlyEvaluation.fromData(data);
+      log.infoObj({'method': 'addDailyEvalMorningEvent', 'data': data});
+      DailyEvaluation userInputEval = new DailyEvaluation.fromData(data);
       userInputEval.hashedDate = calculateDateHash(data['id']);
-      await nightlyEvalCollection.doc(data['id']).set(userInputEval.toJson());
+      await dailyEvalCollection.doc(data['id']).set(userInputEval.toJson());
 
       log.successObj({
-        'method': 'addNightlyEvalMorningEvent - success',
-        'nightlyEvalRecord': userInputEval
+        'method': 'addDailyEvalMorningEvent - success',
+        'dailyEvalRecord': userInputEval
       });
-      return {'nightlyEvalRecord': userInputEval};
+      return {'dailyEvalRecord': userInputEval};
     } catch (error) {
       log.errorObj({
-        'method': 'addNightlyEvalMorningEvent - error',
+        'method': 'addDailyEvalMorningEvent - error',
         'error': error.toString()
       }, 2);
       return {'error': error};
     }
   }
 
-  // Creating a nightly evaluation for an user and store in user db
+  // Creating a daily evaluation for an user and store in user db
   // date format: MM-DD-YY. Expecting photo to be a base64 encoding
   // of user proof image
-  Future<Map<String, dynamic>> updateNightlyEval(
+  Future<Map<String, dynamic>> updateDailyEval(
       Map<String, dynamic> data) async {
-    log.infoObj({'method': 'updateNightlyEval', 'data': data});
+    log.infoObj({'method': 'updateDailyEval', 'data': data});
     try {
       String id = data.remove('id');
-      await nightlyEvalCollection.doc(id).update(data);
+      await dailyEvalCollection.doc(id).update(data);
 
       // Retrieving user information to update their streak and days successful
       Map<String, dynamic> userData = await getUserData();
       
       if (userData['error'] != null) {
-        log.errorObj({'method': 'updateNightlyEval - error', 'error': userData['error']},2);
+        log.errorObj({'method': 'updateDailyEval - error', 'error': userData['error']},2);
         return { 'error': userData['error'] };
       }
       
@@ -305,7 +303,7 @@ class UserDbService {
           DateTime prevSuccessLocalTime = DateTime.parse(user.prevSucessDateTime).toLocal();
           int daysBetween = DateHelper.daysBetween(prevSuccessLocalTime, crntLocalDateTime);
           log.infoObj({
-            'method': 'updateNightlyEval',
+            'method': 'updateDailyEval',
             'crntLocalDateTime': crntLocalDateTime.toString(),
             'prevSuccessLocalTime': prevSuccessLocalTime.toString(),
             'daysBetween': daysBetween
@@ -336,73 +334,73 @@ class UserDbService {
       });
 
       log.infoObj({
-        'method': 'updateNightlyEval', 
+        'method': 'updateDailyEval', 
         'message': 'update user streaks successful'
       });
 
-      // Returning the nightly evaluation document
-      DocumentSnapshot nightlyEvalSnapshot = await nightlyEvalCollection.doc(id).get();
-      if (!nightlyEvalSnapshot.exists) {
-        String message = 'Nightly evaluation with date = ${id} does not exist';
+      // Returning the daily evaluation document
+      DocumentSnapshot dailyEvalSnapshot = await dailyEvalCollection.doc(id).get();
+      if (!dailyEvalSnapshot.exists) {
+        String message = 'Daily evaluation with date = ${id} does not exist';
         log.errorObj({
-          'method': 'updateNightlyEval', 
+          'method': 'updateDailyEval', 
           'error': message
         });
         return {'error': message};
       }
 
-      NightlyEvaluation nightlyEvalRecord =
-          new NightlyEvaluation.fromData(nightlyEvalSnapshot.data());
+      DailyEvaluation dailyEvalRecord =
+          new DailyEvaluation.fromData(dailyEvalSnapshot.data());
       log.successObj({
-        'method': 'updateNightlyEval - success',
-        'nightlyEvalRecord': nightlyEvalRecord
+        'method': 'updateDailyEval - success',
+        'dailyEvalRecord': dailyEvalRecord
       });
-      return {'nightlyEvalRecord': nightlyEvalRecord};
+      return {'dailyEvalRecord': dailyEvalRecord};
     } catch (error) {
       log.errorObj(
-          {'method': 'updateNightlyEval - error', 'error': error.toString()},
+          {'method': 'updateDailyEval - error', 'error': error.toString()},
           2);
       return {'error': error};
     }
   }
 
-  // Querying a specific nightly evaluation of the user
+  // Querying a specific daily evaluation of the user
   // expected date format: MM-DD-YY
-  Future<Map<String, dynamic>> getUserNightlyEvalByDate(String date) async {
-    log.infoObj({'method': 'getUserNightlyEvalByDate', 'date': date});
-    DocumentSnapshot nightlyEvalSnapshot;
+  Future<Map<String, dynamic>> getUserDailyEvalByDate(String date) async {
+    log.infoObj({'method': 'getUserDailyEvalByDate', 'date': date});
+    DocumentSnapshot dailyEvalSnapshot;
     try {
-      nightlyEvalSnapshot = await nightlyEvalCollection.doc(date).get();
+      dailyEvalSnapshot = await dailyEvalCollection.doc(date).get();
 
       // User does not exist
-      if (!nightlyEvalSnapshot.exists) {
+      if (!dailyEvalSnapshot.exists) {
         String message =
-            'Nightly evaluation with date = ${date} does not exist';
-        log.errorObj({'method': 'getUserNightlyEvalByDate', 'error': message});
+            'Daily evaluation with date = ${date} does not exist';
+        log.errorObj({'method': 'getUserDailyEvalByDate', 'error': message});
         return {'error': message};
       }
 
-      NightlyEvaluation nightlyEvalRecord =
-          new NightlyEvaluation.fromData(nightlyEvalSnapshot.data());
+      DailyEvaluation dailyEvalRecord =
+          new DailyEvaluation.fromData(dailyEvalSnapshot.data());
       log.successObj({
-        'method': 'getUserNightlyEvalByDate - success',
-        'nightlyEvalRecord': nightlyEvalRecord
+        'method': 'getUserDailyEvalByDate - success',
+        'dailyEvalRecord': dailyEvalRecord
       });
-      return {'nightlyEvalRecord': nightlyEvalRecord};
+      return {'dailyEvalRecord': dailyEvalRecord};
     } catch (error) {
       log.errorObj({
-        'method': 'getUserNightlyEvalByDate - error',
+        'method': 'getUserDailyEvalByDate - error',
         'error': error.toString()
       }, 2);
       return {'error': error};
     }
   }
 
-  // Retrieving a list of all nightly evaluation dates of an user within a month.
+  // Retrieving a list of all daily evaluation dates of an user within a month.
   // Need to receive the ending date of a month in the format: MM-DD-YY
-  Future<Map<String, dynamic>> getUserNightlyEvalDatesByMonth(String endDate) async {
+  Future<Map<String, dynamic>> getUserDailyEvalDatesByMonth(String endDate) async {
     log.infoObj({
-      'method': 'getUserNightlyEvalDatesByMonth',
+      'method': 'getUserDailyEvalDatesByMonth',
       'id': uid,
       'endDate': endDate
     });
@@ -411,25 +409,25 @@ class UserDbService {
     int hashedStartDate = calculateDateHash(endDateSplit[0] + '-01-' + endDateSplit[2]);
 
     QuerySnapshot querySnapshot;
-    List<NightlyEvaluation> nightEvalRecords = [];
+    List<DailyEvaluation> dailyEvalRecords = [];
     try {
-      querySnapshot = await nightlyEvalCollection
+      querySnapshot = await dailyEvalCollection
           .where('hashedDate', isGreaterThanOrEqualTo: hashedStartDate)
           .where('hashedDate', isLessThanOrEqualTo: calculateDateHash(endDate))
           .get();
       if (querySnapshot.docs.isNotEmpty) {
         for (var doc in querySnapshot.docs.toList()) {
-          nightEvalRecords.add(new NightlyEvaluation.fromData(doc.data()));
+          dailyEvalRecords.add(new DailyEvaluation.fromData(doc.data()));
         }
       }
       log.successObj({
-        'method': 'getUserNightlyEvalDatesByMonth - successs',
-        'nightEvalRecords': nightEvalRecords
+        'method': 'getUserDailyEvalDatesByMonth - successs',
+        'dailyEvalRecords': dailyEvalRecords
       });
-      return {'nightEvalRecords': nightEvalRecords};
+      return {'dailyEvalRecords': dailyEvalRecords};
     } catch (error) {
       log.errorObj({
-        'method': 'getUserNightlyEvalDatesByMonth - error',
+        'method': 'getUserDailyEvalDatesByMonth - error',
         'error': error.toString()
       }, 2);
       return {'error': error};
@@ -488,7 +486,7 @@ class UserDbService {
       log.infoObj({'method': 'addMindfulnessSessionCompletion', 'data': data});
       MindfulSession userMindfulInput = new MindfulSession.fromData(data);
       userMindfulInput.hashedDate = calculateDateHash(data['id']);
-      await mindfulSessionCollection.doc(data['id']).set(userMindfulInput.toJson());
+      await mindfulSesCollection.doc(data['id']).set(userMindfulInput.toJson());
 
       log.successObj({
         'method': 'addMindfulnessSessionCompletion - success',
@@ -504,7 +502,7 @@ class UserDbService {
     }
   }
 
-  // Hashing the date for each nightly evaluation to help with retrieving
+  // Hashing the date for each daily evaluation to help with retrieving
   // dates within a certain range - format: MM-DD-YY
   int calculateDateHash(String date) {
     List<String> dateSplit = date.split('-');
