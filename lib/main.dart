@@ -16,7 +16,6 @@ import 'screens/consent_screen.dart';
 import 'screens/study_id_screen.dart';
 import 'screens/choose_mindfulness_session_screen.dart';
 import 'screens/choose_task_session.dart';
-import 'package:curiosity_flutter/navigation.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
@@ -46,7 +45,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/choose_task_session',
+      initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -191,28 +190,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   UserDbService userDbService;
   LogService log = new LogService();
-  int first = 0;
 
   Future<void> initialize() async {
     //Change page once user is logged in
     FirebaseAuth.instance.authStateChanges().listen((User user) async {
       if (user == null) {
         log.infoString('User is currently signed out!', 0);
-      } else if (first == 0) {
-        first += 1;
+      } else {
         //Getting user hashed email example
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          String hashedEmail =
-              sha256.convert(utf8.encode(currentUser.email)).toString();
+          String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
+
           userDbService = UserDbService(hashedEmail);
           await userDbService.registerUserId();
           log.infoString('user has log in successfully', 0);
+
+          // After user successfully register then proceed to ask them for their study id
+          Navigator.pushReplacementNamed(
+            context,
+            '/study_id',
+          );
         }
-        Navigator.pushReplacementNamed(
-          context,
-          '/study_id',
-        );
       }
     });
   }
