@@ -1,4 +1,4 @@
-import 'package:curiosity_flutter/models/nightly_evaluation.dart';
+import 'package:curiosity_flutter/models/daily_evaluation.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -10,7 +10,7 @@ import 'package:curiosity_flutter/screens/set_custom_tasks_screen.dart';
 import 'package:curiosity_flutter/screens/onboarding_screen.dart';
 
 class CentralDashboardScreen extends StatefulWidget {
-  Map<DateTime, List<NightlyEvaluation>> dates;
+  Map<DateTime, List<DailyEvaluation>> dates;
   Map<String, dynamic> records;
   CentralDashboardScreen(
       {Key key, @required this.dates, @required this.records})
@@ -29,11 +29,11 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     //For each day, returns the nightly evaluation for that day.
-    List<NightlyEvaluation> getEvents(DateTime d) {
+    List<DailyEvaluation> getEvents(DateTime d) {
       if (d.day <= DateTime.now().day) {
         if (widget.dates[d] == null) {
           Map<String, dynamic> data = {'id': 'failed'};
-          List<NightlyEvaluation> temp = [new NightlyEvaluation.fromData(data)];
+          List<DailyEvaluation> temp = [new DailyEvaluation.fromData(data)];
           return temp;
         }
         return widget.dates[d];

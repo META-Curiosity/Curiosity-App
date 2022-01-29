@@ -19,7 +19,7 @@ class DailyEvaluation {
     hashedDate = data['hashedDate'];
   }
 
-  // Default constructor for a nightly evaluation
+  // Default constructor for a daily evaluation
   DailyEvaluation() {
     id = '';
     reflection = '';

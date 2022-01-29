@@ -1,4 +1,4 @@
-import 'package:curiosity_flutter/models/nightly_evaluation.dart';
+import 'package:curiosity_flutter/models/daily_evaluation.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
