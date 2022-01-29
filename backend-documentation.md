@@ -287,6 +287,19 @@ Map<String, dynamic> data = {
 userDbService.addMindfulnessSessionCompletion(data);
 ```
 
+19. updateDailyEvalEnjoyment(String enjoyment, String id)
+```dart
+'''
+Input:
+  - String enjoyment: the level of ennjoyment for the activity user has
+  - String id: identification use to locate the daily evaluation record to update
+Ouput:
+  - Map<String, dynamic> response:
+      - Boolean success: returns True if the response is successfull
+'''
+await userDbService.updateDailyEvalEnjoyment('It went okay!', data['id']);
+```
+
 -----------------------------------------------------------------------------------------------
 ## Admin Database Service - AdminDbService
 1. Constructor
