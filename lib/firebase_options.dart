@@ -17,8 +17,11 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
+      print('is this web?');
       return web;
     }
+
+    print('before defaultTargetPlaform switch statement');
     // ignore: missing_enum_constant_in_switch
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:

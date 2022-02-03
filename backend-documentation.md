@@ -297,7 +297,7 @@ Ouput:
   - Map<String, dynamic> response:
       - Boolean success: returns True if the response is successfull
 '''
-await userDbService.updateDailyEvalEnjoyment('It went okay!', data['id']);
+await userDbService.updateDailyEvalEnjoyment('It went okay!', '01-02-2022');
 ```
 
 -----------------------------------------------------------------------------------------------

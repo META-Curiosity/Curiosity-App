@@ -34,10 +34,12 @@
 <body>
 
 
-<!--  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>-->
-<!--  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>-->
-<!--  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>-->
-<!--  <script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-analytics.js"></script>-->
+   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
+   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <!--  <script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-analytics.js"></script>-->
+   <!-- <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script> -->
   <script src="https://apis.google.com/js/platform.js" async defer></script>
 
 <!--  <script>-->
@@ -74,6 +76,7 @@
     }
 
     if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register("/firebase-messaging-sw.js");
       // Service workers are supported. Use them.
       window.addEventListener('load', function () {
         // Wait for registration to finish before dropping the <script> tag.
