@@ -1,7 +1,7 @@
 # META Curiosity Backend Documentation
 
 ## Starting application via terminal
-1. For web browsers (Chrome)
+1. For web browsers
 ```html
 <!-- Uncomment out the 3 scripts tag line below inside /web/index.html file-->
   <!-- <script src="https://www.gstatic.com/firebasejs/7.22.1/firebase-app.js"></script>
@@ -13,10 +13,11 @@
   <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
 ```
-- Once finish remember to revert the changes back inside /web/index.html file as the old change allows Google OAuth
+- Once finish remember to revert the changes back inside /web/index.html file as the old change allows Google OAuth.
+- In order to view the logs from the backend service, user would need to use Chrome browser.
 ```
-// Run the following command inside terminal to start application on chrome
-flutter run -d web-server --web-port 8000
+// Run the following command inside terminal to start application on Chrome
+flutter run -d chrome --web-port 8000
 ```
 
 -----------------------------------------------------------------------------------------------
@@ -124,7 +125,7 @@ Map<String, CustomTask> oldTask = {'0': new CustomTask(), ..., '5': new CustomTa
 db.updateTask('1', new CustomTask.fromData(data), oldTask);
 ```
 
-8. addNightlyEvalMorningEvent(data) -> response
+8. addDailyEvalMorningEvent(data) -> response
 ```dart
 '''
 Input: 
@@ -134,7 +135,7 @@ Input:
     - Boolean isCustomTask: True = task created from user and False = task created by META
 Ouput:
     - Map<String, dynamic> response:
-      - NightlyEvaluation nightlyEvalRecord: the nightly evaluation record after user chose their task for the day
+      - DailyEvaluation dailyEvalRecord: the daily evaluation record after user chose their task for the day
     
 '''
 Map<String, dynamic> data = {
@@ -142,19 +143,21 @@ Map<String, dynamic> data = {
     'taskTitle': 'jogging in the morning',
     'isCustomTask': true
 };
-await userDbService.addNightlyEvalMorningEvent(data);
+await userDbService.addDailyEvalMorningEvent(data);
 ```
 
-9. updateNightlyEval(data) -> response
+9. updateDailyEval(data) -> response
 ```dart
 '''
+Input:
   - Map<String, dynamic> data:
     - String id: the current date (MM-DD-YY)
-    - Boolean isSuccessful: True = nightly evaluation is successful | False = night evaluation is unsuccessful
+    - Boolean isSuccessful: daily evalu successful/not successful
     - String imageProof: Base64 encoding of the uploaded proof provided by the user | if empty can leave as null
-    - String reflection: user nightly reflection
+    - String reflection: user daily reflection
+Output:
   - Map<String, dynamic> response:
-      - NightlyEvaluation nightlyEvalRecord: the nightly evaluation record after user chose their task for the day
+      - DailyEvaluation dailyEvalRecord: the daily evaluation record after user chose their task for the day
 '''
 Map<String, dynamic> data = {
     'id': '11-20-21',
@@ -162,31 +165,31 @@ Map<String, dynamic> data = {
     'imageProof': 'hello',
     'reflection': 'it went pretty well i would say'
 };
-await userDbService.updateNightlyEval(data);
+await userDbService.updateDailyEval(data);
 ```
 
-10. getUserNightlyEvalByDate(date) -> response
+10. getUserDailyEvalByDate(date) -> response
 ```dart
 '''
 Input:
-  - String date: Specific date of user nightly evaluation (MM-DD-YY)
+  - String date: Specific date of user daily evaluation (MM-DD-YY)
 Ouput:
   - Map<String, dynamic> response:
-      - NightlyEvaluation nightlyEvalRecord: the nightly evaluation record queried
+      - DailyEvaluation dailyEvalRecord: the daily evaluation record queried
 '''
-await userDbService.getUserNightlyEvalByDate('11-29-21');
+await userDbService.getUserDailyEvalByDate('11-29-21');
 ```
 
-11. getUserNightlyEvalDatesByMonth(endDate) -> response
+11. getUserDailyEvalDatesByMonth(endDate) -> response
 ```dart
 '''
 Input:
-  - String endDate: the ending date of the month to retrieve all the nightly evaluation records within that month
+  - String endDate: the ending date of the month to retrieve all the daily evaluation records within that month
 Ouput:
   - Map<String, dynamic> response:
-    - List<NightlyEvaluation> nightEvalRecords: a list of all inputted nightly evaluation records of the whole month
+    - List<DailyEvaluation> dailyEvalRecords: a list of all inputted daily evaluation records of the whole month
 '''
-await userDbService.getUserNightlyEvalDatesByMonth('11-30-21');
+await userDbService.getUserDailyEvalDatesByMonth('11-30-21');
 ```
 
 12. getUserData() -> response
@@ -241,7 +244,7 @@ Map<String, dynamic> data = { 'reminders': [8, 9, 10, 11, 12]};
 await userDbService.updateCompleteActivityReminder(data);
 ```
 
-16.getRandomMetaTask(String difficulty) -> response
+16. getRandomMetaTask(String difficulty) -> response
 ```dart
 '''
 Input:
@@ -254,7 +257,7 @@ Ouput:
 await userDbService.getRandomMetaTask('easy');
 ```
 
-17.removeMetaTask(String difficulty, int index)
+17. removeMetaTask(String difficulty, int index)
 ```dart
 '''
 Input:
@@ -265,6 +268,38 @@ Ouput:
 '''
 await userDbService.removeMetaTask('easy', 5);
 ```
+
+18. addMindfulnessSessionCompletion(String difficulty, int index)
+```dart
+'''
+Input:
+  - Map<String, dynamic> data:
+    - String id: the current date (MM-DD-YY)
+    - Boolean hasCompleted: True = mindfulness session completed is successful | False = mindfulness ession was not completed
+Ouput:
+  - Map<String, dynamic> response:
+      - MindfulSession userMindfulInput: a record of the user entered mindfulness completion stored in the database
+'''
+Map<String, dynamic> data = {
+  'hasCompleted': false,
+  'id': '01-02-2022'
+}
+userDbService.addMindfulnessSessionCompletion(data);
+```
+
+19. updateDailyEvalEnjoyment(String enjoyment, String id)
+```dart
+'''
+Input:
+  - String enjoyment: the level of ennjoyment for the activity user has
+  - String id: identification use to locate the daily evaluation record to update
+Ouput:
+  - Map<String, dynamic> response:
+      - Boolean success: returns True if the response is successfull
+'''
+await userDbService.updateDailyEvalEnjoyment('It went okay!', '01-02-2022');
+```
+
 -----------------------------------------------------------------------------------------------
 ## Admin Database Service - AdminDbService
 1. Constructor
