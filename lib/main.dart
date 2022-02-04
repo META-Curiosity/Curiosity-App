@@ -29,6 +29,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 // CRON scheduler
 // import 'package:cron/cron.dart';
 
@@ -244,49 +246,54 @@ class _MyHomePageState extends State<MyHomePage> {
       provisional: false,
       sound: true,
     );
+
     print('User granted permission: ${settings.authorizationStatus}');
 
     print('Setting up the message if the app has not been opened');
     // Initializing push notification message for users
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print('I am listening to something i think');
-      RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
-      if (notification != null && android != null) {
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(channel.id, channel.name,
-                  // channel.description,
-                  color: Colors.blue,
-                  playSound: true,
-                  icon: '@mipmap/ic_launcher'),
-            ));
-      }
+      userDbService = UserDbService('hashedEmail');
+      await userDbService.registerUserId();
+      // RemoteNotification notification = message.notification;
+      // AndroidNotification android = message.notification?.android;
+      // if (notification != null && android != null) {
+      //   flutterLocalNotificationsPlugin.show(
+      //       notification.hashCode,
+      //       notification.title,
+      //       notification.body,
+      //       NotificationDetails(
+      //         android: AndroidNotificationDetails(channel.id, channel.name,
+      //             // channel.description,
+      //             color: Colors.blue,
+      //             playSound: true,
+      //             icon: '@mipmap/ic_launcher'),
+      //       ));
+      // }
+      showNotification();
     });
     print('Setting up the message once this app has been opened');
     // Initializing screens to show when the user received a message with opened application
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('A new onMessageOpenedApp event was published!');
-      RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
-      if (android != null && notification != null) {
-        showDialog(
-            context: context,
-            builder: (_) {
-              return AlertDialog(
-                title: Text(notification.title),
-                content: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Text(notification.body)],
-                  ),
-                ),
-              );
-            });
-      }
+      // RemoteNotification notification = message.notification;
+      // AndroidNotification android = message.notification?.android;
+      // if (android != null && notification != null) {
+      //   showDialog(
+      //       context: context,
+      //       builder: (_) {
+      //         return AlertDialog(
+      //           title: Text(notification.title),
+      //           content: SingleChildScrollView(
+      //             child: Column(
+      //               crossAxisAlignment: CrossAxisAlignment.start,
+      //               children: [Text(notification.body)],
+      //             ),
+      //           ),
+      //         );
+      //       });
+      showNotification();
+      // }
     });
     // Change page once user is logged in
     FirebaseAuth.instance.authStateChanges().listen((User user) async {
@@ -296,30 +303,32 @@ class _MyHomePageState extends State<MyHomePage> {
         //Getting user hashed email example
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          // String hashedEmail =
-          //     sha256.convert(utf8.encode(currentUser.email)).toString();
+          String hashedEmail =
+              sha256.convert(utf8.encode(currentUser.email)).toString();
 
-          // userDbService = UserDbService(hashedEmail);
-          // await userDbService.registerUserId();
+          userDbService = UserDbService(hashedEmail);
+          await userDbService.registerUserId();
           // log.infoString('user has log in successfully', 0);
           // After user successfully register then proceed to ask them for their study id
-          // Navigator.pushReplacementNamed(
-          //   context,
-          //   '/study_id',
-          // );
+          Navigator.pushReplacementNamed(
+            context,
+            '/study_id',
+          );
         }
       }
     });
   }
 
   void showNotification() {
-    setState(() {
-      _counter++;
-    });
-    flutterLocalNotificationsPlugin.show(
+    print("Function has been called");
+    // setState(() {
+    //   _counter++;
+    // });
+    flutterLocalNotificationsPlugin.schedule(
         0,
         "Testing $_counter",
         "How are you doing?",
+        DateTime.now().add(Duration(seconds: 10)),
         NotificationDetails(
           android: AndroidNotificationDetails(
             channel.id,
