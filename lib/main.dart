@@ -217,14 +217,17 @@ class _MyHomePageState extends State<MyHomePage> {
         if (currentUser != null) {
           String hashedEmail =
               sha256.convert(utf8.encode(currentUser.email)).toString();
+
           userDbService = UserDbService(hashedEmail);
           await userDbService.registerUserId();
           log.infoString('user has log in successfully', 0);
+
+          // After user successfully register then proceed to ask them for their study id
+          Navigator.pushReplacementNamed(
+            context,
+            '/study_id',
+          );
         }
-        Navigator.pushReplacementNamed(
-          context,
-          '/study_id',
-        );
       }
     });
   }

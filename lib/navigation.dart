@@ -15,7 +15,7 @@ import 'screens/mindful_sessions_screen.dart';
 import 'screens/play_audio_screen.dart';
 import 'screens/good_morning_screen.dart';
 import 'screens/firebase_test_screen.dart';
-import 'package:curiosity_flutter/models/nightly_evaluation.dart';
+import 'package:curiosity_flutter/models/daily_evaluation.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key key}) : super(key: key);
@@ -30,7 +30,7 @@ class _NavigationState extends State<Navigation> {
   int index = 1; //index for nav bar
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
   List<Widget> screens = [];
-  Map<DateTime, List<NightlyEvaluation>> _dates = {};
+  Map<DateTime, List<DailyEvaluation>> _dates = {};
   bool _datesRecieved = false;
   bool _recordsRecieved = false;
   bool _dataRecieved = false;
@@ -44,14 +44,14 @@ class _NavigationState extends State<Navigation> {
     return userData['user'];
   }
 
-  //Takes the currentMonth and returns a list of nightly evaluation from firestore under the user's collection.
-  Future<List<NightlyEvaluation>> getDates(DateTime currentMonth) async {
+  //Takes the currentMonth and returns a list of daily evaluation from firestore under the user's collection.
+  Future<List<DailyEvaluation>> getDates(DateTime currentMonth) async {
     String convertedTime =
         '${currentMonth.month.toString().padLeft(2, '0')}-31-${currentMonth.year.toString().substring(2, 4)}'; //MM-DD-YYYY
     Map<String, dynamic> datesObj =
-        await UDS.getUserNightlyEvalDatesByMonth(convertedTime);
+        await UDS.getUserDailyEvalDatesByMonth(convertedTime);
 
-    return datesObj['nightEvalRecords'];
+    return datesObj['dailyEvalRecords'];
   }
 
   //Takes a String date in the form MM-DD-YY and converts it into a DateTime object.
@@ -61,11 +61,11 @@ class _NavigationState extends State<Navigation> {
         int.parse(dateSplit[1]));
   }
 
-  //Takes in a List of Nightly Evaluations and returns a list of extracted DateTime
-  Map<DateTime, List<NightlyEvaluation>> listOfNightlyEvaluationsToMap(
-      List<NightlyEvaluation> neList) {
-    Map<DateTime, List<NightlyEvaluation>> res = {};
-    for (NightlyEvaluation ne in neList) {
+  //Takes in a List of Daily Evaluations and returns a list of extracted DateTime
+  Map<DateTime, List<DailyEvaluation>> listOfDailyEvaluationsToMap(
+      List<DailyEvaluation> neList) {
+    Map<DateTime, List<DailyEvaluation>> res = {};
+    for (DailyEvaluation ne in neList) {
       DateTime neDate = stringToDateTime(ne.id);
       if (res[neDate] == null) res[neDate] = [];
       res[neDate].add(ne);
@@ -98,10 +98,10 @@ class _NavigationState extends State<Navigation> {
     //   });
     // });
     //
-    // //get list of nightly evaluations
+    // //get list of daily evaluations
     // getDates(today).then((result) {
     //   setState(() {
-    //     _dates = listOfNightlyEvaluationsToMap(result); //Set list of dates
+    //     _dates = listOfDailyEvaluationsToMap(result); //Set list of dates
     //     _datesRecieved = true; //Set Data Recieved to true
     //   });
     // });
@@ -119,7 +119,7 @@ class _NavigationState extends State<Navigation> {
         screens = [
           OnboardingScreen(), //To be replaced with meditation screen
           CentralDashboardScreen(
-              dates: listOfNightlyEvaluationsToMap(result[1]),
+              dates: listOfDailyEvaluationsToMap(result[1]),
               records: result[2]),
           EditCustomTasksScreen(user: result[0]),
         ];
