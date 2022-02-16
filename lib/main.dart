@@ -29,10 +29,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
-// CRON scheduler
-// import 'package:cron/cron.dart';
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel', 'High Importance Channel',
@@ -47,6 +43,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('A bg message just showed up: ${message.messageId}');
 }
 
+// Initializing the application when first launched
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -236,6 +233,8 @@ class _MyHomePageState extends State<MyHomePage> {
   LogService log = new LogService();
 
   Future<void> initialize() async {
+    // Initializing firebase messaging
+    log.infoString('Initializing firebase messaging');
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
@@ -246,55 +245,55 @@ class _MyHomePageState extends State<MyHomePage> {
       provisional: false,
       sound: true,
     );
+    log.infoString('User granted permission: ${settings.authorizationStatus}');
 
-    print('User granted permission: ${settings.authorizationStatus}');
-
-    print('Setting up the message if the app has not been opened');
     // Initializing push notification message for users
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print('I am listening to something i think');
+      log.infoString('Message received - $message');
       userDbService = UserDbService('hashedEmail');
       await userDbService.registerUserId();
-      // RemoteNotification notification = message.notification;
-      // AndroidNotification android = message.notification?.android;
-      // if (notification != null && android != null) {
-      //   flutterLocalNotificationsPlugin.show(
-      //       notification.hashCode,
-      //       notification.title,
-      //       notification.body,
-      //       NotificationDetails(
-      //         android: AndroidNotificationDetails(channel.id, channel.name,
-      //             // channel.description,
-      //             color: Colors.blue,
-      //             playSound: true,
-      //             icon: '@mipmap/ic_launcher'),
-      //       ));
-      // }
-      showNotification();
+      RemoteNotification notification = message.notification;
+      AndroidNotification android = message.notification?.android;
+      if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(channel.id, channel.name,
+                  // channel.description,
+                  color: Colors.blue,
+                  playSound: true,
+                  icon: '@mipmap/ic_launcher'),
+            ));
+      }
+      // showNotification();
     });
+
     print('Setting up the message once this app has been opened');
     // Initializing screens to show when the user received a message with opened application
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('A new onMessageOpenedApp event was published!');
-      // RemoteNotification notification = message.notification;
-      // AndroidNotification android = message.notification?.android;
-      // if (android != null && notification != null) {
-      //   showDialog(
-      //       context: context,
-      //       builder: (_) {
-      //         return AlertDialog(
-      //           title: Text(notification.title),
-      //           content: SingleChildScrollView(
-      //             child: Column(
-      //               crossAxisAlignment: CrossAxisAlignment.start,
-      //               children: [Text(notification.body)],
-      //             ),
-      //           ),
-      //         );
-      //       });
+      RemoteNotification notification = message.notification;
+      AndroidNotification android = message.notification?.android;
+      if (android != null && notification != null) {
+        showDialog(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: Text(notification.title),
+                content: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [Text(notification.body)],
+                  ),
+                ),
+              );
+            });
       showNotification();
-      // }
+      }
     });
+
     // Change page once user is logged in
     FirebaseAuth.instance.authStateChanges().listen((User user) async {
       if (user == null) {
@@ -305,10 +304,10 @@ class _MyHomePageState extends State<MyHomePage> {
         if (currentUser != null) {
           String hashedEmail =
               sha256.convert(utf8.encode(currentUser.email)).toString();
-
           userDbService = UserDbService(hashedEmail);
           await userDbService.registerUserId();
-          // log.infoString('user has log in successfully', 0);
+          log.infoString('user has log in successfully', 0);
+
           // After user successfully register then proceed to ask them for their study id
           Navigator.pushReplacementNamed(
             context,
@@ -320,10 +319,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void showNotification() {
-    print("Function has been called");
-    // setState(() {
-    //   _counter++;
-    // });
+    print('Showing notification');
     flutterLocalNotificationsPlugin.schedule(
         0,
         "Testing $_counter",
@@ -333,7 +329,6 @@ class _MyHomePageState extends State<MyHomePage> {
           android: AndroidNotificationDetails(
             channel.id,
             channel.name,
-
             // channelDescription=channel.description,
             importance: Importance.high,
             color: Colors.blue,
@@ -341,7 +336,6 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: '@mipmap/ic_launcher',
           ),
         ));
-    print('running local notification');
   }
 
   @override

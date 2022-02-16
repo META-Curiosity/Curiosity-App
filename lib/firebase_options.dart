@@ -17,7 +17,6 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      print('is this web?');
       return web;
     }
 
