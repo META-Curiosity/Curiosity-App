@@ -16,6 +16,10 @@ import 'screens/consent_screen.dart';
 import 'screens/study_id_screen.dart';
 import 'screens/choose_mindfulness_session_screen.dart';
 import 'screens/choose_task_session.dart';
+import 'screens/introduction_screen.dart';
+import 'package:curiosity_flutter/navigation.dart';
+import 'screens/introduction_daily_challenge_screen.dart';
+import 'screens/activity_survey_screen.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
@@ -25,7 +29,7 @@ import 'firebase_options.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
-  void main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -116,12 +120,12 @@ class MyApp extends StatelessWidget {
               ),
             ),
         '/play_audio': (context) => Scaffold(
-              appBar: AppBar(
-                //centerTitle: true,
-                leading: BackButton(),
-                //title: Text('New Task'),
-                backgroundColor: Color(0xFFF6C344),
-              ),
+              // appBar: AppBar(
+              //   //centerTitle: true,
+              //   leading: BackButton(),
+              //   //title: Text('New Task'),
+              //   backgroundColor: Color(0xFFF6C344),
+              // ),
               resizeToAvoidBottomInset: true,
               body: Container(
                 child: AudioPlayer(),
@@ -169,6 +173,24 @@ class MyApp extends StatelessWidget {
                 child: ChooseTaskSession(),
               ),
             ),
+        '/introduction': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: Introduction(),
+              ),
+            ),
+        '/introduction_daily_challenge': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: IntroductionDailyChallenge(),
+              ),
+            ),
+        '/activity_survey': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: ActivitySurvey(),
+              ),
+            ),
       },
     );
   }
@@ -200,7 +222,8 @@ class _MyHomePageState extends State<MyHomePage> {
         //Getting user hashed email example
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
+          String hashedEmail =
+              sha256.convert(utf8.encode(currentUser.email)).toString();
 
           userDbService = UserDbService(hashedEmail);
           await userDbService.registerUserId();
@@ -209,7 +232,8 @@ class _MyHomePageState extends State<MyHomePage> {
           // After user successfully register then proceed to ask them for their study id
           Navigator.pushReplacementNamed(
             context,
-            '/study_id',
+            // '/study_id',
+            '/mindful_sessions',
           );
         }
       }
