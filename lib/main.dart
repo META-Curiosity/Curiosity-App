@@ -19,6 +19,7 @@ import 'screens/choose_task_session.dart';
 import 'screens/introduction_screen.dart';
 import 'package:curiosity_flutter/navigation.dart';
 import 'screens/introduction_daily_challenge_screen.dart';
+import 'screens/activity_survey_screen.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/introduction',
+      initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -119,12 +120,12 @@ class MyApp extends StatelessWidget {
               ),
             ),
         '/play_audio': (context) => Scaffold(
-              appBar: AppBar(
-                //centerTitle: true,
-                leading: BackButton(),
-                //title: Text('New Task'),
-                backgroundColor: Color(0xFFF6C344),
-              ),
+              // appBar: AppBar(
+              //   //centerTitle: true,
+              //   leading: BackButton(),
+              //   //title: Text('New Task'),
+              //   backgroundColor: Color(0xFFF6C344),
+              // ),
               resizeToAvoidBottomInset: true,
               body: Container(
                 child: AudioPlayer(),
@@ -184,6 +185,12 @@ class MyApp extends StatelessWidget {
                 child: IntroductionDailyChallenge(),
               ),
             ),
+        '/activity_survey': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: ActivitySurvey(),
+              ),
+            ),
       },
     );
   }
@@ -225,7 +232,8 @@ class _MyHomePageState extends State<MyHomePage> {
           // After user successfully register then proceed to ask them for their study id
           Navigator.pushReplacementNamed(
             context,
-            '/study_id',
+            // '/study_id',
+            '/mindful_sessions',
           );
         }
       }
