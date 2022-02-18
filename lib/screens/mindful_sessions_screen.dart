@@ -32,7 +32,7 @@ class MindfulSessionsScreen extends StatelessWidget {
                   padding: EdgeInsets.fromLTRB(100.0, 20.0, 100.0, 20.0)),
               onPressed: () {
                 // Navigate to the second screen using a named route.
-                Navigator.pushNamed(context, '/play_audio');
+                Navigator.pushNamed(context, '/play_audio', arguments: 0);
               },
               label:
                   const Text('Mindful Eating', style: TextStyle(fontSize: 18)),
@@ -54,7 +54,7 @@ class MindfulSessionsScreen extends StatelessWidget {
               ),
               onPressed: () {
                 // Navigate to the second screen using a named route.
-                Navigator.pushNamed(context, '/play_audio');
+                Navigator.pushNamed(context, '/play_audio', arguments: 1);
               },
               label:
                   const Text('Mindful Walking', style: TextStyle(fontSize: 18)),
@@ -76,14 +76,7 @@ class MindfulSessionsScreen extends StatelessWidget {
               ),
               onPressed: () {
                 // Navigate to the second screen using a named route.
-                Navigator.pushNamed(
-                  context,
-                  '/play_audio',
-                  arguments: <String, String>{
-                    'city': 'Berlin',
-                    'country': 'Germany',
-                  },
-                );
+                Navigator.pushNamed(context, '/play_audio', arguments: 2);
               },
               label:
                   const Text('Mindful Washing', style: TextStyle(fontSize: 18)),

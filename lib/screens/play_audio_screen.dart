@@ -16,11 +16,33 @@ class _AudioPlayerState extends State<AudioPlayer> {
   @override
   void initState() {
     super.initState();
-    setUpPlaylist();
   }
 
-  void setUpPlaylist() async {
-    await audioPlayer.open(Audio('assets/audio/beach.mp3'), autoStart: false);
+  String image = '';
+  String audio = '';
+  @override
+  void didChangeDependencies() {
+    final args = ModalRoute.of(context).settings.arguments as int;
+    //Set the image and audio based on the setting selected.
+    if (args == 0) {
+      image = 'assets/images/desert.jpg';
+      audio = 'assets/audio/beach.mp3';
+      print("0");
+    } else if (args == 1) {
+      image = 'assets/images/forest.jpeg';
+      audio = 'assets/audio/forest.mp3';
+      print("1");
+    } else {
+      image = 'assets/images/beach.jpg';
+      audio = 'assets/audio/beach.mp3';
+      print("2");
+    }
+    setUpPlaylist(audio);
+    super.didChangeDependencies();
+  }
+
+  void setUpPlaylist(String audio) async {
+    await audioPlayer.open(Audio(audio), autoStart: false);
   }
 
   Widget circularAudioPlayer(RealtimePlayingInfos rtpi, double ScreenWidth) {
@@ -30,7 +52,7 @@ class _AudioPlayerState extends State<AudioPlayer> {
       children: [
         SizedBox(height: 80),
         CircularPercentIndicator(
-          radius: ScreenWidth / 2,
+          radius: ScreenWidth / 2.2,
           arcType: ArcType.HALF,
           backgroundColor: primaryColor,
           progressColor: Colors.white,
@@ -56,8 +78,7 @@ class _AudioPlayerState extends State<AudioPlayer> {
         body: Container(
             decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage('assets/images/beach.jpg'),
-                    fit: BoxFit.cover)),
+                    image: AssetImage(this.image), fit: BoxFit.cover)),
             alignment: Alignment.center,
             child: audioPlayer.builderRealtimePlayingInfos(
                 builder: (context, realTimePlayingInfo) {
