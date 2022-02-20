@@ -300,6 +300,16 @@ Ouput:
 await userDbService.updateDailyEvalEnjoyment('It went okay!', '01-02-2022');
 ```
 
+20. getMindfulNotiPref()
+```dart
+'''
+Ouput:
+  - Map<String, dynamic> response:
+      - Boolean success: returns True if the response is successfull
+      - List<int> mindfulReminders: Time range of the user mindfulness notification preference
+'''
+await userDbService.getMindfulNotiPref();
+```
 -----------------------------------------------------------------------------------------------
 ## Admin Database Service - AdminDbService
 1. Constructor
@@ -460,4 +470,47 @@ Input:
   - int stackCall (OPTIONAL | DEFAULT = 0): The number of stack leading to the executed log
 '''
 logService.errorString('error ALERT', 2);
+```
+-----------------------------------------------------------------------------------------------
+## Notification Service - Utilized to setup local notification
+1. Constructor
+```dart
+'''
+Input:
+  - String uuid: the user hashed email uuid
+'''
+NotificationService notificationService = new NotificationService(uuid);
+```
+
+2. scheduleSetupActivityNotification() 
+```dart
+'''
+- No input or output, this function should be called at 9AM everyday so that
+  user activity notification can be reconfigured correctly
+'''
+await notificationService.scheduleSetupActivityNotification();
+```
+
+3. cancelSetupActivityNotification() 
+```dart
+'''
+- No input or output, this function should be call to cancel all the pending activity notification.
+'''
+await notificationService.cancelSetupActivityNotification();
+```
+
+4. scheduleMindfulnessSessionNotification() 
+```dart
+'''
+- No input or output, this function should be call to setup user mindfulness session reminders everyday
+'''
+await notificationService.scheduleMindfulnessSessionNotification();
+```
+
+5. cancelMindfulSessionNotification() 
+```dart
+'''
+- No input or output, this function cancels all te mindfulness sesstion reminder notification
+'''
+await notificationService.cancelMindfulSessionNotification();
 ```

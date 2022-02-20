@@ -1,5 +1,7 @@
+import 'package:curiosity_flutter/const/notification_payload.dart';
 import 'package:curiosity_flutter/navigation.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
+import 'package:curiosity_flutter/services/notification_service.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -27,11 +29,18 @@ import 'firebase_options.dart';
 // Messaging
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// Encryption
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+
+const String ANDROID_CHANNEL_ID = 'high_importance_channel';
+const String ANDROID_CHANNEL_NAME = 'High Importance Channel';
+
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'high_importance_channel', 'High Importance Channel',
+    ANDROID_CHANNEL_ID, ANDROID_CHANNEL_NAME,
     importance: Importance.high, playSound: true);
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -45,20 +54,51 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 // Initializing the application when first launched
 void main() async {
+  // Ensuring all widgets are initialized - mandatory
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Setting up connection with firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  // Setting message handler function when the application is in the background
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(channel);
-
+  // Setting up what options for application if it is open in the foreground
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true, badge: true, sound: true);
+
+  // Creating initial settings for local notification
+  var initializationSettingsAndroid =
+      AndroidInitializationSettings('codex_logo');
+  var initializationSettingsIOS = IOSInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+      onDidReceiveLocalNotification:
+          (int id, String title, String body, String payload) async {});
+  var initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+
+  // Flutter initializing default settings
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      // Determine what to do with the notification once selected
+      onSelectNotification: (String payload) async {
+    if (payload != null) {
+      if (payload == NotificationPayload.MindfulnessSession.toString()) {
+        print('redirected to mindfulness screen');
+        // [TODO]: redirect the user to slide 32
+      } else if (payload == NotificationPayload.DailyActivitySetup.toString()) {
+        print('redirected to daily activity setup screen');
+        // [TODO]: redirect the user to slide 19
+      } else if (payload ==
+          NotificationPayload.DailyActivityCompletion.toString()) {
+        print('redirected to daily activity completion screen');
+        // [TODO]: redirect the user to slide 26
+      }
+    }
+  });
+
   runApp(MyApp());
 }
 
@@ -232,11 +272,10 @@ class _MyHomePageState extends State<MyHomePage> {
   UserDbService userDbService;
   LogService log = new LogService();
 
-  Future<void> initialize() async {
-    // Initializing firebase messaging
-    log.infoString('Initializing firebase messaging');
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    NotificationSettings settings = await messaging.requestPermission(
+  Future<void> initializeFirebaseMessaging() async {
+    // Requesting users permission for notification
+    NotificationSettings settings =
+        await FirebaseMessaging.instance.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -250,8 +289,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // Initializing push notification message for users
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       log.infoString('Message received - $message');
-      userDbService = UserDbService('hashedEmail');
-      await userDbService.registerUserId();
       RemoteNotification notification = message.notification;
       AndroidNotification android = message.notification?.android;
       if (notification != null && android != null) {
@@ -267,10 +304,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   icon: '@mipmap/ic_launcher'),
             ));
       }
-      // showNotification();
     });
 
-    print('Setting up the message once this app has been opened');
     // Initializing screens to show when the user received a message with opened application
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('A new onMessageOpenedApp event was published!');
@@ -290,10 +325,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               );
             });
-      showNotification();
       }
     });
+  }
 
+  Future<void> initialize() async {
+    await initializeFirebaseMessaging();
     // Change page once user is logged in
     FirebaseAuth.instance.authStateChanges().listen((User user) async {
       if (user == null) {
@@ -305,9 +342,10 @@ class _MyHomePageState extends State<MyHomePage> {
           String hashedEmail =
               sha256.convert(utf8.encode(currentUser.email)).toString();
           userDbService = UserDbService(hashedEmail);
+          NotificationService notificationService =
+              NotificationService(hashedEmail);
           await userDbService.registerUserId();
           log.infoString('user has log in successfully', 0);
-
           // After user successfully register then proceed to ask them for their study id
           Navigator.pushReplacementNamed(
             context,
@@ -316,26 +354,6 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }
     });
-  }
-
-  void showNotification() {
-    print('Showing notification');
-    flutterLocalNotificationsPlugin.schedule(
-        0,
-        "Testing $_counter",
-        "How are you doing?",
-        DateTime.now().add(Duration(seconds: 10)),
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            channel.id,
-            channel.name,
-            // channelDescription=channel.description,
-            importance: Importance.high,
-            color: Colors.blue,
-            playSound: true,
-            icon: '@mipmap/ic_launcher',
-          ),
-        ));
   }
 
   @override
