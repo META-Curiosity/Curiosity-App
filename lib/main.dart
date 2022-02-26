@@ -342,9 +342,7 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          // String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
-          // [TESTING]: Remove when upload
-          String hashedEmail = 'hashedEmail';
+          String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
           userDbService = UserDbService(hashedEmail);
 
           // Verifying if the user has registered before - if they have then the application
