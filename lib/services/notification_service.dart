@@ -47,6 +47,7 @@ class NotificationService {
           platformChannelSpecifics,
           androidAllowWhileIdle: true,
           payload: NotificationPayload.DailyActivitySetup.toString());
+      log.successObj({'method': 'scheduleSetupActivityNotification - success'});
     } catch (error) {
       log.errorObj({
         'method': 'scheduleSetupActivityNotification - error',
@@ -61,7 +62,7 @@ class NotificationService {
       log.infoObj({'method': 'cancelSetupActivityNotification'});
       await flutterLocalNotificationsPlugin
           .cancel(NotificationId.DailyActivitiySetupReminder.index);
-      log.infoObj({'method': 'cancelSetupActivityNotification - success'});
+      log.successObj({'method': 'cancelSetupActivityNotification - success'});
     } catch (error) {
       log.errorObj({
         'method': 'scheduleSetupActivityNotification - error',
@@ -78,14 +79,14 @@ class NotificationService {
       dynamic mindfulnessNotiTimes =
           (await userDbService.getMindfulNotiPref())['mindfulReminders'];
       // The notification id for each mindfulness notification id is between
-      // 1 - 5 [inclusive]
+      // 1 - 5 [inclusive] [8, 9, 10, 11]
       for (int i = 0; i < mindfulnessNotiTimes.length; i++) {
         flutterLocalNotificationsPlugin.zonedSchedule(
             i + 1,
             'Complete your mindfulness session',
             'Please finish your mindfulness session for the day',
-            tz.TZDateTime.now(tz.local)
-                .add(Duration(seconds: mindfulnessNotiTimes[i])),
+            tz.TZDateTime.now(tz.local) 
+                .add(Duration(hours: mindfulnessNotiTimes[i])),
             platformChannelSpecifics,
             androidAllowWhileIdle: true,
             uiLocalNotificationDateInterpretation:
@@ -93,7 +94,7 @@ class NotificationService {
             payload: NotificationPayload.MindfulnessSession.toString());
       }
 
-      log.infoObj(
+      log.successObj(
           {'method': 'scheduleMindfulnessActivityNotification - success'});
     } catch (error) {
       log.errorObj({
@@ -120,12 +121,28 @@ class NotificationService {
       flutterLocalNotificationsPlugin
           .cancel(NotificationId.MindfulnessReminder5.index);
 
-      log.infoObj({'method': 'cancelMindfulSessionNotification - success'});
+      log.successObj({'method': 'cancelMindfulSessionNotification - success'});
     } catch (error) {
       log.errorObj({
         'method': 'cancelMindfulSessionNotification - error',
         'error': error
       }, 1);
+    }
+  }
+
+  // Scheduling notification to reminder the user to complete their daily activity
+  // Reminding the user every hour until 12AM ?
+  void scheduleActivityCompletionNotification() async {
+    try {
+      log.infoObj({'method': 'scheduleActivityCompletionNotification'});
+
+
+
+      log.successObj({'method': 'scheduleActivityCompletionNotification - success'});
+    } catch (error) {
+      log.errorObj({
+        'method': 'scheduleActivityCompletionNotification - error'
+      }, 2);
     }
   }
 }

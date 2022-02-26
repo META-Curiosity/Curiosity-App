@@ -21,6 +21,7 @@ import 'screens/choose_task_session.dart';
 import 'screens/introduction_screen.dart';
 import 'package:curiosity_flutter/navigation.dart';
 import 'screens/introduction_daily_challenge_screen.dart';
+import 'screens/activity_survey_screen.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
@@ -32,9 +33,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // Encryption
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
-
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 const String ANDROID_CHANNEL_ID = 'high_importance_channel';
 const String ANDROID_CHANNEL_NAME = 'High Importance Channel';
@@ -184,12 +182,12 @@ class MyApp extends StatelessWidget {
               ),
             ),
         '/play_audio': (context) => Scaffold(
-              appBar: AppBar(
-                //centerTitle: true,
-                leading: BackButton(),
-                //title: Text('New Task'),
-                backgroundColor: Color(0xFFF6C344),
-              ),
+              // appBar: AppBar(
+              //   //centerTitle: true,
+              //   leading: BackButton(),
+              //   //title: Text('New Task'),
+              //   backgroundColor: Color(0xFFF6C344),
+              // ),
               resizeToAvoidBottomInset: true,
               body: Container(
                 child: AudioPlayer(),
@@ -247,6 +245,12 @@ class MyApp extends StatelessWidget {
               resizeToAvoidBottomInset: true,
               body: Container(
                 child: IntroductionDailyChallenge(),
+              ),
+            ),
+        '/activity_survey': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: ActivitySurvey(),
               ),
             ),
       },
@@ -336,20 +340,34 @@ class _MyHomePageState extends State<MyHomePage> {
       if (user == null) {
         log.infoString('User is currently signed out!', 0);
       } else {
-        //Getting user hashed email example
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          String hashedEmail =
-              sha256.convert(utf8.encode(currentUser.email)).toString();
+          // String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
+          // [TESTING]: Remove when upload
+          String hashedEmail = 'hashedEmail';
           userDbService = UserDbService(hashedEmail);
-          NotificationService notificationService =
-              NotificationService(hashedEmail);
-          await userDbService.registerUserId();
-          log.infoString('user has log in successfully', 0);
+
+          // Verifying if the user has registered before - if they have then the application
+          // does not sign the user up
+          Map<String, dynamic> isUserRegistered =
+              await userDbService.getUserData();
+          if (isUserRegistered['error'] != null) {
+            // [TODO] Handle the case where the database encounters an error when checking the user existence
+            log.errorObj({'error': isUserRegistered['error']});
+          }
+          if (isUserRegistered['user'] == null) {
+            // user has not registered yet -> registering the user
+            await userDbService.registerUserId();
+            log.successString('user has registered successfully', 0);
+          } else if (isUserRegistered['user'] != null) {
+            // Registered user logging back in again
+            log.successString('user logged in successfully', 0);
+          }
           // After user successfully register then proceed to ask them for their study id
           Navigator.pushReplacementNamed(
             context,
-            '/study_id',
+            // '/study_id',
+            '/mindful_sessions',
           );
         }
       }
