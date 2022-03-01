@@ -1,3 +1,4 @@
+import 'package:curiosity_flutter/screens/nightly_evaluation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'onboarding_page.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/',
+      initialRoute: '/nightly_evaluation',
       routes: {
         // When navigating to the "/" route, build the FirstScreen widget.
         '/': (context) => Scaffold(
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
                 child: SetCustomTasksScreen(),
               ),
             ),
+        '/nightly_evaluation': (context) => NightlyEvaluation()
       },
     );
   }
