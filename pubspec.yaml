@@ -43,6 +43,7 @@ dependencies:
   survey_kit: ^0.0.21
   assets_audio_player: ^3.0.4+1
   percent_indicator: ^4.0.0
+  carousel_slider: ^4.0.0
 
 dependency_overrides:
   intl: ^0.17.0-nullsafety.2

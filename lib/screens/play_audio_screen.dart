@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import './mindful_completion_screen.dart';
 
 class AudioPlayer extends StatefulWidget {
   const AudioPlayer({Key key}) : super(key: key);
@@ -25,7 +26,7 @@ class _AudioPlayerState extends State<AudioPlayer> {
     final args = ModalRoute.of(context).settings.arguments as int;
     //Set the image and audio based on the setting selected.
     if (args == 0) {
-      image = 'assets/images/desert.jpg';
+      image = 'assets/images/food.jpg';
       audio = 'assets/audio/beach.mp3';
       print("0");
     } else if (args == 1) {
@@ -75,6 +76,21 @@ class _AudioPlayerState extends State<AudioPlayer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          leading: CloseButton(
+            onPressed: () {
+              audioPlayer.stop();
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => new MindfulCompletion()),
+              );
+            },
+          ),
+          backgroundColor: Color(0xFFF6C344),
+          centerTitle: true,
+        ),
         body: Container(
             decoration: BoxDecoration(
                 image: DecorationImage(

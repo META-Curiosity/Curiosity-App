@@ -16,6 +16,7 @@ import 'screens/play_audio_screen.dart';
 import 'screens/good_morning_screen.dart';
 import 'screens/firebase_test_screen.dart';
 import 'package:curiosity_flutter/models/daily_evaluation.dart';
+import 'screens/mindful_sessions_screen.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key key}) : super(key: key);
@@ -117,7 +118,7 @@ class _NavigationState extends State<Navigation> {
     getEverything().then((result) {
       setState(() {
         screens = [
-          OnboardingScreen(), //To be replaced with meditation screen
+          MindfulSessionsScreen(), //To be replaced with meditation screen
           CentralDashboardScreen(
               dates: listOfDailyEvaluationsToMap(result[1]),
               records: result[2]),
