@@ -47,6 +47,8 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 // When the user clicks on the notification when the app is in the background
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+
+  // [TODO]: Mechanism to handle push notification when the application is in the background
   print('A bg message just showed up: ${message.messageId}');
 }
 
@@ -310,12 +312,15 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     });
 
+
+
     // Initializing screens to show when the user received a message with opened application
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('A new onMessageOpenedApp event was published!');
       RemoteNotification notification = message.notification;
       AndroidNotification android = message.notification?.android;
       if (android != null && notification != null) {
+        print('inside the dialog');
         showDialog(
             context: context,
             builder: (_) {
@@ -345,12 +350,13 @@ class _MyHomePageState extends State<MyHomePage> {
           String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
           userDbService = UserDbService(hashedEmail);
 
-          // Verifying if the user has registered before - if they have then the application
-          // does not sign the user up
+          // Verifying if the user has registered before - if they have then 
+          // the application does not sign the user up
           Map<String, dynamic> isUserRegistered =
               await userDbService.getUserData();
           if (isUserRegistered['error'] != null) {
-            // [TODO] Handle the case where the database encounters an error when checking the user existence
+            // [TODO]: Handle the case where the database encounters an error 
+            //  when checking the user existence
             log.errorObj({'error': isUserRegistered['error']});
           }
           if (isUserRegistered['user'] == null) {
@@ -361,7 +367,8 @@ class _MyHomePageState extends State<MyHomePage> {
             // Registered user logging back in again
             log.successString('user logged in successfully', 0);
           }
-          // After user successfully register then proceed to ask them for their study id
+          // After user successfully register then proceed to ask them for 
+          // their study id
           Navigator.pushReplacementNamed(
             context,
             // '/study_id',
