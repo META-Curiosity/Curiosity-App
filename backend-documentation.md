@@ -485,8 +485,7 @@ NotificationService notificationService = new NotificationService(uuid);
 2. scheduleSetupActivityNotification() 
 ```dart
 '''
-- No input or output, this function should be called at 9AM everyday so that
-  user activity notification can be reconfigured correctly
+- No input/output, this function setup user activity notification
 '''
 await notificationService.scheduleSetupActivityNotification();
 ```
@@ -494,7 +493,7 @@ await notificationService.scheduleSetupActivityNotification();
 3. cancelSetupActivityNotification() 
 ```dart
 '''
-- No input or output, this function should be call to cancel all the pending activity notification.
+- No input/output, this function cancel all the setup activity notifications.
 '''
 await notificationService.cancelSetupActivityNotification();
 ```
@@ -502,7 +501,7 @@ await notificationService.cancelSetupActivityNotification();
 4. scheduleMindfulnessSessionNotification() 
 ```dart
 '''
-- No input or output, this function should be call to setup user mindfulness session reminders everyday
+- No input/output, this function setup user mindfulness session reminders
 '''
 await notificationService.scheduleMindfulnessSessionNotification();
 ```
@@ -510,7 +509,26 @@ await notificationService.scheduleMindfulnessSessionNotification();
 5. cancelMindfulSessionNotification() 
 ```dart
 '''
-- No input or output, this function cancels all te mindfulness sesstion reminder notification
+- No input/output, this function cancel all the mindfulness session reminder notifications
 '''
 await notificationService.cancelMindfulSessionNotification();
+```
+
+6. scheduleActivityCompletionNotification(String startTime) 
+```dart
+'''
+- Input:
+  - String startTime: In the format (HH:MM), the time the user selected to start getting the reminder, has 
+                      to be later than the current time.
+- No output, this function setup reminders for user to complete their daily task
+'''
+await notificationService.scheduleActivityCompletionNotification('15:54');
+```
+
+7. cancelActivityCompletionNotification() 
+```dart
+'''
+- No input/output, this function cancel all reminders for user to complete their daily task
+'''
+await notificationService.cancelActivityCompletionNotification();
 ```

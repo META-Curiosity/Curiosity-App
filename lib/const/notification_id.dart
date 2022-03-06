@@ -1,6 +1,4 @@
 // Notification ids
-
-int DailyActivitySetupReminderId = 0;
 List<int> MindfulnessReminderIds = [1, 2, 3, 4, 5];
 List<int> DailyActivityCompletionReminderIds = [
   6,
@@ -21,4 +19,8 @@ List<int> DailyActivityCompletionReminderIds = [
   21,
   22,
   23
+];
+
+List<int> DailyActivitySetupReminderIds = [
+  24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38
 ];

@@ -6,7 +6,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-
 import '../main.dart';
 
 class NotificationService {
@@ -36,19 +35,26 @@ class NotificationService {
   }
 
   // Triggered at 12AM PST
-  // Schedule activity reminder notification at 9AM PST everyday
+  // Schedule setup activity notification at 9AM PST daily
   void scheduleSetupActivityNotification() async {
     try {
       log.infoObj({'method': 'scheduleSetupActivityNotification'});
-      // Notification pops up every hour
-      await flutterLocalNotificationsPlugin.periodicallyShow(
-          DailyActivitySetupReminderId,
-          'Activity Setup reminder',
-          'Please setup your activity for the day',
-          RepeatInterval.hourly,
-          platformChannelSpecifics,
-          androidAllowWhileIdle: true,
-          payload: NotificationPayload.DailyActivitySetup.toString());
+
+      // Scheduling the remainder of the notification for the day
+      for (int pos = 0; pos < DailyActivitySetupReminderIds.length; pos++) {
+        await flutterLocalNotificationsPlugin.zonedSchedule(
+            DailyActivitySetupReminderIds[pos],
+            'Activity Setup reminder',
+            'Please setup your activity for the day',
+            tz.TZDateTime.now(tz.local)
+                .add(Duration(hours: 9 + (1 * pos))),
+            platformChannelSpecifics,
+            androidAllowWhileIdle:
+                true, // deliver notification for android while on low power
+            uiLocalNotificationDateInterpretation:
+                UILocalNotificationDateInterpretation.absoluteTime,
+            payload: NotificationPayload.DailyActivitySetup.toString());
+      }
       log.successObj({'method': 'scheduleSetupActivityNotification - success'});
     } catch (error) {
       log.errorObj({
@@ -62,12 +68,14 @@ class NotificationService {
   void cancelSetupActivityNotification() async {
     try {
       log.infoObj({'method': 'cancelSetupActivityNotification'});
-      await flutterLocalNotificationsPlugin
-          .cancel(DailyActivitySetupReminderId);
+      for (int pos = 0; pos < DailyActivitySetupReminderIds.length; pos++) {
+        await flutterLocalNotificationsPlugin
+            .cancel(DailyActivitySetupReminderIds[pos]);
+      }
       log.successObj({'method': 'cancelSetupActivityNotification - success'});
     } catch (error) {
       log.errorObj({
-        'method': 'scheduleSetupActivityNotification - error',
+        'method': 'cancelSetupActivityNotification - error',
         'error': error
       }, 1);
     }
@@ -147,19 +155,20 @@ class NotificationService {
         'numNotifications': numNotifications
       });
 
-      // Scheduling the remainder of the notification for the day
+      // Scheduling notification
       for (int pos = 0; pos < numNotifications + 1; pos++) {
         await flutterLocalNotificationsPlugin.zonedSchedule(
             DailyActivityCompletionReminderIds[pos],
             'Daily Activity Reminder',
             'Reminder to complete your daily activity',
             tz.TZDateTime.now(tz.local)
-                .add(Duration(seconds: crntAndStartTimeMinDiff + (60 * pos))),
+                .add(Duration(minutes: crntAndStartTimeMinDiff + (60 * pos))),
             platformChannelSpecifics,
             androidAllowWhileIdle:
                 true, // deliver notification for android while on low power
             uiLocalNotificationDateInterpretation:
-                UILocalNotificationDateInterpretation.absoluteTime);
+                UILocalNotificationDateInterpretation.absoluteTime,
+            payload: NotificationPayload.DailyActivityCompletion.toString());
       }
       log.successObj(
           {'method': 'scheduleActivityCompletionNotification - success'});
@@ -182,10 +191,11 @@ class NotificationService {
         await flutterLocalNotificationsPlugin
             .cancel(DailyActivityCompletionReminderIds[pos]);
       }
-      log.successObj({'method': 'cancelMindfulSessionNotification - success'});
+      log.successObj(
+          {'method': 'cancelActivityCompletionNotification - success'});
     } catch (error) {
       log.errorObj({
-        'method': 'cancelMindfulSessionNotification - error',
+        'method': 'cancelActivityCompletionNotification - error',
         'error': error
       }, 1);
     }
