@@ -304,15 +304,12 @@ class _MyHomePageState extends State<MyHomePage> {
             notification.body,
             NotificationDetails(
               android: AndroidNotificationDetails(channel.id, channel.name,
-                  // channel.description,
                   color: Colors.blue,
                   playSound: true,
                   icon: '@mipmap/ic_launcher'),
             ));
       }
     });
-
-
 
     // Initializing screens to show when the user received a message with opened application
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -347,15 +344,16 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
+          String hashedEmail =
+              sha256.convert(utf8.encode(currentUser.email)).toString();
           userDbService = UserDbService(hashedEmail);
 
-          // Verifying if the user has registered before - if they have then 
+          // Verifying if the user has registered before - if they have then
           // the application does not sign the user up
           Map<String, dynamic> isUserRegistered =
               await userDbService.getUserData();
           if (isUserRegistered['error'] != null) {
-            // [TODO]: Handle the case where the database encounters an error 
+            // [TODO]: Handle the case where the database encounters an error
             //  when checking the user existence
             log.errorObj({'error': isUserRegistered['error']});
           }
@@ -367,12 +365,11 @@ class _MyHomePageState extends State<MyHomePage> {
             // Registered user logging back in again
             log.successString('user logged in successfully', 0);
           }
-          // After user successfully register then proceed to ask them for 
+          // After user successfully register then proceed to ask them for
           // their study id
           Navigator.pushReplacementNamed(
             context,
-            // '/study_id',
-            '/mindful_sessions',
+            '/study_id',
           );
         }
       }

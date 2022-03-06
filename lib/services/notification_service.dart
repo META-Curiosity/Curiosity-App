@@ -25,7 +25,9 @@ class NotificationService {
         AndroidNotificationDetails(
             'activity_reminder_id', 'Activity Reminder Channel',
             channelDescription: 'Activity Reminder activity',
-            icon: 'codex_logo');
+            icon: 'codex_logo',
+            importance: Importance.high,
+            playSound: true);
     const IOSNotificationDetails iOSPlatformChannelSpecifics =
         IOSNotificationDetails(
             presentAlert: true, presentBadge: true, presentSound: true);
@@ -46,8 +48,7 @@ class NotificationService {
             DailyActivitySetupReminderIds[pos],
             'Activity Setup reminder',
             'Please setup your activity for the day',
-            tz.TZDateTime.now(tz.local)
-                .add(Duration(hours: 9 + (1 * pos))),
+            tz.TZDateTime.now(tz.local).add(Duration(hours: 9 + (1 * pos))),
             platformChannelSpecifics,
             androidAllowWhileIdle:
                 true, // deliver notification for android while on low power
@@ -74,10 +75,9 @@ class NotificationService {
       }
       log.successObj({'method': 'cancelSetupActivityNotification - success'});
     } catch (error) {
-      log.errorObj({
-        'method': 'cancelSetupActivityNotification - error',
-        'error': error
-      }, 1);
+      log.errorObj(
+          {'method': 'cancelSetupActivityNotification - error', 'error': error},
+          1);
     }
   }
 
@@ -89,11 +89,11 @@ class NotificationService {
       log.infoObj({'method': 'scheduleMindfulnessActivityNotification'});
       dynamic mindfulnessNotiTimes =
           (await userDbService.getMindfulNotiPref())['mindfulReminders'];
-      // The notification id for each mindfulness notification id is between
-      // 1 - 5 [inclusive] [8, 9, 10, 11, 12]
+      
+      // Setting up notifications
       for (int i = 0; i < mindfulnessNotiTimes.length; i++) {
         flutterLocalNotificationsPlugin.zonedSchedule(
-            i + 1,
+            MindfulnessReminderIds[i],
             'Complete your mindfulness session',
             'Please finish your mindfulness session for the day',
             tz.TZDateTime.now(tz.local)
