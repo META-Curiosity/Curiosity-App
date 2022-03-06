@@ -162,8 +162,8 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
                                               Navigator.pushNamed(context,
                                                   '/choose_mindfulness_session');
                                             } else {
-                                              Navigator.pushNamed(
-                                                  context, '/introduction');
+                                              Navigator.pushNamed(context,
+                                                  '/introduction_daily_challenge');
                                             }
                                           },
                                           child: Row(

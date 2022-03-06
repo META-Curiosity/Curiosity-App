@@ -297,9 +297,19 @@ Ouput:
   - Map<String, dynamic> response:
       - Boolean success: returns True if the response is successfull
 '''
-await userDbService.updateDailyEvalEnjoyment('It went okay!', data['id']);
+await userDbService.updateDailyEvalEnjoyment('It went okay!', '01-02-2022');
 ```
 
+20. getMindfulNotiPref()
+```dart
+'''
+Ouput:
+  - Map<String, dynamic> response:
+      - Boolean success: returns True if the response is successfull
+      - List<int> mindfulReminders: Time range of the user mindfulness notification preference
+'''
+await userDbService.getMindfulNotiPref();
+```
 -----------------------------------------------------------------------------------------------
 ## Admin Database Service - AdminDbService
 1. Constructor
@@ -460,4 +470,65 @@ Input:
   - int stackCall (OPTIONAL | DEFAULT = 0): The number of stack leading to the executed log
 '''
 logService.errorString('error ALERT', 2);
+```
+-----------------------------------------------------------------------------------------------
+## Notification Service - Utilized to setup local notification
+1. Constructor
+```dart
+'''
+Input:
+  - String uuid: the user hashed email uuid
+'''
+NotificationService notificationService = new NotificationService(uuid);
+```
+
+2. scheduleSetupActivityNotification() 
+```dart
+'''
+- No input/output, this function setup user activity notification
+'''
+await notificationService.scheduleSetupActivityNotification();
+```
+
+3. cancelSetupActivityNotification() 
+```dart
+'''
+- No input/output, this function cancel all the setup activity notifications.
+'''
+await notificationService.cancelSetupActivityNotification();
+```
+
+4. scheduleMindfulnessSessionNotification() 
+```dart
+'''
+- No input/output, this function setup user mindfulness session reminders
+'''
+await notificationService.scheduleMindfulnessSessionNotification();
+```
+
+5. cancelMindfulSessionNotification() 
+```dart
+'''
+- No input/output, this function cancel all the mindfulness session reminder notifications
+'''
+await notificationService.cancelMindfulSessionNotification();
+```
+
+6. scheduleActivityCompletionNotification(String startTime) 
+```dart
+'''
+- Input:
+  - String startTime: In the format (HH:MM), the time the user selected to start getting the reminder, has 
+                      to be later than the current time.
+- No output, this function setup reminders for user to complete their daily task
+'''
+await notificationService.scheduleActivityCompletionNotification('15:54');
+```
+
+7. cancelActivityCompletionNotification() 
+```dart
+'''
+- No input/output, this function cancel all reminders for user to complete their daily task
+'''
+await notificationService.cancelActivityCompletionNotification();
 ```
