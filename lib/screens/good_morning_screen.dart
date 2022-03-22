@@ -7,9 +7,10 @@ class GoodMorningScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
         child: Container(
-      padding: const EdgeInsets.only(top: 160, left: 30, right: 30, bottom: 30),
+      padding: const EdgeInsets.only(top: 0, left: 30, right: 30, bottom: 20),
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             const Text(
               'Good morning',
@@ -23,7 +24,7 @@ class GoodMorningScreen extends StatelessWidget {
             const SizedBox(height: 84),
             SvgPicture.asset('assets/images/target.svg',
                 semanticsLabel: 'Target', height: 200),
-            const SizedBox(height: 144),
+            const SizedBox(height: 20),
             SizedBox(
               width: 275,
               height: 50,

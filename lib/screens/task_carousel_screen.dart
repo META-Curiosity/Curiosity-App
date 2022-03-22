@@ -51,7 +51,7 @@ class _TaskCarouselState extends State<TaskCarousel> {
               options: CarouselOptions(
                 height: 400,
                 aspectRatio: 16 / 9,
-                viewportFraction: 0.8,
+                viewportFraction: 0.75,
                 initialPage: 0,
                 enableInfiniteScroll: true,
                 reverse: false,
