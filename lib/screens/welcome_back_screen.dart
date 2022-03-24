@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class WelcomeBackScreen extends StatelessWidget {
-  const WelcomeBackScreen({Key key}) : super(key: key);
+class WelcomeBackScreen extends StatefulWidget {
+  String date; //Current date
+  String task; //Today's task
+  WelcomeBackScreen({Key key, @required this.date, @required this.task})
+      : super(key: key);
+
+  @override
+  State<WelcomeBackScreen> createState() => _WelcomeBackScreenState();
+}
+
+class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -11,8 +20,8 @@ class WelcomeBackScreen extends StatelessWidget {
         child: Column(
           children: <Widget>[
             const SizedBox(height: 100),
-            const Text(
-              'Sun, Nov 28',
+            Text(
+              widget.date,
               style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
@@ -35,7 +44,7 @@ class WelcomeBackScreen extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  'Write about anything for 30 minutes.',
+                  widget.task,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 30,
@@ -62,9 +71,24 @@ class WelcomeBackScreen extends StatelessWidget {
                 ),
                 onPressed: () {
                   // Navigate to the second screen using a named route.
-                  // Navigator.pushNamed(context, '/set_custom_tasks');
+                  Navigator.pushNamed(context, '/activity_survey');
                 },
                 child: const Text("I'm done!"),
+              ),
+            ),
+            SizedBox(height: 20),
+            SizedBox(
+              width: 275,
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.grey[600],
+                ),
+                onPressed: () {
+                  // Navigate to the second screen using a named route.
+                  Navigator.pushNamed(context, '/nightly_evaluation_no');
+                },
+                child: const Text("Skip today's goal."),
               ),
             )
           ],

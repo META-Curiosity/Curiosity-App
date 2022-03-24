@@ -105,7 +105,7 @@ class _SetCustomTasksScreenState extends State<SetCustomTasksScreen> {
               child: check()
                   ? RaisedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/navigation');
+                        Navigator.pushNamed(context, '/introduction_task');
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0)),

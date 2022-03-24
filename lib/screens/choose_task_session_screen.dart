@@ -161,6 +161,8 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
                             SizedBox(height: 8),
                             Text(
                               'Selected time: ${_time.format(context)}',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                             SizedBox(height: 50),
                             SizedBox(

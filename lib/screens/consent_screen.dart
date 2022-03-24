@@ -52,7 +52,7 @@ class Consent extends StatelessWidget {
                 onPressed: () async {
                   await UDS.updateUserConsent(false);
                   Navigator.pushReplacementNamed(
-                      context, '/choose_task_session');
+                      context, '/choose_mindfulness_session');
                 },
                 child: Text(
                   'Decline',

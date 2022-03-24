@@ -47,8 +47,20 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
         width: MediaQuery.of(context).size.width,
         child: SingleChildScrollView(
           child: Column(children: <Widget>[
+            SizedBox(height: 30.0),
+            // Text(
+            //   'Calendar',
+            //   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            // ),
             Container(
-              padding: EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 20.0),
+              padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.amber,
+                    width: 10,
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  color: Colors.grey[200]),
               child: TableCalendar(
                 firstDay:
                     DateTime.utc(DateTime.now().year, DateTime.now().month, 1),
@@ -117,9 +129,10 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
                 ),
               ),
             ),
+            SizedBox(height: 20),
             Text(
               'Records',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             Row(children: <Widget>[
               recordCard(
@@ -162,6 +175,9 @@ class _recordCardState extends State<recordCard> {
     return Container(
       child: Expanded(
         child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
             elevation: 2.2,
             color: Colors.grey[200],
             margin: EdgeInsets.all(10),

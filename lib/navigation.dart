@@ -5,6 +5,8 @@ import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'dart:async';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:intl/intl.dart';
 //screens
 import 'screens/onboarding_screen.dart';
 import 'screens/edit_custom_tasks_screen.dart';
@@ -17,6 +19,7 @@ import 'screens/good_morning_screen.dart';
 import 'screens/firebase_test_screen.dart';
 import 'package:curiosity_flutter/models/daily_evaluation.dart';
 import 'screens/mindful_sessions_screen.dart';
+import 'screens/welcome_back_screen.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key key}) : super(key: key);
@@ -28,7 +31,8 @@ class Navigation extends StatefulWidget {
 class _NavigationState extends State<Navigation> {
   UserDbService UDS = UserDbService('hashedEmail');
   User user = User();
-  int index = 1; //index for nav bar
+
+  int index = 0; //index for nav bar
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
   List<Widget> screens = [];
   Map<DateTime, List<DailyEvaluation>> _dates = {};
@@ -55,6 +59,27 @@ class _NavigationState extends State<Navigation> {
     return datesObj['dailyEvalRecords'];
   }
 
+  //Converts Datetime object into a string of form example: 'Sun, Nov 28'
+  String datetimeToString(DateTime date) {
+    DateFormat formatter = DateFormat('E, MMM d');
+    String formattedDate = formatter.format(date);
+    return formattedDate;
+  }
+
+  //Gets today's date and task.  Returns object {String date, String task}
+  List<dynamic> getToday() {
+    List<dynamic> res = List.filled(2, 0);
+
+    String today = datetimeToString(DateTime.now());
+    //TODO: Replace task with a backend function that retrieves today's task
+    String task = 'Write about anything for 30 minutes';
+
+    res[0] = today;
+    res[1] = task;
+
+    return res;
+  }
+
   //Takes a String date in the form MM-DD-YY and converts it into a DateTime object.
   DateTime stringToDateTime(String date) {
     List<String> dateSplit = date.split('-');
@@ -79,45 +104,20 @@ class _NavigationState extends State<Navigation> {
   }
 
   Future<List<dynamic>> getEverything() async {
-    List<dynamic> res = List.filled(3, 0);
+    List<dynamic> res = List.filled(4, 0);
     res[0] = await getUser();
     res[1] = await getDates(today);
     res[2] = await getStreaksAndTotalDaysCompleted();
+    res[3] = getToday();
     return res;
   }
 
   void initState() {
-    // //getUser
-    // getUser().then((result) {
-    //   setState(() {
-    //     user = result;
-    //     screens = [
-    //       OnboardingScreen(), //To be replaced with meditation screen
-    //       CentralDashboardScreen(dates: _dates, records: _records),
-    //       EditCustomTasksScreen(user: user),
-    //     ];
-    //   });
-    // });
-    //
-    // //get list of daily evaluations
-    // getDates(today).then((result) {
-    //   setState(() {
-    //     _dates = listOfDailyEvaluationsToMap(result); //Set list of dates
-    //     _datesRecieved = true; //Set Data Recieved to true
-    //   });
-    // });
-    //
-    // //get Streaks and Total Days Completed
-    // getStreaksAndTotalDaysCompleted().then((result) {
-    //   setState(() {
-    //     _records = result;
-    //     _recordsRecieved = true;
-    //   });
-    // });
     print('init state');
     getEverything().then((result) {
       setState(() {
         screens = [
+          WelcomeBackScreen(date: result[3][0], task: result[3][1]),
           MindfulSessionsScreen(), //To be replaced with meditation screen
           CentralDashboardScreen(
               dates: listOfDailyEvaluationsToMap(result[1]),
@@ -128,7 +128,7 @@ class _NavigationState extends State<Navigation> {
         print("DONE $_dataRecieved");
       });
     });
-    _pageController = PageController(initialPage: 1);
+    _pageController = PageController(initialPage: index);
     super.initState();
   }
 
@@ -142,6 +142,7 @@ class _NavigationState extends State<Navigation> {
   Widget build(BuildContext context) {
     final items = <Widget>[
       Icon(Icons.home, size: 20, color: Colors.black),
+      Icon(Entypo.leaf, size: 20, color: Colors.black),
       Icon(Icons.today, size: 20, color: Colors.black),
       Icon(Icons.list, size: 20, color: Colors.black),
     ];

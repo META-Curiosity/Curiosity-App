@@ -80,12 +80,15 @@ class _AudioPlayerState extends State<AudioPlayer> {
           leading: CloseButton(
             onPressed: () {
               audioPlayer.stop();
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => new MindfulCompletion()),
-              );
+              // Navigator.pop(context);
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => new MindfulCompletion()),
+              // );
+              // Navigator.of(context, rootNavigator: true)
+              //     .pushReplacementNamed('/mindful_completion');
+              Navigator.pushReplacementNamed(context, '/mindful_completion');
             },
           ),
           backgroundColor: Color(0xFFF6C344),

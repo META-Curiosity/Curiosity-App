@@ -130,7 +130,9 @@ class EvaluationCompleted extends StatelessWidget {
                       ),
                       borderRadius: BorderRadius.circular(14),
                       color: Colors.blue,
-                      onPressed: () {}),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      }),
                 ),
               ],
             ),

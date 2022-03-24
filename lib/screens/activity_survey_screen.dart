@@ -32,6 +32,8 @@ class _ActivitySurveyState extends State<ActivitySurvey> {
                           print(questionResult.valueIdentifier);
                         }
                       }
+                      Navigator.of(context, rootNavigator: true)
+                          .pushReplacementNamed('/nightly_evaluation_yes');
                     },
                     task: task,
                     showProgress: true,
@@ -162,8 +164,8 @@ Future<Task> getSampleTask() {
     id: TaskIdentifier(),
     steps: [
       InstructionStep(
-        title: 'Welcome to the\nCuriosity Survey',
-        text: 'Get ready for a bunch of curious questions!',
+        title: 'Great Job On Completing Your Task!',
+        text: 'Get ready for some quick curious questions!',
         buttonText: 'Let\'s go!',
       ),
       QuestionStep(
@@ -180,6 +182,14 @@ Future<Task> getSampleTask() {
           ],
         ),
       ),
+      // QuestionStep(
+      //   title: 'Great Job!',
+      //   text:
+      //       'Do you have any reflections about what you think enabled you to be sucessful today?',
+      //   answerFormat: TextAnswerFormat(
+      //     maxLines: 5,
+      //   ),
+      // ),
       // CompletionStep(
       //   // stepIdentifier: StepIdentifier(id: '321'),
       //   text: 'Thanks for taking the survey, keep up the good habits!',

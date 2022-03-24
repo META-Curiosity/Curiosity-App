@@ -33,7 +33,7 @@ class IntroductionDailyChallenge extends StatelessWidget {
       done: Text('Choose a daily challenge!',
           style: TextStyle(fontWeight: FontWeight.bold)),
       onDone: () {
-        Navigator.of(context).pushReplacementNamed('/onboarding');
+        Navigator.of(context).pushReplacementNamed('/choose_task_session');
       },
       next: Icon(Icons.arrow_forward),
       dotsDecorator: getDotDecoration(),
