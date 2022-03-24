@@ -74,6 +74,7 @@ class MyApp extends StatelessWidget {
                 centerTitle: true,
               ),
               body: Container(
+                color: Colors.amber,
                 child: GoodMorningScreen(),
               ),
             ),
@@ -284,7 +285,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.pushReplacementNamed(
             context,
             // '/study_id',
-            '/navigation',
+            '/good_morning',
           );
         }
       }
