@@ -1,5 +1,7 @@
+import 'package:curiosity_flutter/const/notification_payload.dart';
 import 'package:curiosity_flutter/navigation.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
+import 'package:curiosity_flutter/services/notification_service.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -34,15 +36,77 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
-
+// Messaging
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// Encryption
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
+const String ANDROID_CHANNEL_ID = 'high_importance_channel';
+const String ANDROID_CHANNEL_NAME = 'High Importance Channel';
+
+const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    ANDROID_CHANNEL_ID, ANDROID_CHANNEL_NAME,
+    importance: Importance.high, playSound: true);
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+// When the user clicks on the notification when the app is in the background
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+  // [TODO]: Mechanism to handle push notification when the application is in the background
+  print('A bg message just showed up: ${message.messageId}');
+}
+
+// Initializing the application when first launched
 void main() async {
+  // Ensuring all widgets are initialized - mandatory
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Setting up connection with firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Setting message handler function when the application is in the background
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // Setting up what options for application if it is open in the foreground
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      alert: true, badge: true, sound: true);
+
+  // Creating initial settings for local notification
+  var initializationSettingsAndroid =
+      AndroidInitializationSettings('codex_logo');
+  var initializationSettingsIOS = IOSInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+      onDidReceiveLocalNotification:
+          (int id, String title, String body, String payload) async {});
+  var initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+
+  // Flutter initializing default settings
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      // Determine what to do with the notification once selected
+      onSelectNotification: (String payload) async {
+    if (payload != null) {
+      if (payload == NotificationPayload.MindfulnessSession.toString()) {
+        print('redirected to mindfulness screen');
+        // [TODO]: redirect the user to slide 32
+      } else if (payload == NotificationPayload.DailyActivitySetup.toString()) {
+        print('redirected to daily activity setup screen');
+        // [TODO]: redirect the user to slide 19
+      } else if (payload ==
+          NotificationPayload.DailyActivityCompletion.toString()) {
+        print('redirected to daily activity completion screen');
+        // [TODO]: redirect the user to slide 26
+      }
+    }
+  });
 
   runApp(MyApp());
 }
@@ -254,6 +318,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
   int _pageState = 0;
   var backgroundColor = Colors.white;
   var headingColor = Color(0xFF3a82f7);
@@ -265,23 +330,95 @@ class _MyHomePageState extends State<MyHomePage> {
   UserDbService userDbService;
   LogService log = new LogService();
 
+  Future<void> initializeFirebaseMessaging() async {
+    // Requesting users permission for notification
+    NotificationSettings settings =
+        await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+    log.infoString('User granted permission: ${settings.authorizationStatus}');
+
+    // Initializing push notification message for users
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      log.infoString('Message received - $message');
+      RemoteNotification notification = message.notification;
+      AndroidNotification android = message.notification?.android;
+      if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(channel.id, channel.name,
+                  color: Colors.blue,
+                  playSound: true,
+                  icon: '@mipmap/ic_launcher'),
+            ));
+      }
+    });
+
+    // Initializing screens to show when the user received a message with opened application
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+      RemoteNotification notification = message.notification;
+      AndroidNotification android = message.notification?.android;
+      if (android != null && notification != null) {
+        print('inside the dialog');
+        showDialog(
+            context: context,
+            builder: (_) {
+              return AlertDialog(
+                title: Text(notification.title),
+                content: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [Text(notification.body)],
+                  ),
+                ),
+              );
+            });
+      }
+    });
+  }
+
   Future<void> initialize() async {
-    //Change page once user is logged in
+    await initializeFirebaseMessaging();
+    // Change page once user is logged in
     FirebaseAuth.instance.authStateChanges().listen((User user) async {
       if (user == null) {
         log.infoString('User is currently signed out!', 0);
       } else {
-        //Getting user hashed email example
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
           String hashedEmail =
               sha256.convert(utf8.encode(currentUser.email)).toString();
-
           userDbService = UserDbService(hashedEmail);
-          await userDbService.registerUserId();
-          log.infoString('user has log in successfully', 0);
 
-          // After user successfully register then proceed to ask them for their study id
+          // Verifying if the user has registered before - if they have then
+          // the application does not sign the user up
+          Map<String, dynamic> isUserRegistered =
+              await userDbService.getUserData();
+          if (isUserRegistered['error'] != null) {
+            // [TODO]: Handle the case where the database encounters an error
+            //  when checking the user existence
+            log.errorObj({'error': isUserRegistered['error']});
+          }
+          if (isUserRegistered['user'] == null) {
+            // user has not registered yet -> registering the user
+            await userDbService.registerUserId();
+            log.successString('user has registered successfully', 0);
+          } else if (isUserRegistered['user'] != null) {
+            // Registered user logging back in again
+            log.successString('user logged in successfully', 0);
+          }
+          // After user successfully register then proceed to ask them for
+          // their study id
           Navigator.pushReplacementNamed(
             context,
             // '/study_id',

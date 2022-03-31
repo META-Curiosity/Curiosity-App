@@ -53,7 +53,7 @@ class AdminDbService {
           'method': 'getUserById - error',
           'error': 'User with ${id} does not exist'
         }, 1);
-        return {'error': 'User with ${id} does not exist'};
+        return {'user': null};
       }
       User newUser = new User.fromData(userSnapshot.data());
       log.successObj({'method': 'getUserById - success', 'user': newUser});

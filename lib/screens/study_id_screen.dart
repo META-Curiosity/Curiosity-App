@@ -4,6 +4,8 @@ import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'dart:async';
 
+import '../main.dart';
+
 class StudyId extends StatefulWidget {
   const StudyId({Key key}) : super(key: key);
 
@@ -99,6 +101,7 @@ class _StudyIdState extends State<StudyId> {
               width: MediaQuery.of(context).size.width - 50.0,
               child: ElevatedButton(
                   onPressed: () async {
+                    flutterLocalNotificationsPlugin.cancel(0);
                     await UDS.updateUserLabId(-1);
                     Navigator.pushNamed(
                       context,
