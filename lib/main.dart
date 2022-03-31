@@ -285,7 +285,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.pushReplacementNamed(
             context,
             // '/study_id',
-            '/introduction_daily_challenge',
+            '/study_id',
           );
         }
       }

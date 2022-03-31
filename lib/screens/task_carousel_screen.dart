@@ -95,6 +95,7 @@ class _TaskCarouselState extends State<TaskCarousel> {
             ElevatedButton(
                 onPressed: () {
                   print(" ${difficultyLabelList[currentTask]} was chosen");
+                  Navigator.pushReplacementNamed(context, '/navigation');
                 },
                 child: Text(
                   'Continue',
