@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:survey_kit/survey_kit.dart';
 import 'package:flutter/cupertino.dart';
 
-class ActivitySurvey extends StatefulWidget {
-  const ActivitySurvey({Key key}) : super(key: key);
+class MindfulCompletion extends StatefulWidget {
+  const MindfulCompletion({Key key}) : super(key: key);
 
   @override
-  _ActivitySurveyState createState() => _ActivitySurveyState();
+  _MindfulCompletionState createState() => _MindfulCompletionState();
 }
 
-class _ActivitySurveyState extends State<ActivitySurvey> {
+class _MindfulCompletionState extends State<MindfulCompletion> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -32,14 +32,14 @@ class _ActivitySurveyState extends State<ActivitySurvey> {
                           print(questionResult.valueIdentifier);
                         }
                       }
-                      Navigator.of(context, rootNavigator: true)
-                          .pushReplacementNamed('/nightly_evaluation_yes');
+                      print("Popped");
+                      Navigator.of(context, rootNavigator: true).pop(context);
                     },
                     task: task,
                     showProgress: true,
                     localizations: {
                       'cancel': 'Cancel',
-                      'next': 'Next',
+                      'next': 'Submit',
                     },
                     themeData: Theme.of(context).copyWith(
                       colorScheme: ColorScheme.fromSwatch(
@@ -163,33 +163,17 @@ Future<Task> getSampleTask() {
   var task = NavigableTask(
     id: TaskIdentifier(),
     steps: [
-      InstructionStep(
-        title: 'Great Job On Completing Your Task!',
-        text: 'Get ready for some quick curious questions!',
-        buttonText: 'Let\'s go!',
-      ),
       QuestionStep(
-        title: 'Activty Enjoyment',
-        text: 'How much did you enjoy today’s activity?',
+        title: 'Mindfulness session completion',
+        text: 'Did you complete the mindfulness session?',
         isOptional: false,
         answerFormat: SingleChoiceAnswerFormat(
           textChoices: [
-            TextChoice(text: 'Much more than expected', value: '5'),
-            TextChoice(text: 'More than expected', value: '4'),
-            TextChoice(text: 'About as much as expected', value: '3'),
-            TextChoice(text: 'Less than expected', value: '2'),
-            TextChoice(text: 'Much less than expected', value: '1'),
+            TextChoice(text: 'Yes', value: '1'),
+            TextChoice(text: 'No', value: '0'),
           ],
         ),
       ),
-      // QuestionStep(
-      //   title: 'Great Job!',
-      //   text:
-      //       'Do you have any reflections about what you think enabled you to be sucessful today?',
-      //   answerFormat: TextAnswerFormat(
-      //     maxLines: 5,
-      //   ),
-      // ),
       // CompletionStep(
       //   // stepIdentifier: StepIdentifier(id: '321'),
       //   text: 'Thanks for taking the survey, keep up the good habits!',

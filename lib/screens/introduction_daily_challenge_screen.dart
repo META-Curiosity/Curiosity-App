@@ -18,23 +18,20 @@ class IntroductionDailyChallenge extends StatelessWidget {
           decoration: getPageDecoration(),
         ),
         PageViewModel(
-            title: "Choose a level of intensity",
-            body:
-                "You may choose between three levels, from less time-consuming to more time-consuming. "
-                "The higher the level, the more time you will commit, and the more you will grow and become curious!",
-            image: buildImage('assets/images/challenge.jpeg'),
-            decoration: getPageDecoration(),
-            footer: ElevatedButton(
-                onPressed: () {
-                  // On button presed
-                },
-                child: Text("Choose a daily challenge!")))
+          title: "Choose a level of intensity",
+          body:
+              "You may choose between three levels, from less time-consuming to more time-consuming. "
+              "The higher the level, the more time you will commit, and the more you will grow and become curious!",
+          image: buildImage('assets/images/challenge.jpeg'),
+          decoration: getPageDecoration(),
+          footer: ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/task_carousel');
+              },
+              child: Text("Choose a daily challenge!")),
+        )
       ],
-      done: Text('Choose a daily challenge!',
-          style: TextStyle(fontWeight: FontWeight.bold)),
-      onDone: () {
-        Navigator.of(context).pushReplacementNamed('/onboarding');
-      },
+
       next: Icon(Icons.arrow_forward),
       dotsDecorator: getDotDecoration(),
       showDoneButton: false,

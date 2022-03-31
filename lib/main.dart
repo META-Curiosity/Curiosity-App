@@ -17,11 +17,20 @@ import 'screens/firebase_test_screen.dart';
 import 'screens/consent_screen.dart';
 import 'screens/study_id_screen.dart';
 import 'screens/choose_mindfulness_session_screen.dart';
-import 'screens/choose_task_session.dart';
+import 'screens/choose_task_session_screen.dart';
 import 'screens/introduction_screen.dart';
 import 'package:curiosity_flutter/navigation.dart';
 import 'screens/introduction_daily_challenge_screen.dart';
 import 'screens/activity_survey_screen.dart';
+import 'screens/welcome_back_screen.dart';
+import 'screens/mindful_completion_screen.dart';
+import 'screens/nightly_evaluation.dart';
+import 'screens/nightly_evaluation_no.dart';
+import 'screens/nightly_evaluation_yes.dart';
+import 'screens/welcome_back_screen.dart';
+import 'screens/task_carousel_screen.dart';
+import 'screens/introduction_task_screen.dart';
+import 'screens/mindful_completion_screen.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
@@ -129,6 +138,7 @@ class MyApp extends StatelessWidget {
                 centerTitle: true,
               ),
               body: Container(
+                color: Colors.amber,
                 child: GoodMorningScreen(),
               ),
             ),
@@ -184,15 +194,15 @@ class MyApp extends StatelessWidget {
               ),
             ),
         '/play_audio': (context) => Scaffold(
-              // appBar: AppBar(
-              //   //centerTitle: true,
-              //   leading: BackButton(),
-              //   //title: Text('New Task'),
-              //   backgroundColor: Color(0xFFF6C344),
-              // ),
               resizeToAvoidBottomInset: true,
               body: Container(
                 child: AudioPlayer(),
+              ),
+            ),
+        '/mindful_completion': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: MindfulCompletion(),
               ),
             ),
         '/firebase_test': (context) => Scaffold(
@@ -253,6 +263,48 @@ class MyApp extends StatelessWidget {
               resizeToAvoidBottomInset: true,
               body: Container(
                 child: ActivitySurvey(),
+              ),
+            ),
+        '/welcome_back': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: WelcomeBackScreen(),
+              ),
+            ),
+        '/nightly_evaluation': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: NightlyEvaluation(),
+              ),
+            ),
+        '/nightly_evaluation_yes': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: EvaluationCompleted(),
+              ),
+            ),
+        '/nightly_evaluation_no': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: EvaluationNotCompleted(),
+              ),
+            ),
+        '/introduction_task': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: IntroductionTask(),
+              ),
+            ),
+        '/task_carousel': (context) => Scaffold(
+              appBar: AppBar(
+                //centerTitle: true,
+                leading: BackButton(),
+                //title: Text('New Task'),
+                backgroundColor: Color(0xFFF6C344),
+              ),
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: TaskCarousel(),
               ),
             ),
       },
@@ -370,7 +422,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.pushReplacementNamed(
             context,
             // '/study_id',
-            '/mindful_sessions',
+            '/study_id',
           );
         }
       }

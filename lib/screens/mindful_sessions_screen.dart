@@ -6,83 +6,87 @@ class MindfulSessionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
-            child: const Text(
-              'Mindful Sessions',
-              style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-            ),
-          ),
-          SizedBox(height: 150),
-          SizedBox(
-            width: 350,
-            child: ElevatedButton.icon(
-              icon: Icon(
-                MaterialCommunityIcons.food,
-                color: Colors.white,
-                size: 24.0,
+    return Container(
+      color: Colors.amber,
+      child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+              child: const Text(
+                'Mindful Sessions',
+                style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
               ),
-              style: ElevatedButton.styleFrom(
-                  primary: Colors.orangeAccent, // background
+            ),
+            SizedBox(height: 150),
+            SizedBox(
+              width: 350,
+              child: ElevatedButton.icon(
+                icon: Icon(
+                  MaterialCommunityIcons.food,
+                  color: Colors.white,
+                  size: 24.0,
+                ),
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.orangeAccent, // background
+                    onPrimary: Colors.white, // foreground
+                    padding: EdgeInsets.fromLTRB(100.0, 20.0, 100.0, 20.0)),
+                onPressed: () {
+                  // Navigate to the second screen using a named route.
+                  Navigator.pushNamed(context, '/play_audio', arguments: 0);
+                },
+                label: const Text('Mindful Eating',
+                    style: TextStyle(fontSize: 18)),
+              ),
+            ),
+            SizedBox(height: 30),
+            SizedBox(
+              width: 350,
+              child: ElevatedButton.icon(
+                icon: Icon(
+                  MaterialCommunityIcons.walk,
+                  color: Colors.white,
+                  size: 24.0,
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.green, // background
                   onPrimary: Colors.white, // foreground
-                  padding: EdgeInsets.fromLTRB(100.0, 20.0, 100.0, 20.0)),
-              onPressed: () {
-                // Navigate to the second screen using a named route.
-                Navigator.pushNamed(context, '/play_audio', arguments: 0);
-              },
-              label:
-                  const Text('Mindful Eating', style: TextStyle(fontSize: 18)),
+                  padding: EdgeInsets.fromLTRB(80.0, 20.0, 80.0, 20.0),
+                ),
+                onPressed: () {
+                  // Navigate to the second screen using a named route.
+                  Navigator.pushNamed(context, '/play_audio', arguments: 1);
+                },
+                label: const Text('Mindful Walking',
+                    style: TextStyle(fontSize: 18)),
+              ),
             ),
-          ),
-          SizedBox(height: 30),
-          SizedBox(
-            width: 350,
-            child: ElevatedButton.icon(
-              icon: Icon(
-                MaterialCommunityIcons.walk,
-                color: Colors.white,
-                size: 24.0,
+            SizedBox(height: 30),
+            SizedBox(
+              width: 350,
+              child: ElevatedButton.icon(
+                icon: Icon(
+                  IconData(0xe6cd, fontFamily: 'MaterialIcons'),
+                  color: Colors.white,
+                  size: 24.0,
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.lightBlue, // background
+                  onPrimary: Colors.white, // foreground
+                  padding: EdgeInsets.fromLTRB(80.0, 20.0, 80.0, 20.0),
+                ),
+                onPressed: () {
+                  // Navigate to the second screen using a named route.
+                  Navigator.pushNamed(context, '/play_audio', arguments: 2);
+                },
+                label: const Text('Mindful Washing',
+                    style: TextStyle(fontSize: 18)),
               ),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.green, // background
-                onPrimary: Colors.white, // foreground
-                padding: EdgeInsets.fromLTRB(80.0, 20.0, 80.0, 20.0),
-              ),
-              onPressed: () {
-                // Navigate to the second screen using a named route.
-                Navigator.pushNamed(context, '/play_audio', arguments: 1);
-              },
-              label:
-                  const Text('Mindful Walking', style: TextStyle(fontSize: 18)),
             ),
-          ),
-          SizedBox(height: 30),
-          SizedBox(
-            width: 350,
-            child: ElevatedButton.icon(
-              icon: Icon(
-                IconData(0xe6cd, fontFamily: 'MaterialIcons'),
-                color: Colors.white,
-                size: 24.0,
-              ),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.lightBlue, // background
-                onPrimary: Colors.white, // foreground
-                padding: EdgeInsets.fromLTRB(80.0, 20.0, 80.0, 20.0),
-              ),
-              onPressed: () {
-                // Navigate to the second screen using a named route.
-                Navigator.pushNamed(context, '/play_audio', arguments: 2);
-              },
-              label:
-                  const Text('Mindful Washing', style: TextStyle(fontSize: 18)),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
     /* Center(
