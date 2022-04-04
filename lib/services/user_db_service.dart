@@ -163,23 +163,133 @@ class UserDbService {
     }
   }
 
-  // Get user mindfulness reminder time slot preference
-  Future<Map<String, dynamic>> getMindfulNotiPref() async {
+  // Creating a daily evaluation for an user and store in user db
+  // date format: MM-DD-YY. Expecting photo to be a base64 encoding
+  // of user proof image
+  Future<Map<String, dynamic>> updateDailyEval(
+      Map<String, dynamic> data) async {
+    log.infoObj({'method': 'updateDailyEval', 'data': data});
     try {
-      log.infoObj({'method': 'getMindfulNotiPref'});
-      DocumentSnapshot user = await usersCollection.doc(uid).get();
+      String id = data.remove('id');
+      await dailyEvalCollection.doc(id).update(data);
+
+      // Retrieving user information to update their streak and days successful
+      Map<String, dynamic> userData = await getUserData();
+
+      if (userData['error'] != null) {
+        log.errorObj(
+            {'method': 'updateDailyEval - error', 'error': userData['error']},
+            2);
+        return {'error': userData['error']};
+      }
+
+      User user = userData['user'];
+      if (data['isSuccessful']) {
+        if (user.prevSucessDateTime != null) {
+          DateTime crntLocalDateTime = DateTime.now().toLocal();
+          DateTime prevSuccessLocalTime =
+              DateTime.parse(user.prevSucessDateTime).toLocal();
+          int daysBetween =
+              DateHelper.daysBetween(prevSuccessLocalTime, crntLocalDateTime);
+          log.infoObj({
+            'method': 'updateDailyEval',
+            'crntLocalDateTime': crntLocalDateTime.toString(),
+            'prevSuccessLocalTime': prevSuccessLocalTime.toString(),
+            'daysBetween': daysBetween
+          });
+          // More than a day since task is marked as successful -> user lose their streak
+          if (daysBetween != 1) {
+            user.currentStreak = 0;
+          }
+        }
+        user.currentStreak += 1;
+        user.totalSuccessfulDays += 1;
+        user.prevSucessDateTime = DateTime.now().toUtc().toString();
+      } else {
+        // Task was not completed successfully -> lose streak
+        user.currentStreak = 0;
+      }
+
       log.infoObj({
-        'method': 'getMindfulNotiPref - success',
-        'mindfulReminders': user['mindfulReminders']
+        'currentStreak': user.currentStreak,
+        'totalSuccessfulDays': user.totalSuccessfulDays,
+        'prevSuccessDateTime': user.prevSucessDateTime
       });
-      return {'mindfulReminders': user['mindfulReminders']};
+
+      await usersCollection.doc(uid).update({
+        'currentStreak': user.currentStreak,
+        'totalSuccessfulDays': user.totalSuccessfulDays,
+        'prevSucessDateTime': user.prevSucessDateTime
+      });
+
+      log.infoObj({
+        'method': 'updateDailyEval',
+        'message': 'update user streaks successful'
+      });
+
+      // Returning the daily evaluation document
+      DocumentSnapshot dailyEvalSnapshot =
+          await dailyEvalCollection.doc(id).get();
+      if (!dailyEvalSnapshot.exists) {
+        String message = 'Daily evaluation with date = ${id} does not exist';
+        log.errorObj({'method': 'updateDailyEval', 'error': message});
+        return {'error': message};
+      }
+
+      DailyEvaluation dailyEvalRecord =
+          new DailyEvaluation.fromData(dailyEvalSnapshot.data());
+      log.successObj({
+        'method': 'updateDailyEval - success',
+        'dailyEvalRecord': dailyEvalRecord
+      });
+      return {'dailyEvalRecord': dailyEvalRecord};
     } catch (error) {
       log.errorObj(
-          {'method': 'getMindfulNotiPref - error', 'error': error.toString()},
-          2);
-      return {'error': error, 'success': false};
+          {'method': 'updateDailyEval - error', 'error': error.toString()}, 2);
+      return {'error': error};
     }
   }
+
+  // Updating the daily evaluation enjoyment from participat
+  Future<Map<String, dynamic>> updateDailyEvalEnjoyment(
+      String enjoyment, String id) async {
+    try {
+      log.infoObj(
+          {'method': 'updateDailyEvalEnjoyment', 'enjoyment': enjoyment});
+
+      // Only update the specific field activityEnjoyment of the daily eval record
+      await dailyEvalCollection
+          .doc(id)
+          .update({'activityEnjoyment': enjoyment});
+      log.successObj({'method': 'updateDailyEval - success'});
+      return {'success': true};
+    } catch (error) {
+      log.errorObj(
+          {'method': 'updateDailyEvalEnjoyment', 'error': error.toString()});
+      return {'error': error};
+    }
+  }
+
+  // Update user onboarding values
+  Future<Map<String, dynamic>> updateUserViewingMetaTaskIntro(bool hasUserViewedMetaTaskIntro) async {
+    try {
+      log.infoObj({'method': 'updateUserViewingMetaTaskIntro', 'hasUserViewedMetaTaskIntro': hasUserViewedMetaTaskIntro});
+      await usersCollection.doc(uid).update({'hasViewedMetaTaskIntro': hasUserViewedMetaTaskIntro});
+      log.successObj({'method': 'updateUserViewingMetaTaskIntro - success'});
+      return { 'success': true };
+    } catch (error) {
+      log.errorObj({
+        'method': 'updateUserViewingMetaTaskIntro',
+        'error': error.toString()
+      });
+      return { 
+        'error': error,
+        'success': false
+      };
+    }
+  }
+
+  
 
   // Update user task via the position passed in and new values -
   // Upon successful update - a new custom task array will be returned
@@ -310,6 +420,24 @@ class UserDbService {
     }
   }
 
+  // Get user mindfulness reminder time slot preference
+  Future<Map<String, dynamic>> getMindfulNotiPref() async {
+    try {
+      log.infoObj({'method': 'getMindfulNotiPref'});
+      DocumentSnapshot user = await usersCollection.doc(uid).get();
+      log.infoObj({
+        'method': 'getMindfulNotiPref - success',
+        'mindfulReminders': user['mindfulReminders']
+      });
+      return {'mindfulReminders': user['mindfulReminders']};
+    } catch (error) {
+      log.errorObj(
+          {'method': 'getMindfulNotiPref - error', 'error': error.toString()},
+          2);
+      return {'error': error, 'success': false};
+    }
+  }
+
   // Used at the beginning of the morning to create a daily evaluation
   // for a specific task that the user have choosen for that day
   // Expecting the field:
@@ -334,113 +462,6 @@ class UserDbService {
         'method': 'addDailyEvalMorningEvent - error',
         'error': error.toString()
       }, 2);
-      return {'error': error};
-    }
-  }
-
-  // Creating a daily evaluation for an user and store in user db
-  // date format: MM-DD-YY. Expecting photo to be a base64 encoding
-  // of user proof image
-  Future<Map<String, dynamic>> updateDailyEval(
-      Map<String, dynamic> data) async {
-    log.infoObj({'method': 'updateDailyEval', 'data': data});
-    try {
-      String id = data.remove('id');
-      await dailyEvalCollection.doc(id).update(data);
-
-      // Retrieving user information to update their streak and days successful
-      Map<String, dynamic> userData = await getUserData();
-
-      if (userData['error'] != null) {
-        log.errorObj(
-            {'method': 'updateDailyEval - error', 'error': userData['error']},
-            2);
-        return {'error': userData['error']};
-      }
-
-      User user = userData['user'];
-      if (data['isSuccessful']) {
-        if (user.prevSucessDateTime != null) {
-          DateTime crntLocalDateTime = DateTime.now().toLocal();
-          DateTime prevSuccessLocalTime =
-              DateTime.parse(user.prevSucessDateTime).toLocal();
-          int daysBetween =
-              DateHelper.daysBetween(prevSuccessLocalTime, crntLocalDateTime);
-          log.infoObj({
-            'method': 'updateDailyEval',
-            'crntLocalDateTime': crntLocalDateTime.toString(),
-            'prevSuccessLocalTime': prevSuccessLocalTime.toString(),
-            'daysBetween': daysBetween
-          });
-          // More than a day since task is marked as successful -> user lose their streak
-          if (daysBetween != 1) {
-            user.currentStreak = 0;
-          }
-        }
-        user.currentStreak += 1;
-        user.totalSuccessfulDays += 1;
-        user.prevSucessDateTime = DateTime.now().toUtc().toString();
-      } else {
-        // Task was not completed successfully -> lose streak
-        user.currentStreak = 0;
-      }
-
-      log.infoObj({
-        'currentStreak': user.currentStreak,
-        'totalSuccessfulDays': user.totalSuccessfulDays,
-        'prevSuccessDateTime': user.prevSucessDateTime
-      });
-
-      await usersCollection.doc(uid).update({
-        'currentStreak': user.currentStreak,
-        'totalSuccessfulDays': user.totalSuccessfulDays,
-        'prevSucessDateTime': user.prevSucessDateTime
-      });
-
-      log.infoObj({
-        'method': 'updateDailyEval',
-        'message': 'update user streaks successful'
-      });
-
-      // Returning the daily evaluation document
-      DocumentSnapshot dailyEvalSnapshot =
-          await dailyEvalCollection.doc(id).get();
-      if (!dailyEvalSnapshot.exists) {
-        String message = 'Daily evaluation with date = ${id} does not exist';
-        log.errorObj({'method': 'updateDailyEval', 'error': message});
-        return {'error': message};
-      }
-
-      DailyEvaluation dailyEvalRecord =
-          new DailyEvaluation.fromData(dailyEvalSnapshot.data());
-      log.successObj({
-        'method': 'updateDailyEval - success',
-        'dailyEvalRecord': dailyEvalRecord
-      });
-      return {'dailyEvalRecord': dailyEvalRecord};
-    } catch (error) {
-      log.errorObj(
-          {'method': 'updateDailyEval - error', 'error': error.toString()}, 2);
-      return {'error': error};
-    }
-  }
-
-  // Updating the daily evaluation enjoyment from participat
-  Future<Map<String, dynamic>> updateDailyEvalEnjoyment(
-      String enjoyment, String id) async {
-    try {
-      log.infoObj(
-          {'method': 'updateDailyEvalEnjoyment', 'enjoyment': enjoyment});
-
-      // Only update the specific field activityEnjoyment of the daily eval record
-      await dailyEvalCollection
-          .doc(id)
-          .update({'activityEnjoyment': enjoyment});
-      log.successObj({'method': 'updateDailyEval - success'});
-      return {'success': true};
-    } catch (error) {
-      log.errorObj(
-          {'method': 'updateDailyEvalEnjoyment', 'error': error.toString()});
       return {'error': error};
     }
   }
@@ -583,6 +604,49 @@ class UserDbService {
         'error': error.toString()
       }, 2);
       return {'error': error};
+    }
+  }
+
+
+  // Determining which type of task to get for today
+  Future<Map<String, dynamic>> getTypeOfTaskToday() async {
+    try {
+      log.infoObj({'method': 'getTypeOfTaskToday'});
+      
+      // Retrieving user information
+      Map<String, dynamic> userData = await getUserData();
+      // Check if the response return an error
+      if (userData['error'] != null) {
+        log.errorObj({
+          'method': 'updateDailyEval - error', 
+          'error': userData['error']
+        }, 2);
+        return {
+          'error': userData['error'], 
+          'success': false
+        };
+      }
+
+      int taskPrevDoneByUser = userData['user'].prevTypeOfTaskDone;
+      // Update the task done by the user appropriately
+      if (taskPrevDoneByUser == 0) {
+        await usersCollection.doc(uid).update({'prevTypeOfTaskDone': 1});
+      } else {
+        await usersCollection.doc(uid).update({'prevTypeOfTaskDone': 0});
+      }
+      int userTypeOfTaskToday = taskPrevDoneByUser == 0 ? 1 : 0;
+      log.successObj({
+        'method': 'getTypeOfTaskToday - success',
+        'userTypeOfTaskToday': userTypeOfTaskToday,
+        'taskPrevDoneByUser': taskPrevDoneByUser
+      });
+      return {'success': true, 'userTypeOfTaskToday': userTypeOfTaskToday};
+    } catch (error) {
+      log.errorObj({
+        'method': 'getTypeOfTaskToday - error',
+        'error': error.toString()
+      }, 2);
+      return {'error': error, 'success': false};
     }
   }
 
