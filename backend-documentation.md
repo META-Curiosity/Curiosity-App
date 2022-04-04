@@ -320,7 +320,8 @@ Ouput:
   - Map<String, dynamic> response:
       - Boolean success: returns true if the response is successful, false if failed
 '''
-await userDbService.getMindfulNotiPref();
+// Changes the onboarded attribute of user to true
+await userDbService.updateUserOnboarding(true);
 ```
 -----------------------------------------------------------------------------------------------
 ## Admin Database Service - AdminDbService
