@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:curiosity_flutter/services/user_db_service.dart';
 
 class IntroductionTask extends StatelessWidget {
-  const IntroductionTask({Key key}) : super(key: key);
+  IntroductionTask({Key key}) : super(key: key);
+  UserDbService UDS = UserDbService('hashedEmail');
 
   Future<void> showInformationDialog(BuildContext context) async {
     return await showDialog(
@@ -54,7 +56,8 @@ class IntroductionTask extends StatelessWidget {
                 child: Text("Tips and Tricks!"))),
       ],
       done: Text('Begin!', style: TextStyle(fontWeight: FontWeight.bold)),
-      onDone: () {
+      onDone: () async {
+        await UDS.updateUserOnboarding(true);
         Navigator.of(context).pushReplacementNamed('/choose_task_session');
       },
       next: Icon(Icons.arrow_forward),
