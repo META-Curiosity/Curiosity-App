@@ -14,6 +14,7 @@ class User {
   String prevSucessDateTime;
   String registerDateTime;
   bool mindfulEligibility; // whether users can view the mindfulness screen
+  bool onboarded; // Indicate whether user finished with onboarding process
   var mindfulReminders;
   var completeActivityReminders;
 
@@ -37,6 +38,7 @@ class User {
     totalSuccessfulDays = 0;
     mindfulReminders = null;
     completeActivityReminders = null;
+    onboarded = false;
   }
 
   // Created from the data retrieved from firestore
@@ -57,8 +59,8 @@ class User {
     totalSuccessfulDays = data['totalSuccessfulDays'] ?? totalSuccessfulDays;
     mindfulEligibility = data['mindfulEligibility'] ?? mindfulEligibility;
     mindfulReminders = data['mindfulReminders'] ?? mindfulReminders;
-    completeActivityReminders =
-        data['completeActivityReminders'] ?? completeActivityReminders;
+    completeActivityReminders = data['completeActivityReminders'] ?? completeActivityReminders;
+    onboarded = data['onboarded'] ?? onboarded;
   }
 
   Map<String, dynamic> toJson() {
@@ -77,6 +79,7 @@ class User {
       'totalSuccessfulDays': totalSuccessfulDays,
       'mindfulEligibility': mindfulEligibility,
       'completeActivityReminders': completeActivityReminders,
+      'onboarded': onboarded,
       'mindfulReminders': mindfulReminders
     };
   }

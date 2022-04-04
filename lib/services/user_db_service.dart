@@ -54,7 +54,7 @@ class UserDbService {
   // accessed via the 'user' key of the response. Expecting data to contain:
   // the field labId and contributeData.
   Future<Map<String, dynamic>> registerUserId() async {
-    log.infoObj({'method': 'registerUser'});
+    log.infoObj({'method': 'registerUserId'});
     try {
       User user = new User();
 
@@ -62,11 +62,11 @@ class UserDbService {
           {'id': uid, 'registerDateTime': DateTime.now().toUtc().toString()});
       // Put the new user id into the db
       await usersCollection.doc(uid).set(user.toJson());
-      log.successObj({'method': 'registerUser - success', 'user': user});
+      log.successObj({'method': 'registerUserId - success', 'user': user});
       return {'user': user};
     } catch (error) {
       log.errorObj(
-          {'method': 'registerUser - error', 'error': error.toString()}, 2);
+          {'method': 'registerUserId - error', 'error': error.toString()}, 2);
       return {'error': error, 'success': false};
     }
   }
@@ -140,6 +140,26 @@ class UserDbService {
         'error': error.toString()
       }, 2);
       return {'error': error, 'success': false};
+    }
+  }
+
+
+  // Update user onboarding values
+  Future<Map<String, dynamic>> updateUserOnboarding(bool hasUserOnboard) async {
+    try {
+      log.infoObj({'method': 'updateUserOnboarding', 'hasUserOnboard': hasUserOnboard});
+      await usersCollection.doc(uid).update({'onboarded': hasUserOnboard});
+      log.successObj({'method': 'updateUserOnboarding - success'});
+      return { 'success': true };
+    } catch (error) {
+      log.errorObj({
+        'method': 'updateUserOnboarding',
+        'error': error.toString()
+      });
+      return { 
+        'error': error,
+        'success': false
+      };
     }
   }
 
