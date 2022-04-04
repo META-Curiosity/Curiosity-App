@@ -46,10 +46,8 @@ class _StudyIdState extends State<StudyId> {
                       if (_formKey.currentState.validate()) {
                         await UDS.updateUserLabId(
                             int.parse(_textEditingController.text));
-                        Navigator.pushNamed(
-                          context,
-                          '/consent',
-                        );
+                        Navigator.pushNamed(context, '/consent',
+                            arguments: _textEditingController.text);
                       }
                     })
               ]);
@@ -103,10 +101,7 @@ class _StudyIdState extends State<StudyId> {
                   onPressed: () async {
                     flutterLocalNotificationsPlugin.cancel(0);
                     await UDS.updateUserLabId(-1);
-                    Navigator.pushNamed(
-                      context,
-                      '/consent',
-                    );
+                    Navigator.pushNamed(context, '/consent', arguments: '-1');
                   },
                   child: Text(
                     'I\'m not participating in the study',
