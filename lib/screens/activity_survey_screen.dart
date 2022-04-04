@@ -169,7 +169,7 @@ Future<Task> getSampleTask() {
         buttonText: 'Let\'s go!',
       ),
       QuestionStep(
-        title: 'Activty Enjoyment',
+        title: 'Activity Enjoyment',
         text: 'How much did you enjoy today’s activity?',
         isOptional: false,
         answerFormat: SingleChoiceAnswerFormat(

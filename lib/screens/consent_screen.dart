@@ -6,6 +6,16 @@ import 'dart:async';
 class Consent extends StatelessWidget {
   UserDbService UDS = UserDbService('hashedEmail');
   User user = User();
+
+  //Skips the mindfulness session if the study Id is odd.
+  void navigateBasedOnStudyId(BuildContext context, String studyId) {
+    int convertedStudyId = int.parse(studyId);
+    if (convertedStudyId % 2 == 0)
+      Navigator.pushReplacementNamed(context, '/choose_mindfulness_session');
+    else
+      Navigator.pushReplacementNamed(context, '/introduction');
+  }
+
   @override
   Widget build(BuildContext context) {
     final studyId = ModalRoute.of(context).settings.arguments as String;
@@ -37,7 +47,7 @@ class Consent extends StatelessWidget {
           child: ElevatedButton(
               onPressed: () async {
                 await UDS.updateUserConsent(true);
-                Navigator.pushReplacementNamed(context, '/choose_task_session');
+                navigateBasedOnStudyId(context, studyId);
               },
               child: Text('Allow'),
               style: ElevatedButton.styleFrom(
@@ -51,8 +61,7 @@ class Consent extends StatelessWidget {
             child: ElevatedButton(
                 onPressed: () async {
                   await UDS.updateUserConsent(false);
-                  Navigator.pushReplacementNamed(
-                      context, '/choose_mindfulness_session');
+                  navigateBasedOnStudyId(context, studyId);
                 },
                 child: Text(
                   'Decline',

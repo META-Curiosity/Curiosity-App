@@ -3,6 +3,37 @@ import 'package:introduction_screen/introduction_screen.dart';
 
 class Introduction extends StatelessWidget {
   const Introduction({Key key}) : super(key: key);
+  Future<void> showInformationDialog(BuildContext context) async {
+    return await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              content: SizedBox(
+                height: 160,
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(child: Container()),
+                        IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            }),
+                      ],
+                    ),
+                    Text(
+                        "Each time you complete a daily goal you move one step closer to becoming a more curious person- "
+                        "small, consistent practice leads to stable long-term changes!",
+                        style: TextStyle(
+                          fontSize: 17,
+                        ))
+                  ],
+                ),
+              ),
+              actions: <Widget>[]);
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +54,10 @@ class Introduction extends StatelessWidget {
             image: buildImage('assets/images/curiosity.jpeg'),
             decoration: getPageDecoration(),
             footer: ElevatedButton(
-                onPressed: () {
-                  // On button presed
+                onPressed: () async {
+                  return await showInformationDialog(context);
                 },
-                child: Text("Move to Examples and Tips!")))
+                child: Text("Examples and Tips!")))
       ],
       done:
           Text('Skip to Goals', style: TextStyle(fontWeight: FontWeight.bold)),
