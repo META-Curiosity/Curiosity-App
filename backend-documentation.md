@@ -295,7 +295,7 @@ Input:
   - String id: identification use to locate the daily evaluation record to update
 Ouput:
   - Map<String, dynamic> response:
-      - Boolean success: returns True if the response is successfull
+      - Boolean success: returns true if the response is successful, false if failed
 '''
 await userDbService.updateDailyEvalEnjoyment('It went okay!', '01-02-2022');
 ```
@@ -305,8 +305,20 @@ await userDbService.updateDailyEvalEnjoyment('It went okay!', '01-02-2022');
 '''
 Ouput:
   - Map<String, dynamic> response:
-      - Boolean success: returns True if the response is successfull
+      - Boolean success: returns true if the response is successful, false if failed
       - List<int> mindfulReminders: Time range of the user mindfulness notification preference
+'''
+await userDbService.getMindfulNotiPref();
+```
+
+21. updateUserOnboarding(bool hasUserOnboard)
+```dart
+'''
+Input:
+  - bool hasUserOnboard: indicate whether the user completed the onboarding process
+Ouput:
+  - Map<String, dynamic> response:
+      - Boolean success: returns true if the response is successful, false if failed
 '''
 await userDbService.getMindfulNotiPref();
 ```
