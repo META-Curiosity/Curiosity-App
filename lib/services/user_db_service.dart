@@ -586,6 +586,49 @@ class UserDbService {
     }
   }
 
+
+  // Determining which type of task to get for today
+  Future<Map<String, dynamic>> getTypeOfTaskToday() async {
+    try {
+      log.infoObj({'method': 'getTypeOfTaskToday'});
+      
+      // Retrieving user information
+      Map<String, dynamic> userData = await getUserData();
+      // Check if the response return an error
+      if (userData['error'] != null) {
+        log.errorObj({
+          'method': 'updateDailyEval - error', 
+          'error': userData['error']
+        }, 2);
+        return {
+          'error': userData['error'], 
+          'success': false
+        };
+      }
+
+      int taskPrevDoneByUser = userData['user'].prevTypeOfTaskDone;;
+      // Update the task done by the user appropriately
+      if (taskPrevDoneByUser == 0) {
+        await usersCollection.doc(uid).update({'prevTypeOfTaskDone': 1});
+      } else {
+        await usersCollection.doc(uid).update({'prevTypeOfTaskDone': 0});
+      }
+      int userTypeOfTaskToday = taskPrevDoneByUser == 0 ? 1 : 0;
+      log.successObj({
+        'method': 'getTypeOfTaskToday - success',
+        'userTypeOfTaskToday': userTypeOfTaskToday,
+        'taskPrevDoneByUser': taskPrevDoneByUser
+      });
+      return {'success': true, 'userTypeOfTaskToday': userTypeOfTaskToday};
+    } catch (error) {
+      log.errorObj({
+        'method': 'getTypeOfTaskToday - error',
+        'error': error.toString()
+      }, 2);
+      return {'error': error, 'success': false};
+    }
+  }
+
   // Hashing the date for each daily evaluation to help with retrieving
   // dates within a certain range - format: MM-DD-YY
   int calculateDateHash(String date) {

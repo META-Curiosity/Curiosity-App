@@ -323,6 +323,20 @@ Ouput:
 // Changes the onboarded attribute of user to true
 await userDbService.updateUserOnboarding(true);
 ```
+
+22. getTypeOfTaskToday()
+```dart
+'''
+Ouput:
+  - Map<String, dynamic> response:
+      - Boolean success: returns true if the response is successful, false if failed
+      - int userTypeOfTaskToday: the type of task that the user is getting for the day
+                                 0 = custom task, 1 = META task
+'''
+await userDbService.getTypeOfTaskToday();
+```
+
+
 -----------------------------------------------------------------------------------------------
 ## Admin Database Service - AdminDbService
 1. Constructor

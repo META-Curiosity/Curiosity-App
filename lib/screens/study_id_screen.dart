@@ -101,7 +101,6 @@ class _StudyIdState extends State<StudyId> {
               width: MediaQuery.of(context).size.width - 50.0,
               child: ElevatedButton(
                   onPressed: () async {
-                    flutterLocalNotificationsPlugin.cancel(0);
                     await UDS.updateUserLabId(-1);
                     Navigator.pushNamed(
                       context,
