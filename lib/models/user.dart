@@ -4,18 +4,22 @@ import 'package:pretty_json/pretty_json.dart';
 class User {
   final int CUSTOM_TASK_LENGTH = 6; // indicate how many task we currently have
 
-  String id; // User hashed email
-  int labId; // -1 if the user does not have lab id
   // Toggle option to get user consent to use their data
-  bool contributeData;
   Map<String, CustomTask> customTasks = {};
   int currentStreak;
   int totalSuccessfulDays;
+  int prevTypeOfTaskDone; // 0 = custom task, 1 = META task
+  int labId; // -1 if the user does not have lab id
+
+  String id; // User hashed email
   String prevSucessDateTime;
   String registerDateTime;
+
+  bool contributeData;
   bool mindfulEligibility; // whether users can view the mindfulness screen
   bool onboarded; // Indicate whether user finished with onboarding process
-  int prevTypeOfTaskDone; // 0 = custom task, 1 = META task
+  bool hasViewedMetaTaskIntro; // if user have view intro when first viewing meta task
+
   var mindfulReminders;
   var completeActivityReminders;
 
@@ -35,12 +39,13 @@ class User {
     prevSucessDateTime = null;
     registerDateTime = null;
     mindfulEligibility = null;
-    currentStreak = 0;
-    totalSuccessfulDays = 0;
     mindfulReminders = null;
     completeActivityReminders = null;
-    onboarded = false;
+    currentStreak = 0;
+    totalSuccessfulDays = 0;
     prevTypeOfTaskDone = 1;
+    onboarded = false;
+    hasViewedMetaTaskIntro = false;
   }
 
   // Created from the data retrieved from firestore
@@ -64,6 +69,7 @@ class User {
     completeActivityReminders = data['completeActivityReminders'] ?? completeActivityReminders;
     onboarded = data['onboarded'] ?? onboarded;
     prevTypeOfTaskDone = data['prevTypeOfTaskDone'] ?? prevTypeOfTaskDone;
+    hasViewedMetaTaskIntro = data['hasViewedMetaTaskIntro'] ?? hasViewedMetaTaskIntro;
   }
 
   Map<String, dynamic> toJson() {
@@ -84,7 +90,8 @@ class User {
       'completeActivityReminders': completeActivityReminders,
       'onboarded': onboarded,
       'mindfulReminders': mindfulReminders,
-      'prevTypeOfTaskDone': prevTypeOfTaskDone
+      'prevTypeOfTaskDone': prevTypeOfTaskDone,
+      'hasViewedMetaTaskIntro': hasViewedMetaTaskIntro
     };
   }
 
