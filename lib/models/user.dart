@@ -15,6 +15,7 @@ class User {
   String registerDateTime;
   bool mindfulEligibility; // whether users can view the mindfulness screen
   bool onboarded; // Indicate whether user finished with onboarding process
+  int prevTypeOfTaskDone; // 0 = custom task, 1 = META task
   var mindfulReminders;
   var completeActivityReminders;
 
@@ -39,6 +40,7 @@ class User {
     mindfulReminders = null;
     completeActivityReminders = null;
     onboarded = false;
+    prevTypeOfTaskDone = 1;
   }
 
   // Created from the data retrieved from firestore
@@ -61,6 +63,7 @@ class User {
     mindfulReminders = data['mindfulReminders'] ?? mindfulReminders;
     completeActivityReminders = data['completeActivityReminders'] ?? completeActivityReminders;
     onboarded = data['onboarded'] ?? onboarded;
+    prevTypeOfTaskDone = data['prevTypeOfTaskDone'] ?? prevTypeOfTaskDone;
   }
 
   Map<String, dynamic> toJson() {
@@ -80,7 +83,8 @@ class User {
       'mindfulEligibility': mindfulEligibility,
       'completeActivityReminders': completeActivityReminders,
       'onboarded': onboarded,
-      'mindfulReminders': mindfulReminders
+      'mindfulReminders': mindfulReminders,
+      'prevTypeOfTaskDone': prevTypeOfTaskDone
     };
   }
 
