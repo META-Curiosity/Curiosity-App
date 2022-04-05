@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:survey_kit/survey_kit.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:curiosity_flutter/services/user_db_service.dart';
+import 'package:intl/intl.dart';
 
 class MindfulCompletion extends StatefulWidget {
   const MindfulCompletion({Key key}) : super(key: key);
@@ -10,8 +12,16 @@ class MindfulCompletion extends StatefulWidget {
 }
 
 class _MindfulCompletionState extends State<MindfulCompletion> {
+  UserDbService UDS = UserDbService('hashedEmail');
   @override
   Widget build(BuildContext context) {
+    //Converts Datetime object into a string of form example: '01-02-2022'
+    String datetimeToString(DateTime date) {
+      DateFormat formatter = DateFormat('MM-dd-y');
+      String formattedDate = formatter.format(date);
+      return formattedDate;
+    }
+
     return MaterialApp(
       home: Scaffold(
         body: Container(
@@ -27,13 +37,22 @@ class _MindfulCompletionState extends State<MindfulCompletion> {
                   final task = snapshot.data;
                   return SurveyKit(
                     onResult: (SurveyResult result) {
+                      bool answer = false;
                       for (var stepResult in result.results) {
                         for (var questionResult in stepResult.results) {
                           print(questionResult.valueIdentifier);
+                          if (questionResult.valueIdentifier == '1') {
+                            answer = true;
+                          }
                         }
                       }
-                      print("Popped");
+
                       Navigator.of(context, rootNavigator: true).pop(context);
+                      Map<String, dynamic> data = {
+                        'hasCompleted': answer,
+                        'id': datetimeToString(DateTime.now())
+                      };
+                      UDS.addMindfulnessSessionCompletion(data);
                     },
                     task: task,
                     showProgress: true,

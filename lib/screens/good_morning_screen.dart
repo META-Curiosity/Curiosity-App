@@ -1,8 +1,12 @@
+import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class GoodMorningScreen extends StatelessWidget {
-  const GoodMorningScreen({Key key}) : super(key: key);
+  GoodMorningScreen({Key key}) : super(key: key);
+
+  UserDbService UDS = UserDbService('hashedEmail');
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -34,9 +38,20 @@ class GoodMorningScreen extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     primary: const Color(0xFF4B81EF),
                   ),
-                  onPressed: () {
-                    // Navigate to the second screen using a named route.
-                    Navigator.pushNamed(context, '/play_audio');
+                  onPressed: () async {
+                    int todayTask;
+                    await UDS
+                        .getTypeOfTaskToday()
+                        .then((Map<String, dynamic> res) {
+                      todayTask = res['userTypeOfTaskToday'];
+                    });
+                    if (todayTask == 1) {
+                      Navigator.of(context)
+                          .pushReplacementNamed('/choose_task_session');
+                    } else {
+                      Navigator.of(context).pushReplacementNamed(
+                          '/introduction_daily_challenge');
+                    }
                   },
                   child: const Text("Set Today's Task"),
                 ),

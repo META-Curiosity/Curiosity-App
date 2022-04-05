@@ -421,7 +421,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // their study id
           Navigator.pushReplacementNamed(
             context,
-            '/navigation',
+            '/study_id',
           );
         }
       }
