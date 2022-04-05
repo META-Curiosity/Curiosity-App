@@ -18,9 +18,9 @@ class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
     "assets/images/night.jpeg"
   ];
   final List<String> info = <String>[
-    "Morning: 9am - 12pm",
+    "Morning: 8am - 12pm",
     "Afternoon: 12pm - 4pm",
-    "Evening: 4pm - 9pm"
+    "Evening: 4pm - 8pm"
   ];
 
   UserDbService UDS = UserDbService('hashedEmail');
@@ -158,11 +158,11 @@ class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
 
                                             List<int> data = [];
                                             if (index == 0) {
-                                              data = [9, 10, 11, 12];
+                                              data = [8, 9, 10, 11, 12];
                                             } else if (index == 1) {
                                               data = [12, 13, 14, 15, 16];
                                             } else {
-                                              data = [16, 17, 18, 19, 20, 21];
+                                              data = [16, 17, 18, 19, 20];
                                             }
                                             await UDS
                                                 .updateMindfulReminders(data);

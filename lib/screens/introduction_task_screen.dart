@@ -58,7 +58,7 @@ class IntroductionTask extends StatelessWidget {
       done: Text('Begin!', style: TextStyle(fontWeight: FontWeight.bold)),
       onDone: () async {
         await UDS.updateUserOnboarding(true);
-        Navigator.of(context).pushReplacementNamed('/choose_task_session');
+        Navigator.of(context).pushReplacementNamed('/good_morning');
       },
       next: Icon(Icons.arrow_forward),
       dotsDecorator: getDotDecoration(),
