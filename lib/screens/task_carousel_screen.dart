@@ -1,7 +1,11 @@
+import 'package:curiosity_flutter/models/meta_task.dart';
+import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:curiosity_flutter/services/meta_task_db_service.dart';
+import 'package:intl/intl.dart';
 
 class TaskCarousel extends StatefulWidget {
   const TaskCarousel({Key key}) : super(key: key);
@@ -29,87 +33,111 @@ class _TaskCarouselState extends State<TaskCarousel> {
     MaterialCommunityIcons.speedometer
   ];
   final difficultyLabelList = ['Beginner', 'Intermediate', 'Advanced'];
+  final difficultyLabelListDb = ['easy', 'intermediate', 'hard'];
   @override
   Widget build(BuildContext context) {
+    UserDbService UDS = UserDbService('hashedEmail');
+
+    String datetimeToString(DateTime date) {
+      DateFormat formatter = DateFormat('MM-dd-y');
+      String formattedDate = formatter.format(date);
+      return formattedDate;
+    }
+
     return Container(
         child: Center(
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: 40),
-            SafeArea(
-              child: Text(
-                'Today\'s Task',
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(height: 20),
-            Text("Pick a level of difficulty to get started",
-                style: TextStyle(fontSize: 16)),
-            SizedBox(height: 40),
-            CarouselSlider(
-              options: CarouselOptions(
-                height: 400,
-                aspectRatio: 16 / 9,
-                viewportFraction: 0.75,
-                initialPage: 0,
-                enableInfiniteScroll: true,
-                reverse: false,
-                autoPlay: false,
-                autoPlayInterval: Duration(seconds: 3),
-                autoPlayAnimationDuration: Duration(milliseconds: 800),
-                autoPlayCurve: Curves.fastOutSlowIn,
-                enlargeCenterPage: true,
-                onPageChanged: (i, reason) {
-                  // print("Page: ${i}");
-                  // print("Reason: ${reason}");
-                  setState(() {
-                    currentTask = i;
-                  });
-                },
-                scrollDirection: Axis.horizontal,
-              ),
-              items: [0, 1, 2].map((i) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: EdgeInsets.symmetric(horizontal: 5.0),
-                      // decoration: BoxDecoration(color: Colors.amber),
-                      child: TaskCard(
-                        icon: Icon(cardIconList[i],
-                            color: colorList[i], size: 52),
-                        stat: 'w',
-                        task: taskList[i],
-                        color: colorList[i],
-                        difficultyIcon: Icon(difficultyIconList[i],
-                            color: colorList[i], size: 120),
-                        difficultyLabel: difficultyLabelList[i],
-                      ),
-                    );
-                  },
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: <
+          Widget>[
+        SizedBox(height: 40),
+        SafeArea(
+          child: Text(
+            'Today\'s Task',
+            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+          ),
+        ),
+        SizedBox(height: 20),
+        Text("Pick a level of difficulty to get started",
+            style: TextStyle(fontSize: 16)),
+        SizedBox(height: 40),
+        CarouselSlider(
+          options: CarouselOptions(
+            height: 400,
+            aspectRatio: 16 / 9,
+            viewportFraction: 0.75,
+            initialPage: 0,
+            enableInfiniteScroll: true,
+            reverse: false,
+            autoPlay: false,
+            autoPlayInterval: Duration(seconds: 3),
+            autoPlayAnimationDuration: Duration(milliseconds: 800),
+            autoPlayCurve: Curves.fastOutSlowIn,
+            enlargeCenterPage: true,
+            onPageChanged: (i, reason) {
+              // print("Page: ${i}");
+              // print("Reason: ${reason}");
+              setState(() {
+                currentTask = i;
+              });
+            },
+            scrollDirection: Axis.horizontal,
+          ),
+          items: [0, 1, 2].map((i) {
+            return Builder(
+              builder: (BuildContext context) {
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  // decoration: BoxDecoration(color: Colors.amber),
+                  child: TaskCard(
+                    icon: Icon(cardIconList[i], color: colorList[i], size: 52),
+                    stat: 'w',
+                    task: taskList[i],
+                    color: colorList[i],
+                    difficultyIcon: Icon(difficultyIconList[i],
+                        color: colorList[i], size: 120),
+                    difficultyLabel: difficultyLabelList[i],
+                  ),
                 );
-              }).toList(),
+              },
+            );
+          }).toList(),
+        ),
+        SizedBox(height: 30),
+        ElevatedButton(
+            onPressed: () async {
+              print(" ${difficultyLabelList[currentTask]} was chosen");
+              Map<String, dynamic> result = await UDS.getRandomMetaTask('easy');
+              MetaTaskDbServices MTDS = new MetaTaskDbServices();
+              MetaTask task;
+              await MTDS
+                  .getTaskByDifficultyAndID(
+                      difficultyLabelListDb[currentTask], result['taskId'])
+                  .then((res) {
+                task = res['metaTask'];
+              });
+              await UDS.removeMetaTask(
+                  difficultyLabelListDb[currentTask], result['userIndex']);
+              Map<String, dynamic> data = {
+                'id': datetimeToString(DateTime.now()),
+                'taskTitle': task.description,
+                'isCustomTask': false
+              };
+              await UDS.addDailyEvalMorningEvent(data);
+              Navigator.pushReplacementNamed(context, '/navigation');
+            },
+            child: Text(
+              'Continue',
+              style: TextStyle(color: Color(0xffFFFFFF), fontSize: 20),
             ),
-            SizedBox(height: 30),
-            ElevatedButton(
-                onPressed: () {
-                  print(" ${difficultyLabelList[currentTask]} was chosen");
-                  Navigator.pushReplacementNamed(context, '/navigation');
-                },
-                child: Text(
-                  'Continue',
-                  style: TextStyle(color: Color(0xffFFFFFF), fontSize: 20),
-                ),
-                style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                    )),
-                    // backgroundColor:
-                    //     MaterialStateProperty.all<Color>(Colors.amber),
-                    fixedSize: MaterialStateProperty.all(Size(300, 48))))
-          ]),
+            style: ButtonStyle(
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                )),
+                // backgroundColor:
+                //     MaterialStateProperty.all<Color>(Colors.amber),
+                fixedSize: MaterialStateProperty.all(Size(300, 48))))
+      ]),
     ));
   }
 }

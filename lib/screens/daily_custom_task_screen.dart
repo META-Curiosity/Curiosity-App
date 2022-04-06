@@ -5,89 +5,104 @@ import 'dart:collection';
 import 'package:curiosity_flutter/models/user.dart';
 import 'package:curiosity_flutter/models/custom_task.dart';
 import 'package:curiosity_flutter/models/props.dart';
+import 'package:curiosity_flutter/navigation.dart';
 
-class EditCustomTasksScreen extends StatefulWidget {
-  final User user; //user
-  const EditCustomTasksScreen({Key key, @required this.user}) : super(key: key);
+class DailyCustomTasksScreen extends StatefulWidget {
+  const DailyCustomTasksScreen({Key key}) : super(key: key);
   @override
-  State<EditCustomTasksScreen> createState() => EditCustomTasksScreenState();
+  State<DailyCustomTasksScreen> createState() => _DailyCustomTasksScreen();
 }
 
-class EditCustomTasksScreenState extends State<EditCustomTasksScreen> {
+class _DailyCustomTasksScreen extends State<DailyCustomTasksScreen> {
+  //Function to check if all 6 tasks are completed or not.
+  bool check() {
+    final user = ModalRoute.of(context).settings.arguments as User;
+    for (int i = 0; i < 6; i++) {
+      String key = i.toString();
+      if (user.customTasks[key].title == null) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   void refresh() {
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    final user = ModalRoute.of(context).settings.arguments as User;
+    final Map<String, CustomTask> customTasks = user.customTasks;
     return Center(
         child: Container(
-      key: UniqueKey(),
-      color: Colors.amber,
+      color: Colors.grey[200],
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
+      key: UniqueKey(),
       padding: const EdgeInsets.only(top: 30, left: 30, right: 30, bottom: 30),
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            const SizedBox(height: 50.0),
+            SizedBox(height: 20),
             const Text(
-              'Edit Your Custom Goals',
+              'Choose Your Custom Goal',
               style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
             const Text(
-              "Let's set 6 goals related to curiosity.",
+              "Let's choose a goal for today!",
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 30),
             GradientButton(
               startColor: Color(0xFFF6744B),
               endColor: Color(0xFFDA3401),
-              user: widget.user,
+              user: user,
               id: '0',
               notifyParent: refresh,
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 25),
             GradientButton(
               startColor: Color(0xFFC34FE5),
               endColor: Color(0xFF8302A7),
-              user: widget.user,
+              user: user,
               id: '1',
               notifyParent: refresh,
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 25),
             GradientButton(
               startColor: Color(0xFF74D5BF),
               endColor: Color(0xFF1B9D8D),
-              user: widget.user,
+              user: user,
               id: '2',
               notifyParent: refresh,
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 25),
             GradientButton(
               startColor: Color(0xFFED9440),
               endColor: Color(0xFFDA5D03),
-              user: widget.user,
+              user: user,
               id: '3',
               notifyParent: refresh,
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 25),
             GradientButton(
               startColor: Color(0xFFE9C216),
               endColor: Color(0xFFE2810B),
-              user: widget.user,
+              user: user,
               id: '4',
               notifyParent: refresh,
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 25),
             GradientButton(
               startColor: Color(0xFF5C7CCA),
               endColor: Color(0xFF2741A6),
-              user: widget.user,
+              user: user,
               id: '5',
               notifyParent: refresh,
             ),
+            const SizedBox(height: 40),
           ],
         ),
       ),
@@ -130,7 +145,7 @@ class _GradientButtonState extends State<GradientButton> {
         child: RaisedButton(
             onPressed: () async {
               //Push the inputting task screen on top
-              await Navigator.pushNamed(context, '/input_tasks',
+              await Navigator.pushNamed(context, '/view_tasks',
                       arguments: dataToBePushed(widget.user, widget.id))
                   .then((_) => setState(() {
                         widget.notifyParent();

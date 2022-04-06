@@ -79,7 +79,7 @@ class _InputTasksScreenState extends State<InputTasksScreen> {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Text('New Task',
+                const Text('New Goal',
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 32)),
                 const SizedBox(height: 30),
