@@ -54,5 +54,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key> 
+	<string>To upload image for your proof of work for the day</string>
+	<key>NSCameraUsageDescription</key> 
+	<string>Using the camera to take a picture of proof of work</string>
+	<key>NSMicrophoneUsageDescription</key> 
+	<string>Need microphone access to upload a video</string>
 </dict>
 </plist>

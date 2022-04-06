@@ -1,8 +1,53 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 
-class EvaluationCompleted extends StatelessWidget {
+class EvaluationCompletedPage extends StatefulWidget {
+  @override
+  _EvaluationCompletedPageState createState() =>
+      _EvaluationCompletedPageState();
+}
+
+class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
   String proof = "";
+  var image;
+  var base64encode;
+
+  Future<void> pickImage() async {
+    try {
+      final ImagePicker _picker = ImagePicker();
+      final image = await _picker.pickImage(source: ImageSource.gallery);
+      // If the user did not select an image exit the function
+      if (image == null) {
+        return;
+      }
+
+      final imagePermanent = await saveImagePermanently(image.path);
+      setState(() => this.image = imagePermanent);
+
+      final bytes = File(image.path).readAsBytesSync();
+      String encodedSrc = base64Encode(bytes);
+
+      setState(() => this.base64encode = encodedSrc);
+
+    } on PlatformException catch (e) {
+      print('failed to pick image $e');
+    }
+  }
+
+  Future<File> saveImagePermanently(String imagePath) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final name = basename(imagePath);
+    final image = File('${directory.path}/$name');
+    return File(imagePath).copy(image.path);
+  }
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -90,6 +135,20 @@ class EvaluationCompleted extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(
                       left: width / 5.5, right: width / 5.5, top: 20),
+                  child: image != null
+                      ? Image.file(image)
+                      : Text(
+                          "No photo selected",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400),
+                          textAlign: TextAlign.center,
+                        ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      left: width / 5.5, right: width / 5.5, top: 20),
                   child: CupertinoButton(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -106,7 +165,7 @@ class EvaluationCompleted extends StatelessWidget {
                       ),
                       borderRadius: BorderRadius.circular(14),
                       color: Colors.blue,
-                      onPressed: () {}),
+                      onPressed: () => pickImage()),
                 ),
                 Padding(
                   padding: EdgeInsets.only(

@@ -155,6 +155,7 @@ Input:
     - Boolean isSuccessful: daily evalu successful/not successful
     - String imageProof: Base64 encoding of the uploaded proof provided by the user | if empty can leave as null
     - String reflection: user daily reflection
+    - String enjoyment: the level of enjoyment for the activity user has
 Output:
   - Map<String, dynamic> response:
       - DailyEvaluation dailyEvalRecord: the daily evaluation record after user chose their task for the day
@@ -164,6 +165,7 @@ Map<String, dynamic> data = {
     'isSuccessful': true,
     'imageProof': 'hello',
     'reflection': 'it went pretty well i would say'
+    'enjoyment': 'I think I would rate it as a good exercise'
 };
 await userDbService.updateDailyEval(data);
 ```
@@ -251,7 +253,7 @@ Input:
     - String difficulty: difficulty | easy, intermediate, hard
 Ouput:
   - Map<String, dynamic> response:
-    -taskId: an integer representing the ID of a task within a given difficulty. This Id can be used with the MetaTaskDbService to obtain task details
+    -taskId: an integer representing the ID of a task within a given difficulty. This Id can be used with the MetaTaskDbServices to obtain task details
     -userIndex: an integer representing the index of the task, this number is needed to remove this task from the list of remaining tasks if the user decides to select it.
 '''
 await userDbService.getRandomMetaTask('easy');
@@ -287,20 +289,7 @@ Map<String, dynamic> data = {
 userDbService.addMindfulnessSessionCompletion(data);
 ```
 
-19. updateDailyEvalEnjoyment(String enjoyment, String id)
-```dart
-'''
-Input:
-  - String enjoyment: the level of ennjoyment for the activity user has
-  - String id: identification use to locate the daily evaluation record to update
-Ouput:
-  - Map<String, dynamic> response:
-      - Boolean success: returns true if the response is successful, false if failed
-'''
-await userDbService.updateDailyEvalEnjoyment('It went okay!', '01-02-2022');
-```
-
-20. getMindfulNotiPref()
+19. getMindfulNotiPref()
 ```dart
 '''
 Ouput:
@@ -311,7 +300,7 @@ Ouput:
 await userDbService.getMindfulNotiPref();
 ```
 
-21. updateUserOnboarding(bool hasUserOnboard)
+20. updateUserOnboarding(bool hasUserOnboard)
 ```dart
 '''
 Input:
@@ -324,7 +313,7 @@ Ouput:
 await userDbService.updateUserOnboarding(true);
 ```
 
-22. updateUserViewingMetaTaskIntro(bool hasUserViewedMetaTaskIntro)
+21. updateUserViewingMetaTaskIntro(bool hasUserViewedMetaTaskIntro)
 ```dart
 '''
 Input:
@@ -337,7 +326,7 @@ Ouput:
 await userDbService.updateUserViewingMetaTaskIntro(true);
 ```
 
-23. getTypeOfTaskToday()
+22. getTypeOfTaskToday()
 ```dart
 '''
 Ouput:
@@ -383,14 +372,14 @@ Ouput:
 await adminDbService.getAllUsers();
 ```
 -----------------------------------------------------------------------------------------------
-## META task database service - MetaTaskDbService
+## META task database service - MetaTaskDbServices
 1. Constructor
 ```dart
 '''
 Output:
-  Ouput new MetaTaskDbService object
+  Ouput new MetaTaskDbServices object
 '''
-MetaTaskDbService metaTaskDbService = new MetaTaskDbService();
+MetaTaskDbServices metaTaskDbService = new MetaTaskDbServices();
 ```
 
 2. addMetaTask(data) -> response
