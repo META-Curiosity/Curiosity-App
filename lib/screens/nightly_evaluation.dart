@@ -144,7 +144,7 @@ class _NightlyEvaluationState extends State<NightlyEvaluation> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => EvaluationCompleted()),
+                          builder: (context) => EvaluationCompletedPage()),
                     );
                   } else if (no) {
                     log("no");

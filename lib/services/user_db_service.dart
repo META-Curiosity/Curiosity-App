@@ -250,26 +250,6 @@ class UserDbService {
     }
   }
 
-  // Updating the daily evaluation enjoyment from participat
-  Future<Map<String, dynamic>> updateDailyEvalEnjoyment(
-      String enjoyment, String id) async {
-    try {
-      log.infoObj(
-          {'method': 'updateDailyEvalEnjoyment', 'enjoyment': enjoyment});
-
-      // Only update the specific field activityEnjoyment of the daily eval record
-      await dailyEvalCollection
-          .doc(id)
-          .update({'activityEnjoyment': enjoyment});
-      log.successObj({'method': 'updateDailyEval - success'});
-      return {'success': true};
-    } catch (error) {
-      log.errorObj(
-          {'method': 'updateDailyEvalEnjoyment', 'error': error.toString()});
-      return {'error': error};
-    }
-  }
-
   // Update user onboarding values
   Future<Map<String, dynamic>> updateUserViewingMetaTaskIntro(bool hasUserViewedMetaTaskIntro) async {
     try {
@@ -348,8 +328,7 @@ class UserDbService {
         final random = new Random();
 
         // If we don't have an array or if it is empty, repopulate the array
-        if (!user.data().toString().contains(difficulty) ||
-            user[difficulty].length == 0) {
+        if (!user.data().toString().contains(difficulty) || user[difficulty].length == 0) {
           var currentCount = await metaTasks.getCountForDifficulty(difficulty);
           var list = [for (var i = 1; i <= currentCount['count']; i++) i];
           usersCollection.doc(uid).update({difficulty: list});

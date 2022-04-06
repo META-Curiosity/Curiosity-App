@@ -280,7 +280,7 @@ class MyApp extends StatelessWidget {
         '/nightly_evaluation_yes': (context) => Scaffold(
               resizeToAvoidBottomInset: true,
               body: Container(
-                child: EvaluationCompleted(),
+                child: EvaluationCompletedPage(),
               ),
             ),
         '/nightly_evaluation_no': (context) => Scaffold(
@@ -413,16 +413,20 @@ class _MyHomePageState extends State<MyHomePage> {
             // user has not registered yet -> registering the user
             await userDbService.registerUserId();
             log.successString('user has registered successfully', 0);
+            // After user successfully register then proceed to ask them for
+            // their study id
+            Navigator.pushReplacementNamed(
+              context,
+              '/study_id',
+            );
           } else if (isUserRegistered['user'] != null) {
             // Registered user logging back in again
             log.successString('user logged in successfully', 0);
+            Navigator.pushReplacementNamed(
+              context,
+              '/navigation',
+            );
           }
-          // After user successfully register then proceed to ask them for
-          // their study id
-          Navigator.pushReplacementNamed(
-            context,
-            '/study_id',
-          );
         }
       }
     });
