@@ -66,13 +66,26 @@ class _NavigationState extends State<Navigation> {
     return formattedDate;
   }
 
+  //Converts Datetime object into a string of form example: '04-05-22'
+  String datetimeToString2(DateTime date) {
+    DateFormat formatter = DateFormat('MM-dd-y');
+    String formattedDate = formatter.format(date);
+    return formattedDate;
+  }
+
   //Gets today's date and task.  Returns object {String date, String task}
-  List<dynamic> getToday() {
+  Future<List<dynamic>> getToday() async {
     List<dynamic> res = List.filled(2, 0);
 
     String today = datetimeToString(DateTime.now());
     //TODO: Replace task with a backend function that retrieves today's task
+
     String task = 'Write about anything for 30 minutes';
+    await UDS
+        .getUserDailyEvalByDate(datetimeToString2(DateTime.now()))
+        .then((res) {
+      task = res['dailyEvalRecord'].taskTitle;
+    });
 
     res[0] = today;
     res[1] = task;
@@ -108,7 +121,7 @@ class _NavigationState extends State<Navigation> {
     res[0] = await getUser();
     res[1] = await getDates(today);
     res[2] = await getStreaksAndTotalDaysCompleted();
-    res[3] = getToday();
+    res[3] = await getToday();
     return res;
   }
 

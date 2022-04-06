@@ -31,6 +31,8 @@ import 'screens/welcome_back_screen.dart';
 import 'screens/task_carousel_screen.dart';
 import 'screens/introduction_task_screen.dart';
 import 'screens/mindful_completion_screen.dart';
+import 'screens/daily_custom_task_screen.dart';
+import 'screens/view_tasks_screen.dart';
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
@@ -132,11 +134,6 @@ class MyApp extends StatelessWidget {
             ),
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/good_morning': (context) => Scaffold(
-              appBar: AppBar(
-                leading: BackButton(),
-                backgroundColor: Color(0xFFF6C344),
-                centerTitle: true,
-              ),
               body: Container(
                 color: Colors.amber,
                 child: GoodMorningScreen(),
@@ -307,6 +304,24 @@ class MyApp extends StatelessWidget {
                 child: TaskCarousel(),
               ),
             ),
+        '/daily_custom_tasks': (context) => Scaffold(
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: DailyCustomTasksScreen(),
+              ),
+            ),
+        '/view_tasks': (context) => Scaffold(
+              appBar: AppBar(
+                //centerTitle: true,
+                leading: BackButton(),
+                //title: Text('New Task'),
+                backgroundColor: Color(0xFFF6C344),
+              ),
+              resizeToAvoidBottomInset: true,
+              body: Container(
+                child: ViewTasksScreen(),
+              ),
+            ),
       },
     );
   }
@@ -424,7 +439,7 @@ class _MyHomePageState extends State<MyHomePage> {
             log.successString('user logged in successfully', 0);
             Navigator.pushReplacementNamed(
               context,
-              '/navigation',
+              '/good_morning',
             );
           }
         }

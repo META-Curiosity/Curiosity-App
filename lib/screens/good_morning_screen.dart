@@ -1,11 +1,34 @@
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:curiosity_flutter/models/user.dart';
+import 'package:curiosity_flutter/models/custom_task.dart';
 
-class GoodMorningScreen extends StatelessWidget {
+class GoodMorningScreen extends StatefulWidget {
   GoodMorningScreen({Key key}) : super(key: key);
 
+  @override
+  State<GoodMorningScreen> createState() => _GoodMorningScreenState();
+}
+
+class _GoodMorningScreenState extends State<GoodMorningScreen> {
   UserDbService UDS = UserDbService('hashedEmail');
+
+  User user = User();
+
+  Future<User> getUser() async {
+    Map<String, dynamic> userData = await UDS.getUserData();
+    return userData['user'];
+  }
+
+  void initState() {
+    getUser().then((result) {
+      setState(() {
+        user = result;
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +68,11 @@ class GoodMorningScreen extends StatelessWidget {
                         .then((Map<String, dynamic> res) {
                       todayTask = res['userTypeOfTaskToday'];
                     });
+                    print(todayTask);
                     if (todayTask == 1) {
-                      Navigator.of(context)
-                          .pushReplacementNamed('/choose_task_session');
+                      Navigator.of(context).pushReplacementNamed(
+                          '/daily_custom_tasks',
+                          arguments: user);
                     } else {
                       Navigator.of(context).pushReplacementNamed(
                           '/introduction_daily_challenge');
