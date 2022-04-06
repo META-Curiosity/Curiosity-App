@@ -143,23 +143,18 @@ class UserDbService {
     }
   }
 
-
   // Update user onboarding values
   Future<Map<String, dynamic>> updateUserOnboarding(bool hasUserOnboard) async {
     try {
-      log.infoObj({'method': 'updateUserOnboarding', 'hasUserOnboard': hasUserOnboard});
+      log.infoObj(
+          {'method': 'updateUserOnboarding', 'hasUserOnboard': hasUserOnboard});
       await usersCollection.doc(uid).update({'onboarded': hasUserOnboard});
       log.successObj({'method': 'updateUserOnboarding - success'});
-      return { 'success': true };
+      return {'success': true};
     } catch (error) {
-      log.errorObj({
-        'method': 'updateUserOnboarding',
-        'error': error.toString()
-      });
-      return { 
-        'error': error,
-        'success': false
-      };
+      log.errorObj(
+          {'method': 'updateUserOnboarding', 'error': error.toString()});
+      return {'error': error, 'success': false};
     }
   }
 
@@ -271,25 +266,26 @@ class UserDbService {
   }
 
   // Update user onboarding values
-  Future<Map<String, dynamic>> updateUserViewingMetaTaskIntro(bool hasUserViewedMetaTaskIntro) async {
+  Future<Map<String, dynamic>> updateUserViewingMetaTaskIntro(
+      bool hasUserViewedMetaTaskIntro) async {
     try {
-      log.infoObj({'method': 'updateUserViewingMetaTaskIntro', 'hasUserViewedMetaTaskIntro': hasUserViewedMetaTaskIntro});
-      await usersCollection.doc(uid).update({'hasViewedMetaTaskIntro': hasUserViewedMetaTaskIntro});
+      log.infoObj({
+        'method': 'updateUserViewingMetaTaskIntro',
+        'hasUserViewedMetaTaskIntro': hasUserViewedMetaTaskIntro
+      });
+      await usersCollection
+          .doc(uid)
+          .update({'hasViewedMetaTaskIntro': hasUserViewedMetaTaskIntro});
       log.successObj({'method': 'updateUserViewingMetaTaskIntro - success'});
-      return { 'success': true };
+      return {'success': true};
     } catch (error) {
       log.errorObj({
         'method': 'updateUserViewingMetaTaskIntro',
         'error': error.toString()
       });
-      return { 
-        'error': error,
-        'success': false
-      };
+      return {'error': error, 'success': false};
     }
   }
-
-  
 
   // Update user task via the position passed in and new values -
   // Upon successful update - a new custom task array will be returned
@@ -607,24 +603,19 @@ class UserDbService {
     }
   }
 
-
   // Determining which type of task to get for today
   Future<Map<String, dynamic>> getTypeOfTaskToday() async {
     try {
       log.infoObj({'method': 'getTypeOfTaskToday'});
-      
+
       // Retrieving user information
       Map<String, dynamic> userData = await getUserData();
       // Check if the response return an error
       if (userData['error'] != null) {
-        log.errorObj({
-          'method': 'updateDailyEval - error', 
-          'error': userData['error']
-        }, 2);
-        return {
-          'error': userData['error'], 
-          'success': false
-        };
+        log.errorObj(
+            {'method': 'updateDailyEval - error', 'error': userData['error']},
+            2);
+        return {'error': userData['error'], 'success': false};
       }
 
       int taskPrevDoneByUser = userData['user'].prevTypeOfTaskDone;
@@ -642,10 +633,9 @@ class UserDbService {
       });
       return {'success': true, 'userTypeOfTaskToday': userTypeOfTaskToday};
     } catch (error) {
-      log.errorObj({
-        'method': 'getTypeOfTaskToday - error',
-        'error': error.toString()
-      }, 2);
+      log.errorObj(
+          {'method': 'getTypeOfTaskToday - error', 'error': error.toString()},
+          2);
       return {'error': error, 'success': false};
     }
   }
