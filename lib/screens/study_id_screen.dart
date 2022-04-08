@@ -7,15 +7,33 @@ import 'dart:async';
 import '../main.dart';
 
 class StudyId extends StatefulWidget {
-  const StudyId({Key key}) : super(key: key);
+  const StudyId({Key key})
+      : super(
+          key: key,
+        );
 
   @override
   _StudyIdState createState() => _StudyIdState();
 }
 
 class _StudyIdState extends State<StudyId> {
-  UserDbService UDS = UserDbService('hashedEmail');
+  String _id;
+
+  //UserDbService UDS = UserDbService('hashedEmail');
+
+  UserDbService UDS;
   User user = User();
+
+  @override
+  void didChangeDependencies() {
+    String uuid = ModalRoute.of(context).settings.arguments as String;
+    setState(() {
+      _id = uuid;
+      UDS = UserDbService(uuid);
+    });
+    super.didChangeDependencies();
+  }
+
   Future<void> showInformationDialog(BuildContext context) async {
     GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -47,7 +65,7 @@ class _StudyIdState extends State<StudyId> {
                         await UDS.updateUserLabId(
                             int.parse(_textEditingController.text));
                         Navigator.pushNamed(context, '/consent',
-                            arguments: _textEditingController.text);
+                            arguments: [_id, _textEditingController.text]);
                       }
                     })
               ]);
@@ -100,7 +118,8 @@ class _StudyIdState extends State<StudyId> {
               child: ElevatedButton(
                   onPressed: () async {
                     await UDS.updateUserLabId(-1);
-                    Navigator.pushNamed(context, '/consent', arguments: '-1');
+                    Navigator.pushNamed(context, '/consent',
+                        arguments: [_id, '-1']);
                   },
                   child: Text(
                     'I\'m not participating in the study',

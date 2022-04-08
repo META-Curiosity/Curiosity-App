@@ -29,8 +29,38 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
-  UserDbService UDS = UserDbService('hashedEmail');
+  // UserDbService UDS = UserDbService('hashedEmail');
+  // User user = User();
+
+  UserDbService UDS;
   User user = User();
+  String _id;
+
+  @override
+  void didChangeDependencies() {
+    String uuid = ModalRoute.of(context).settings.arguments as String;
+    setState(() {
+      _id = uuid;
+      UDS = UserDbService(uuid);
+    });
+    getEverything().then((result) {
+      setState(() {
+        screens = [
+          WelcomeBackScreen(date: result[3][0], task: result[3][1], uuid: uuid),
+          MindfulSessionsScreen(
+              uuid: uuid), //To be replaced with meditation screen
+          CentralDashboardScreen(
+              dates: listOfDailyEvaluationsToMap(result[1]),
+              records: result[2]),
+          EditCustomTasksScreen(user: result[0]),
+        ];
+        _dataRecieved = true;
+        print("DONE $_dataRecieved");
+      });
+    });
+    _pageController = PageController(initialPage: index);
+    super.didChangeDependencies();
+  }
 
   int index = 0; //index for nav bar
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
@@ -127,21 +157,6 @@ class _NavigationState extends State<Navigation> {
 
   void initState() {
     print('init state');
-    getEverything().then((result) {
-      setState(() {
-        screens = [
-          WelcomeBackScreen(date: result[3][0], task: result[3][1]),
-          MindfulSessionsScreen(), //To be replaced with meditation screen
-          CentralDashboardScreen(
-              dates: listOfDailyEvaluationsToMap(result[1]),
-              records: result[2]),
-          EditCustomTasksScreen(user: result[0]),
-        ];
-        _dataRecieved = true;
-        print("DONE $_dataRecieved");
-      });
-    });
-    _pageController = PageController(initialPage: index);
     super.initState();
   }
 

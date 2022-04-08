@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
-class MindfulSessionsScreen extends StatelessWidget {
-  const MindfulSessionsScreen({Key key}) : super(key: key);
+class MindfulSessionsScreen extends StatefulWidget {
+  String uuid; //User id
+  MindfulSessionsScreen({Key key, @required this.uuid}) : super(key: key);
 
+  @override
+  State<MindfulSessionsScreen> createState() => _MindfulSessionsScreenState();
+}
+
+class _MindfulSessionsScreenState extends State<MindfulSessionsScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -35,7 +41,8 @@ class MindfulSessionsScreen extends StatelessWidget {
                     padding: EdgeInsets.fromLTRB(100.0, 20.0, 100.0, 20.0)),
                 onPressed: () {
                   // Navigate to the second screen using a named route.
-                  Navigator.pushNamed(context, '/play_audio', arguments: 0);
+                  Navigator.pushNamed(context, '/play_audio',
+                      arguments: [widget.uuid, 0]);
                 },
                 label: const Text('Mindful Eating',
                     style: TextStyle(fontSize: 18)),
@@ -57,7 +64,8 @@ class MindfulSessionsScreen extends StatelessWidget {
                 ),
                 onPressed: () {
                   // Navigate to the second screen using a named route.
-                  Navigator.pushNamed(context, '/play_audio', arguments: 1);
+                  Navigator.pushNamed(context, '/play_audio',
+                      arguments: [widget.uuid, 1]);
                 },
                 label: const Text('Mindful Walking',
                     style: TextStyle(fontSize: 18)),
@@ -79,7 +87,8 @@ class MindfulSessionsScreen extends StatelessWidget {
                 ),
                 onPressed: () {
                   // Navigate to the second screen using a named route.
-                  Navigator.pushNamed(context, '/play_audio', arguments: 2);
+                  Navigator.pushNamed(context, '/play_audio',
+                      arguments: [widget.uuid, 2]);
                 },
                 label: const Text('Mindful Washing',
                     style: TextStyle(fontSize: 18)),

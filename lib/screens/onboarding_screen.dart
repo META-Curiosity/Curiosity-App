@@ -15,22 +15,40 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  UserDbService UDS = UserDbService('hashedEmail');
+  // UserDbService UDS = UserDbService('hashedEmail');
+  UserDbService UDS;
   User user = User();
+
+  String _id;
+  @override
+  void didChangeDependencies() {
+    String uuid = ModalRoute.of(context).settings.arguments as String;
+    setState(() {
+      _id = uuid;
+      UDS = UserDbService(uuid);
+    });
+    getUser().then((result) {
+      setState(() {
+        user = result;
+      });
+    });
+    super.didChangeDependencies();
+  }
+
   //get User object to pass into the set_custom_tasks screen
   Future<User> getUser() async {
     Map<String, dynamic> userData = await UDS.getUserData();
     return userData['user'];
   }
 
-  void initState() {
-    getUser().then((result) {
-      setState(() {
-        user = result;
-      });
-    });
-    super.initState();
-  }
+  // void initState() {
+  //   getUser().then((result) {
+  //     setState(() {
+  //       user = result;
+  //     });
+  //   });
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +106,7 @@ class StartJourneyScreen extends StatelessWidget {
   const StartJourneyScreen({Key key, @required this.user}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    String uuid = ModalRoute.of(context).settings.arguments as String;
     return Center(
         child: Container(
       padding: const EdgeInsets.only(top: 100, left: 30, right: 30, bottom: 30),
@@ -116,7 +135,7 @@ class StartJourneyScreen extends StatelessWidget {
               onPressed: () {
                 // Navigate to the second screen using a named route.
                 Navigator.pushNamed(context, '/set_custom_tasks',
-                    arguments: user);
+                    arguments: [uuid, user]);
               },
               child: const Text("Set Custom Goals"),
             ),

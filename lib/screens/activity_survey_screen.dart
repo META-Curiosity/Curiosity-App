@@ -12,6 +12,7 @@ class ActivitySurvey extends StatefulWidget {
 class _ActivitySurveyState extends State<ActivitySurvey> {
   @override
   Widget build(BuildContext context) {
+    String uuid = ModalRoute.of(context).settings.arguments as String;
     return MaterialApp(
       home: Scaffold(
         body: Container(
@@ -36,12 +37,9 @@ class _ActivitySurveyState extends State<ActivitySurvey> {
                       if (responses.length == 2) {
                         Navigator.of(context, rootNavigator: true)
                             .pushReplacementNamed('/nightly_evaluation_yes',
-                                arguments: responses[1]);
+                                arguments: [uuid, responses[1]]);
                       } else {
-                        Navigator.of(context, rootNavigator: true)
-                            .pushReplacementNamed(
-                          '/navigation',
-                        );
+                        Navigator.of(context, rootNavigator: true).pop();
                       }
                     },
                     task: task,

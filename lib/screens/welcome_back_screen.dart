@@ -6,7 +6,9 @@ import 'package:intl/intl.dart';
 class WelcomeBackScreen extends StatefulWidget {
   String date; //Current date
   String task; //Today's task
-  WelcomeBackScreen({Key key, @required this.date, @required this.task})
+  String uuid; //User id
+  WelcomeBackScreen(
+      {Key key, @required this.date, @required this.task, @required this.uuid})
       : super(key: key);
 
   @override
@@ -73,7 +75,8 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                 ),
                 onPressed: () {
                   // Navigate to the second screen using a named route.
-                  Navigator.pushNamed(context, '/activity_survey');
+                  Navigator.pushNamed(context, '/activity_survey',
+                      arguments: widget.uuid);
                 },
                 child: const Text("I'm done!"),
               ),
@@ -88,7 +91,8 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                 ),
                 onPressed: () {
                   // Navigate to the second screen using a named route.
-                  Navigator.pushNamed(context, '/nightly_evaluation_no');
+                  Navigator.pushNamed(context, '/nightly_evaluation_no',
+                      arguments: widget.uuid);
                 },
                 child: const Text("Skip today's goal."),
               ),

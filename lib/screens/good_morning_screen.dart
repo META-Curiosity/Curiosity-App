@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'package:curiosity_flutter/models/custom_task.dart';
+import 'package:curiosity_flutter/services/admin_db_service.dart';
 
 class GoodMorningScreen extends StatefulWidget {
   GoodMorningScreen({Key key}) : super(key: key);
@@ -12,23 +13,45 @@ class GoodMorningScreen extends StatefulWidget {
 }
 
 class _GoodMorningScreenState extends State<GoodMorningScreen> {
-  UserDbService UDS = UserDbService('hashedEmail');
+  //UserDbService UDS = UserDbService('hashedEmail');
+  UserDbService UDS;
+  User user;
+  AdminDbService adminDbService = new AdminDbService();
 
-  User user = User();
+  String _id;
+  @override
+  void didChangeDependencies() {
+    String uuid = ModalRoute.of(context).settings.arguments as String;
+    setState(() {
+      _id = uuid;
+      UDS = UserDbService(uuid);
+      // adminDbService.getUserById(uuid).then((res) {
+      //   setState(() {
+      //     user = res['user'];
+      //   });
+      // });
+    });
+    getUser().then((result) {
+      setState(() {
+        user = result;
+      });
+    });
+    super.didChangeDependencies();
+  }
 
   Future<User> getUser() async {
     Map<String, dynamic> userData = await UDS.getUserData();
     return userData['user'];
   }
 
-  void initState() {
-    getUser().then((result) {
-      setState(() {
-        user = result;
-      });
-    });
-    super.initState();
-  }
+  // void initState() {
+  //   getUser().then((result) {
+  //     setState(() {
+  //       user = result;
+  //     });
+  //   });
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +95,11 @@ class _GoodMorningScreenState extends State<GoodMorningScreen> {
                     if (todayTask == 1) {
                       Navigator.of(context).pushReplacementNamed(
                           '/daily_custom_tasks',
-                          arguments: user);
+                          arguments: [_id, user]);
                     } else {
                       Navigator.of(context).pushReplacementNamed(
-                          '/introduction_daily_challenge');
+                          '/introduction_daily_challenge',
+                          arguments: _id);
                     }
                   },
                   child: const Text("Set Today's Task"),

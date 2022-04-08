@@ -6,6 +6,7 @@ class IntroductionDailyChallenge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final uuid = ModalRoute.of(context).settings.arguments as String;
     return SafeArea(
         child: IntroductionScreen(
       pages: [
@@ -26,7 +27,7 @@ class IntroductionDailyChallenge extends StatelessWidget {
           decoration: getPageDecoration(),
           footer: ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/task_carousel');
+                Navigator.pushNamed(context, '/task_carousel', arguments: uuid);
               },
               child: Text("Choose a daily challenge!")),
         )

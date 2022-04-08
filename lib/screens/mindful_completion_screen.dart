@@ -12,7 +12,21 @@ class MindfulCompletion extends StatefulWidget {
 }
 
 class _MindfulCompletionState extends State<MindfulCompletion> {
-  UserDbService UDS = UserDbService('hashedEmail');
+  //UserDbService UDS = UserDbService('hashedEmail');
+
+  UserDbService UDS;
+  String _id;
+
+  @override
+  void didChangeDependencies() {
+    String uuid = ModalRoute.of(context).settings.arguments as String;
+    setState(() {
+      _id = uuid;
+      UDS = UserDbService(uuid);
+    });
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     //Converts Datetime object into a string of form example: '01-02-2022'

@@ -1,10 +1,21 @@
+import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class EvaluationNotCompleted extends StatelessWidget {
-  String proof = "";
+  //Converts date into MM-DD-YY ex. 04-07-22
+  String datetimeToString(DateTime date) {
+    DateFormat formatter = DateFormat('MM-dd-y');
+    String formattedDate = formatter.format(date);
+    return formattedDate;
+  }
+
+  String reflection = "";
   @override
   Widget build(BuildContext context) {
+    String uuid = ModalRoute.of(context).settings.arguments as String;
+    UserDbService UDS = UserDbService(uuid);
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return GestureDetector(
@@ -68,7 +79,7 @@ class EvaluationNotCompleted extends StatelessWidget {
                       expands: true,
                       cursorColor: Colors.white,
                       onChanged: (val) {
-                        proof = val;
+                        reflection = val;
                       },
                       onTap: FocusScope.of(context).unfocus,
                       decoration: InputDecoration(
@@ -131,7 +142,17 @@ class EvaluationNotCompleted extends StatelessWidget {
                       ),
                       borderRadius: BorderRadius.circular(14),
                       color: Colors.blue,
-                      onPressed: () {
+                      onPressed: () async {
+                        Map<String, dynamic> data = {
+                          'id': datetimeToString(DateTime.now()),
+                          'isSuccessful': false,
+                          'imageProof': null,
+                          'reflection': reflection,
+                          'activityEnjoyment': null
+                        };
+                        print("Sending");
+                        print(data);
+                        await UDS.updateDailyEval(data);
                         Navigator.pop(context);
                       }),
                 ),

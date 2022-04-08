@@ -16,7 +16,9 @@ class SetCustomTasksScreen extends StatefulWidget {
 class _SetCustomTasksScreenState extends State<SetCustomTasksScreen> {
   //Function to check if all 6 tasks are completed or not.
   bool check() {
-    final user = ModalRoute.of(context).settings.arguments as User;
+    final arg = ModalRoute.of(context).settings.arguments as List;
+    String uuid = arg[0];
+    User user = arg[1];
     for (int i = 0; i < 6; i++) {
       String key = i.toString();
       if (user.customTasks[key].title == null) {
@@ -32,7 +34,9 @@ class _SetCustomTasksScreenState extends State<SetCustomTasksScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ModalRoute.of(context).settings.arguments as User;
+    final arg = ModalRoute.of(context).settings.arguments as List;
+    String uuid = arg[0];
+    User user = arg[1];
     final Map<String, CustomTask> customTasks = user.customTasks;
     return Center(
         child: Container(
@@ -105,7 +109,8 @@ class _SetCustomTasksScreenState extends State<SetCustomTasksScreen> {
               child: check()
                   ? RaisedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/introduction_task');
+                        Navigator.pushNamed(context, '/introduction_task',
+                            arguments: uuid);
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0)),
