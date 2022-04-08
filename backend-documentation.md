@@ -155,7 +155,7 @@ Input:
     - Boolean isSuccessful: daily evalu successful/not successful
     - String imageProof: Base64 encoding of the uploaded proof provided by the user | if empty can leave as null
     - String reflection: user daily reflection
-    - String enjoyment: the level of enjoyment for the activity user has
+    - String activityEnjoyment: the level of enjoyment for the activity user has
 Output:
   - Map<String, dynamic> response:
       - DailyEvaluation dailyEvalRecord: the daily evaluation record after user chose their task for the day
@@ -165,7 +165,7 @@ Map<String, dynamic> data = {
     'isSuccessful': true,
     'imageProof': 'hello',
     'reflection': 'it went pretty well i would say'
-    'enjoyment': 'I think I would rate it as a good exercise'
+    'activityEnjoyment': 'I think I would rate it as a good exercise'
 };
 await userDbService.updateDailyEval(data);
 ```
