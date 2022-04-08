@@ -160,9 +160,9 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                       ?
                       //  Image.file(image)
                       Text(
-                          "No photo selected",
+                          "Photo successfully submitted",
                           style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.green,
                               fontSize: 18,
                               fontWeight: FontWeight.w400),
                           textAlign: TextAlign.center,
