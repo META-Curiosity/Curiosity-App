@@ -21,7 +21,8 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
   String activityEnjoyment = "";
   var image;
   var base64encode;
-  UserDbService UDS = UserDbService('hashedEmail');
+  String _id;
+  UserDbService UDS;
 
   //Converts date into MM-DD-YY ex. 04-07-22
   String datetimeToString(DateTime date) {
@@ -32,7 +33,13 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
 
   @override
   void didChangeDependencies() {
-    final arg = ModalRoute.of(context).settings.arguments as String;
+    final args = ModalRoute.of(context).settings.arguments as List;
+    String uuid = args[0];
+    String arg = args[1];
+    setState(() {
+      _id = uuid;
+      UDS = UserDbService(uuid);
+    });
     print(arg + " was recieved");
     setState(() {
       activityEnjoyment = arg;
