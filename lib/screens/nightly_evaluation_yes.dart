@@ -51,12 +51,14 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
   Future<void> pickImage() async {
     try {
       final ImagePicker _picker = ImagePicker();
-      final image = await _picker.pickImage(source: ImageSource.gallery);
+      final image = await _picker.pickImage(
+        source: ImageSource.gallery, maxHeight: 850, maxWidth: 850
+      );
       // If the user did not select an image exit the function
       if (image == null) {
         return;
       }
-      print("activity enjoyment is " + activityEnjoyment);
+    
       final imagePermanent = await saveImagePermanently(image.path);
       setState(() => this.image = imagePermanent);
 
@@ -167,9 +169,9 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                       ?
                       //  Image.file(image)
                       Text(
-                          "No photo selected",
+                          "Photo successfully submitted",
                           style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.green,
                               fontSize: 18,
                               fontWeight: FontWeight.w400),
                           textAlign: TextAlign.center,
