@@ -165,7 +165,7 @@ Map<String, dynamic> data = {
     'isSuccessful': true,
     'imageProof': 'hello',
     'reflection': 'it went pretty well i would say'
-    'enjoyment': 'I think I would rate it as a good exercise'
+    'activityEnjoyment': 'I think I would rate it as a good exercise'
 };
 await userDbService.updateDailyEval(data);
 ```
