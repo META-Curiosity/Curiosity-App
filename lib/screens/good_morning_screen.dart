@@ -94,11 +94,11 @@ class _GoodMorningScreenState extends State<GoodMorningScreen> {
                     print(todayTask);
                     if (todayTask == 1) {
                       Navigator.of(context).pushReplacementNamed(
-                          '/daily_custom_tasks',
+                          '/introduction_daily_challenge',
                           arguments: [_id, user]);
                     } else {
                       Navigator.of(context).pushReplacementNamed(
-                          '/introduction_daily_challenge',
+                          '/daily_custom_tasks',
                           arguments: _id);
                     }
                   },
