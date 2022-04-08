@@ -3,6 +3,7 @@ import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'dart:async';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:curiosity_flutter/services/notification_service.dart';
 
 class ChooseTaskSession extends StatefulWidget {
   const ChooseTaskSession({Key key}) : super(key: key);
@@ -39,6 +40,8 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
   }
 
   UserDbService UDS = UserDbService('hashedEmail');
+  NotificationService notificationService =
+      new NotificationService('hashedEmail');
   User user = User();
   Future<void> showInformationDialog(BuildContext context) async {
     return await showDialog(
@@ -171,7 +174,44 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
                                   AntDesign.arrowright,
                                   size: 30.0,
                                 ),
-                                onPressed: () {
+                                onPressed: () async {
+                                  String time = _time.format(context);
+                                  String zone = time.substring(
+                                      time.length - 2, time.length);
+                                  String minutes = time.substring(
+                                      time.length - 5, time.length - 3);
+                                  String hours;
+                                  String convertedTime;
+                                  if (time.length == 8) {
+                                    hours = time.substring(0, 2);
+                                  } else {
+                                    hours = time.substring(0, 1);
+                                  }
+                                  if (zone == "AM") {
+                                    if (hours == "12") {
+                                      convertedTime = "00:" + minutes;
+                                    } else if (hours == "10" || hours == "11") {
+                                      convertedTime = hours + ":" + minutes;
+                                    } else {
+                                      convertedTime =
+                                          "0" + hours + ":" + minutes;
+                                    }
+                                  } else if (zone == "PM") {
+                                    if (hours == "12") {
+                                      convertedTime = "12:" + minutes;
+                                    } else {
+                                      int hours24 = int.parse(hours) + 12;
+                                      convertedTime =
+                                          hours24.toString() + ":" + minutes;
+                                    }
+                                  }
+                                  print(hours);
+                                  print(zone);
+                                  print(minutes);
+                                  print("Converted Time = " + convertedTime);
+                                  await notificationService
+                                      .scheduleActivityCompletionNotification(
+                                          convertedTime);
                                   Navigator.pushReplacementNamed(
                                     context,
                                     '/navigation',

@@ -439,7 +439,7 @@ class _MyHomePageState extends State<MyHomePage> {
             log.successString('user logged in successfully', 0);
             Navigator.pushReplacementNamed(
               context,
-              '/good_morning',
+              '/choose_task_session',
             );
           }
         }
