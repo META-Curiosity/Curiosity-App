@@ -3,6 +3,7 @@ import 'package:survey_kit/survey_kit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:intl/intl.dart';
+import 'package:curiosity_flutter/helper/date_parse.dart';
 
 class MindfulCompletion extends StatefulWidget {
   const MindfulCompletion({Key key}) : super(key: key);
@@ -29,12 +30,7 @@ class _MindfulCompletionState extends State<MindfulCompletion> {
 
   @override
   Widget build(BuildContext context) {
-    //Converts Datetime object into a string of form example: '01-02-2022'
-    String datetimeToString(DateTime date) {
-      DateFormat formatter = DateFormat('MM-dd-y');
-      String formattedDate = formatter.format(date);
-      return formattedDate;
-    }
+    //Converts Datetime object into a string of form example: '01-02-22'
 
     return MaterialApp(
       home: Scaffold(

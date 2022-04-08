@@ -6,6 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:curiosity_flutter/services/meta_task_db_service.dart';
 import 'package:intl/intl.dart';
+import 'package:curiosity_flutter/helper/date_parse.dart';
 
 class TaskCarousel extends StatefulWidget {
   const TaskCarousel({Key key}) : super(key: key);
@@ -119,7 +120,7 @@ class _TaskCarouselState extends State<TaskCarousel> {
               await UDS.removeMetaTask(
                   difficultyLabelListDb[currentTask], result['userIndex']);
               Map<String, dynamic> data = {
-                'id': datetimeToString(DateTime.now()),
+                'id': dateParse(datetimeToString(DateTime.now())),
                 'taskTitle': task.description,
                 'isCustomTask': false
               };

@@ -85,7 +85,7 @@ class _NavigationState extends State<Navigation> {
         '${currentMonth.month.toString().padLeft(2, '0')}-31-${currentMonth.year.toString().substring(2, 4)}'; //MM-DD-YYYY
     Map<String, dynamic> datesObj =
         await UDS.getUserDailyEvalDatesByMonth(convertedTime);
-
+    print(datesObj['dailyEvalRecords']);
     return datesObj['dailyEvalRecords'];
   }
 
@@ -103,16 +103,25 @@ class _NavigationState extends State<Navigation> {
     return formattedDate;
   }
 
+  //MM-dd-yyyy to MM-dd-yy
+  String dateParse(String date) {
+    String res;
+    for (int i = 0; i < date.length; i++) {
+      if (i == 6 && i == 7) continue;
+      res += date[i];
+    }
+    return res;
+  }
+
   //Gets today's date and task.  Returns object {String date, String task}
   Future<List<dynamic>> getToday() async {
     List<dynamic> res = List.filled(2, 0);
 
     String today = datetimeToString(DateTime.now());
-    //TODO: Replace task with a backend function that retrieves today's task
 
     String task = 'Write about anything for 30 minutes';
     await UDS
-        .getUserDailyEvalByDate(datetimeToString2(DateTime.now()))
+        .getUserDailyEvalByDate(dateParse(datetimeToString2(DateTime.now())))
         .then((res) {
       task = res['dailyEvalRecord'].taskTitle;
     });
