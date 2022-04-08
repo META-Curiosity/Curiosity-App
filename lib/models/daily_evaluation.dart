@@ -25,7 +25,7 @@ class DailyEvaluation {
   DailyEvaluation() {
     id = '';
     reflection = '';
-    imageProof = '';
+    imageProof = null;
     taskTitle = '';
     activityEnjoyment = '';
     hashedDate = null;
