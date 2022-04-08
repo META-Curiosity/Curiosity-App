@@ -95,11 +95,11 @@ class _GoodMorningScreenState extends State<GoodMorningScreen> {
                     if (todayTask == 1) {
                       Navigator.of(context).pushReplacementNamed(
                           '/introduction_daily_challenge',
-                          arguments: [_id, user]);
+                          arguments: _id);
                     } else {
                       Navigator.of(context).pushReplacementNamed(
                           '/daily_custom_tasks',
-                          arguments: _id);
+                          arguments: [_id, user]);
                     }
                   },
                   child: const Text("Set Today's Task"),
