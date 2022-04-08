@@ -52,13 +52,12 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
     try {
       final ImagePicker _picker = ImagePicker();
       final image = await _picker.pickImage(
-        source: ImageSource.gallery, maxHeight: 850, maxWidth: 850
-      );
+          source: ImageSource.gallery, maxHeight: 850, maxWidth: 850);
       // If the user did not select an image exit the function
       if (image == null) {
         return;
       }
-    
+
       final imagePermanent = await saveImagePermanently(image.path);
       setState(() => this.image = imagePermanent);
 
@@ -166,16 +165,7 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                   padding: EdgeInsets.only(
                       left: width / 5.5, right: width / 5.5, top: 20),
                   child: image != null
-                      ?
-                      //  Image.file(image)
-                      Text(
-                          "Photo successfully submitted",
-                          style: TextStyle(
-                              color: Colors.green,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w400),
-                          textAlign: TextAlign.center,
-                        )
+                      ? Image.file(image)
                       : Text(
                           "No photo selected",
                           style: TextStyle(
