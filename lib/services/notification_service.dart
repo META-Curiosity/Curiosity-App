@@ -89,7 +89,7 @@ class NotificationService {
       log.infoObj({'method': 'scheduleMindfulnessActivityNotification'});
       dynamic mindfulnessNotiTimes =
           (await userDbService.getMindfulNotiPref())['mindfulReminders'];
-      
+
       // Setting up notifications
       for (int i = 0; i < mindfulnessNotiTimes.length; i++) {
         flutterLocalNotificationsPlugin.zonedSchedule(

@@ -27,13 +27,15 @@ class _ActivitySurveyState extends State<ActivitySurvey> {
                   final task = snapshot.data;
                   return SurveyKit(
                     onResult: (SurveyResult result) {
+                      List<String> responses = [];
                       for (var stepResult in result.results) {
                         for (var questionResult in stepResult.results) {
-                          print(questionResult.valueIdentifier);
+                          responses.add(questionResult.valueIdentifier);
                         }
                       }
                       Navigator.of(context, rootNavigator: true)
-                          .pushReplacementNamed('/nightly_evaluation_yes');
+                          .pushReplacementNamed('/nightly_evaluation_yes',
+                              arguments: responses[1]);
                     },
                     task: task,
                     showProgress: true,
@@ -174,11 +176,17 @@ Future<Task> getSampleTask() {
         isOptional: false,
         answerFormat: SingleChoiceAnswerFormat(
           textChoices: [
-            TextChoice(text: 'Much more than expected', value: '5'),
-            TextChoice(text: 'More than expected', value: '4'),
-            TextChoice(text: 'About as much as expected', value: '3'),
-            TextChoice(text: 'Less than expected', value: '2'),
-            TextChoice(text: 'Much less than expected', value: '1'),
+            TextChoice(
+                text: 'Much more than expected',
+                value: 'Much more than expected'),
+            TextChoice(text: 'More than expected', value: 'More than expected'),
+            TextChoice(
+                text: 'About as much as expected',
+                value: 'About as much as expected'),
+            TextChoice(text: 'Less than expected', value: 'Less than expected'),
+            TextChoice(
+                text: 'Much less than expected',
+                value: 'Much less than expected'),
           ],
         ),
       ),

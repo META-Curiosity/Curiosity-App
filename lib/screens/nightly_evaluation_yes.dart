@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as Path;
+import 'package:intl/intl.dart';
 
 class EvaluationCompletedPage extends StatefulWidget {
   @override
@@ -15,9 +17,29 @@ class EvaluationCompletedPage extends StatefulWidget {
 }
 
 class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
-  String proof = "";
+  String reflection = "";
+  String activityEnjoyment = "";
   var image;
   var base64encode;
+  UserDbService UDS = UserDbService('hashedEmail');
+
+  //Converts date into MM-DD-YY ex. 04-07-22
+  String datetimeToString(DateTime date) {
+    DateFormat formatter = DateFormat('MM-dd-y');
+    String formattedDate = formatter.format(date);
+    return formattedDate;
+  }
+
+  @override
+  void didChangeDependencies() {
+    final arg = ModalRoute.of(context).settings.arguments as String;
+    print(arg + " was recieved");
+    setState(() {
+      activityEnjoyment = arg;
+    });
+
+    super.didChangeDependencies();
+  }
 
   Future<void> pickImage() async {
     try {
@@ -27,7 +49,7 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
       if (image == null) {
         return;
       }
-
+      print("activity enjoyment is " + activityEnjoyment);
       final imagePermanent = await saveImagePermanently(image.path);
       setState(() => this.image = imagePermanent);
 
@@ -35,7 +57,6 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
       String encodedSrc = base64Encode(bytes);
 
       setState(() => this.base64encode = encodedSrc);
-
     } on PlatformException catch (e) {
       print('failed to pick image $e');
     }
@@ -43,7 +64,7 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
 
   Future<File> saveImagePermanently(String imagePath) async {
     final directory = await getApplicationDocumentsDirectory();
-    final name = basename(imagePath);
+    final name = Path.basename(imagePath);
     final image = File('${directory.path}/$name');
     return File(imagePath).copy(image.path);
   }
@@ -112,7 +133,7 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                       expands: true,
                       cursorColor: Colors.white,
                       onChanged: (val) {
-                        proof = val;
+                        reflection = val;
                       },
                       onTap: FocusScope.of(context).unfocus,
                       decoration: InputDecoration(
@@ -136,7 +157,16 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                   padding: EdgeInsets.only(
                       left: width / 5.5, right: width / 5.5, top: 20),
                   child: image != null
-                      ? Image.file(image)
+                      ?
+                      //  Image.file(image)
+                      Text(
+                          "No photo selected",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400),
+                          textAlign: TextAlign.center,
+                        )
                       : Text(
                           "No photo selected",
                           style: TextStyle(
@@ -189,7 +219,17 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                       ),
                       borderRadius: BorderRadius.circular(14),
                       color: Colors.blue,
-                      onPressed: () {
+                      onPressed: () async {
+                        Map<String, dynamic> data = {
+                          'id': datetimeToString(DateTime.now()),
+                          'isSuccessful': true,
+                          'imageProof': base64encode,
+                          'reflection': reflection,
+                          'activityEnjoyment': activityEnjoyment
+                        };
+                        print("Sending");
+                        print(data);
+                        await UDS.updateDailyEval(data);
                         Navigator.pop(context);
                       }),
                 ),

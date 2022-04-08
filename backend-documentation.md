@@ -155,7 +155,7 @@ Input:
     - Boolean isSuccessful: daily evalu successful/not successful
     - String imageProof: Base64 encoding of the uploaded proof provided by the user | if empty can leave as null
     - String reflection: user daily reflection
-    - String enjoyment: the level of enjoyment for the activity user has
+    - String activityEnjoyment: the level of enjoyment for the activity user has
 Output:
   - Map<String, dynamic> response:
       - DailyEvaluation dailyEvalRecord: the daily evaluation record after user chose their task for the day

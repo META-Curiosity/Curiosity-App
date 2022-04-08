@@ -35,7 +35,7 @@ class EditCustomTasksScreenState extends State<EditCustomTasksScreen> {
               'Edit Your Custom Goals',
               style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
             const Text(
               "Let's set 6 goals related to curiosity.",
               style: TextStyle(fontSize: 16),
