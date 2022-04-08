@@ -47,7 +47,8 @@ class _NavigationState extends State<Navigation> {
       setState(() {
         screens = [
           WelcomeBackScreen(date: result[3][0], task: result[3][1], uuid: uuid),
-          MindfulSessionsScreen(), //To be replaced with meditation screen
+          MindfulSessionsScreen(
+              uuid: uuid), //To be replaced with meditation screen
           CentralDashboardScreen(
               dates: listOfDailyEvaluationsToMap(result[1]),
               records: result[2]),

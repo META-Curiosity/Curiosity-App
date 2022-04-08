@@ -22,10 +22,15 @@ class _AudioPlayerState extends State<AudioPlayer> {
 
   String image = '';
   String audio = '';
+  String _id = '';
   @override
   void didChangeDependencies() {
-    final args = ModalRoute.of(context).settings.arguments as int;
-
+    final arg = ModalRoute.of(context).settings.arguments as List;
+    String uuid = arg[0];
+    int args = arg[1];
+    setState(() {
+      _id = uuid;
+    });
     Random random = new Random();
     //Set the image and audio based on the setting selected.
     if (args == 0) {
@@ -108,7 +113,8 @@ class _AudioPlayerState extends State<AudioPlayer> {
               // );
               // Navigator.of(context, rootNavigator: true)
               //     .pushReplacementNamed('/mindful_completion');
-              Navigator.pushReplacementNamed(context, '/mindful_completion');
+              Navigator.pushReplacementNamed(context, '/mindful_completion',
+                  arguments: _id);
             },
           ),
           backgroundColor: Color(0xFFF6C344),
