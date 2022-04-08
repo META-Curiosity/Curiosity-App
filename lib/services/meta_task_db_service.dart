@@ -3,7 +3,7 @@ import 'package:curiosity_flutter/models/meta_task.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
 
 class MetaTaskDbServices {
-  final String META_TASK_DB_NAME = 'meta-task-dev';
+  final String META_TASK_DB_NAME = 'meta-task';
   final LogService log = new LogService();
   CollectionReference taskCollection;
 
