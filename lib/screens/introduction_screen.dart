@@ -37,6 +37,7 @@ class Introduction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String uuid = ModalRoute.of(context).settings.arguments as String;
     return SafeArea(
         child: IntroductionScreen(
       pages: [
@@ -62,7 +63,8 @@ class Introduction extends StatelessWidget {
       done:
           Text('Skip to Goals', style: TextStyle(fontWeight: FontWeight.bold)),
       onDone: () {
-        Navigator.of(context).pushReplacementNamed('/onboarding');
+        Navigator.of(context)
+            .pushReplacementNamed('/onboarding', arguments: uuid);
       },
       next: Icon(Icons.arrow_forward),
       dotsDecorator: getDotDecoration(),

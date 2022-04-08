@@ -16,7 +16,9 @@ class DailyCustomTasksScreen extends StatefulWidget {
 class _DailyCustomTasksScreen extends State<DailyCustomTasksScreen> {
   //Function to check if all 6 tasks are completed or not.
   bool check() {
-    final user = ModalRoute.of(context).settings.arguments as User;
+    final arg = ModalRoute.of(context).settings.arguments as List;
+    String uuid = arg[0];
+    User user = arg[1];
     for (int i = 0; i < 6; i++) {
       String key = i.toString();
       if (user.customTasks[key].title == null) {
@@ -32,8 +34,9 @@ class _DailyCustomTasksScreen extends State<DailyCustomTasksScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ModalRoute.of(context).settings.arguments as User;
-    final Map<String, CustomTask> customTasks = user.customTasks;
+    final arg = ModalRoute.of(context).settings.arguments as List;
+    String uuid = arg[0];
+    User user = arg[1];
     return Center(
         child: Container(
       color: Colors.grey[200],
@@ -139,6 +142,9 @@ class _GradientButtonState extends State<GradientButton> {
 
   @override
   Widget build(BuildContext context) {
+    final arg = ModalRoute.of(context).settings.arguments as List;
+    String uuid = arg[0];
+    User user = arg[1];
     return SizedBox(
         width: 330,
         height: 60,
@@ -146,7 +152,7 @@ class _GradientButtonState extends State<GradientButton> {
             onPressed: () async {
               //Push the inputting task screen on top
               await Navigator.pushNamed(context, '/view_tasks',
-                      arguments: dataToBePushed(widget.user, widget.id))
+                      arguments: [uuid, dataToBePushed(widget.user, widget.id)])
                   .then((_) => setState(() {
                         widget.notifyParent();
                       }));

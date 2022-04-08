@@ -3,23 +3,45 @@ import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'dart:async';
 
-class Consent extends StatelessWidget {
-  UserDbService UDS = UserDbService('hashedEmail');
+class Consent extends StatefulWidget {
+  @override
+  State<Consent> createState() => _ConsentState();
+}
+
+class _ConsentState extends State<Consent> {
+  // UserDbService UDS = UserDbService('hashedEmail');
+  UserDbService UDS;
   User user = User();
 
-  //Skips the mindfulness session if the study Id is odd.
+  String _id;
+
+  @override
+  void didChangeDependencies() {
+    List arg = ModalRoute.of(context).settings.arguments as List;
+    String uuid = arg[0];
+    setState(() {
+      _id = uuid;
+      UDS = UserDbService(uuid);
+    });
+    super.didChangeDependencies();
+  }
+
   void navigateBasedOnStudyId(BuildContext context, String studyId) {
     int convertedStudyId = int.parse(studyId);
     if (convertedStudyId % 2 == 0)
-      Navigator.pushReplacementNamed(context, '/choose_mindfulness_session');
+      Navigator.pushReplacementNamed(context, '/choose_mindfulness_session',
+          arguments: _id);
     else
-      Navigator.pushReplacementNamed(context, '/introduction');
+      Navigator.pushReplacementNamed(context, '/introduction', arguments: _id);
   }
 
   @override
   Widget build(BuildContext context) {
-    final studyId = ModalRoute.of(context).settings.arguments as String;
+    final args = ModalRoute.of(context).settings.arguments as List;
+    String _id = args[0];
+    String studyId = args[1];
     print(studyId);
+
     return Container(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,

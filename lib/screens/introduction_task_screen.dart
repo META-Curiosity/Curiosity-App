@@ -1,10 +1,11 @@
+import 'package:curiosity_flutter/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 
 class IntroductionTask extends StatelessWidget {
   IntroductionTask({Key key}) : super(key: key);
-  UserDbService UDS = UserDbService('hashedEmail');
+  // UserDbService UDS = UserDbService('hashedEmail');
 
   Future<void> showInformationDialog(BuildContext context) async {
     return await showDialog(
@@ -40,6 +41,8 @@ class IntroductionTask extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final uuid = ModalRoute.of(context).settings.arguments as String;
+    UserDbService UDS = UserDbService(uuid);
     return SafeArea(
         child: IntroductionScreen(
       pages: [
@@ -58,7 +61,8 @@ class IntroductionTask extends StatelessWidget {
       done: Text('Begin!', style: TextStyle(fontWeight: FontWeight.bold)),
       onDone: () async {
         await UDS.updateUserOnboarding(true);
-        Navigator.of(context).pushReplacementNamed('/good_morning');
+        Navigator.of(context)
+            .pushReplacementNamed('/good_morning', arguments: uuid);
       },
       next: Icon(Icons.arrow_forward),
       dotsDecorator: getDotDecoration(),

@@ -23,8 +23,21 @@ class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
     "Evening: 4pm - 8pm"
   ];
 
-  UserDbService UDS = UserDbService('hashedEmail');
+  // UserDbService UDS = UserDbService('hashedEmail');
+  UserDbService UDS;
   User user = User();
+
+  String _id;
+  @override
+  void didChangeDependencies() {
+    String uuid = ModalRoute.of(context).settings.arguments as String;
+    setState(() {
+      _id = uuid;
+      UDS = UserDbService(uuid);
+    });
+    super.didChangeDependencies();
+  }
+
   Future<void> showInformationDialog(BuildContext context) async {
     return await showDialog(
         context: context,
@@ -167,7 +180,8 @@ class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
                                             await UDS
                                                 .updateMindfulReminders(data);
                                             Navigator.pushReplacementNamed(
-                                                context, '/introduction');
+                                                context, '/introduction',
+                                                arguments: _id);
                                           },
                                           child: Row(
                                             children: <Widget>[

@@ -33,9 +33,16 @@ class _ActivitySurveyState extends State<ActivitySurvey> {
                           responses.add(questionResult.valueIdentifier);
                         }
                       }
-                      Navigator.of(context, rootNavigator: true)
-                          .pushReplacementNamed('/nightly_evaluation_yes',
-                              arguments: responses[1]);
+                      if (responses.length == 2) {
+                        Navigator.of(context, rootNavigator: true)
+                            .pushReplacementNamed('/nightly_evaluation_yes',
+                                arguments: responses[1]);
+                      } else {
+                        Navigator.of(context, rootNavigator: true)
+                            .pushReplacementNamed(
+                          '/navigation',
+                        );
+                      }
                     },
                     task: task,
                     showProgress: true,

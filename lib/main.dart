@@ -424,6 +424,7 @@ class _MyHomePageState extends State<MyHomePage> {
             //  when checking the user existence
             log.errorObj({'error': isUserRegistered['error']});
           }
+
           if (isUserRegistered['user'] == null) {
             // user has not registered yet -> registering the user
             await userDbService.registerUserId();
@@ -437,10 +438,15 @@ class _MyHomePageState extends State<MyHomePage> {
           } else if (isUserRegistered['user'] != null) {
             // Registered user logging back in again
             log.successString('user logged in successfully', 0);
-            Navigator.pushReplacementNamed(
-              context,
-              '/choose_task_session',
-            );
+            print(isUserRegistered['user'].id);
+            print(isUserRegistered['user'].onboarded);
+            if (isUserRegistered['user'].onboarded == true) {
+              Navigator.pushReplacementNamed(context, '/good_morning',
+                  arguments: isUserRegistered['user'].id);
+            } else {
+              Navigator.pushReplacementNamed(context, '/study_id',
+                  arguments: isUserRegistered['user'].id);
+            }
           }
         }
       }

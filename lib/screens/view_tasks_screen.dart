@@ -47,7 +47,9 @@ class _ViewTasksScreen extends State<ViewTasksScreen> {
 
   @override
   void didChangeDependencies() {
-    final arg = ModalRoute.of(context).settings.arguments as dataToBePushed;
+    final args = ModalRoute.of(context).settings.arguments as List;
+    String uuid = args[0];
+    dataToBePushed arg = args[1];
     final id = arg.id;
     UserDbService UDS = UserDbService(arg.id);
     if (arg != null) {
@@ -70,7 +72,9 @@ class _ViewTasksScreen extends State<ViewTasksScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final arg = ModalRoute.of(context).settings.arguments as dataToBePushed;
+    final args = ModalRoute.of(context).settings.arguments as List;
+    String uuid = args[0];
+    dataToBePushed arg = args[1];
     final id = arg.id;
     UserDbService UDS = UserDbService(arg.user.id);
     String title = arg.user.customTasks[id].title;
@@ -193,7 +197,8 @@ class _ViewTasksScreen extends State<ViewTasksScreen> {
                         'isCustomTask': true
                       };
                       await UDS.addDailyEvalMorningEvent(data);
-                      Navigator.pushReplacementNamed(context, '/navigation');
+                      Navigator.pushReplacementNamed(context, '/navigation',
+                          arguments: uuid);
                     },
                     icon: Icon(AntDesign.checkcircleo),
                     label: Text(

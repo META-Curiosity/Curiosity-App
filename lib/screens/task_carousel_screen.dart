@@ -36,8 +36,9 @@ class _TaskCarouselState extends State<TaskCarousel> {
   final difficultyLabelListDb = ['easy', 'intermediate', 'hard'];
   @override
   Widget build(BuildContext context) {
-    UserDbService UDS = UserDbService('hashedEmail');
-
+    // UserDbService UDS = UserDbService('hashedEmail');
+    final uuid = ModalRoute.of(context).settings.arguments as String;
+    UserDbService UDS = UserDbService(uuid);
     String datetimeToString(DateTime date) {
       DateFormat formatter = DateFormat('MM-dd-y');
       String formattedDate = formatter.format(date);
@@ -123,7 +124,8 @@ class _TaskCarouselState extends State<TaskCarousel> {
                 'isCustomTask': false
               };
               await UDS.addDailyEvalMorningEvent(data);
-              Navigator.pushReplacementNamed(context, '/navigation');
+              Navigator.pushReplacementNamed(context, '/navigation',
+                  arguments: uuid);
             },
             child: Text(
               'Continue',
