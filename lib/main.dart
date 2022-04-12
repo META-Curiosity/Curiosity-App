@@ -44,6 +44,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // Encryption
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
+//Helpers
+import 'package:curiosity_flutter/helper/date_parse.dart';
 
 const String ANDROID_CHANNEL_ID = 'high_importance_channel';
 const String ANDROID_CHANNEL_NAME = 'High Importance Channel';
@@ -425,6 +427,7 @@ class _MyHomePageState extends State<MyHomePage> {
             log.errorObj({'error': isUserRegistered['error']});
           }
 
+          //Initialize First Screen
           if (isUserRegistered['user'] == null) {
             // user has not registered yet -> registering the user
             await userDbService.registerUserId();
@@ -441,8 +444,17 @@ class _MyHomePageState extends State<MyHomePage> {
             print(isUserRegistered['user'].id);
             print(isUserRegistered['user'].onboarded);
             if (isUserRegistered['user'].onboarded == true) {
-              Navigator.pushReplacementNamed(context, '/good_morning',
-                  arguments: isUserRegistered['user'].id);
+              Map<String, dynamic> recievedTask = await userDbService
+                  .getUserDailyEvalByDate(datetimeToString(DateTime.now()));
+              print("REEEEEE");
+              print(recievedTask['dailyEvalRecord'] == null);
+              if (recievedTask['dailyEvalRecord'] == null) {
+                Navigator.pushReplacementNamed(context, '/good_morning',
+                    arguments: isUserRegistered['user'].id);
+              } else {
+                Navigator.pushReplacementNamed(context, '/navigation',
+                    arguments: isUserRegistered['user'].id);
+              }
             } else {
               Navigator.pushReplacementNamed(context, '/study_id',
                   arguments: isUserRegistered['user'].id);

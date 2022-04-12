@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'package:curiosity_flutter/models/custom_task.dart';
 import 'package:curiosity_flutter/services/admin_db_service.dart';
+import 'package:curiosity_flutter/helper/date_parse.dart';
 
 class GoodMorningScreen extends StatefulWidget {
   GoodMorningScreen({Key key}) : super(key: key);
@@ -20,7 +21,7 @@ class _GoodMorningScreenState extends State<GoodMorningScreen> {
 
   String _id;
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     String uuid = ModalRoute.of(context).settings.arguments as String;
     setState(() {
       _id = uuid;
