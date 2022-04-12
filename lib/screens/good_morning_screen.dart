@@ -18,6 +18,7 @@ class _GoodMorningScreenState extends State<GoodMorningScreen> {
   UserDbService UDS;
   User user;
   AdminDbService adminDbService = new AdminDbService();
+  bool onboarded = false;
 
   String _id;
   @override
@@ -37,6 +38,16 @@ class _GoodMorningScreenState extends State<GoodMorningScreen> {
         user = result;
       });
     });
+    UDS
+        .getUserDailyEvalDatesByMonth(
+            '${DateTime.now().month.toString().padLeft(2, '0')}-31-${DateTime.now().year.toString().substring(2, 4)}')
+        .then((res) {
+      if (res['dailyEvalRecords'] != null) {
+        setState(() {
+          onboarded = true;
+        });
+      }
+    }); //MM-DD-YY
     super.didChangeDependencies();
   }
 
@@ -94,9 +105,15 @@ class _GoodMorningScreenState extends State<GoodMorningScreen> {
                     });
                     print(todayTask);
                     if (todayTask == 1) {
-                      Navigator.of(context).pushReplacementNamed(
-                          '/introduction_daily_challenge',
-                          arguments: _id);
+                      if (onboarded) {
+                        Navigator.of(context).pushReplacementNamed(
+                            '/task_carousel',
+                            arguments: _id);
+                      } else {
+                        Navigator.of(context).pushReplacementNamed(
+                            '/introduction_daily_challenge',
+                            arguments: _id);
+                      }
                     } else {
                       Navigator.of(context).pushReplacementNamed(
                           '/daily_custom_tasks',
