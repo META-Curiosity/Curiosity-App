@@ -1,17 +1,15 @@
 import 'package:intl/intl.dart';
 
 String dateParse(String date) {
-  //MM-dd-yyyy to MM-dd-yy
-  String res;
-  for (int i = 0; i < date.length; i++) {
-    if (i == 6 && i == 7) continue;
-    res += date[i];
-  }
-  return res;
+  return date.substring(0, 6) + date.substring(8, 10);
 }
 
+//Converts Date time to the form MM-DD-YY
 String datetimeToString(DateTime date) {
   DateFormat formatter = DateFormat('MM-dd-y');
   String formattedDate = formatter.format(date);
+  print("CHUNK: " +
+      formattedDate.substring(0, 6) +
+      formattedDate.substring(8, 10));
   return dateParse(formattedDate);
 }

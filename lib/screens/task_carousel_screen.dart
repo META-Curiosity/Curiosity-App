@@ -40,11 +40,6 @@ class _TaskCarouselState extends State<TaskCarousel> {
     // UserDbService UDS = UserDbService('hashedEmail');
     final uuid = ModalRoute.of(context).settings.arguments as String;
     UserDbService UDS = UserDbService(uuid);
-    String datetimeToString(DateTime date) {
-      DateFormat formatter = DateFormat('MM-dd-y');
-      String formattedDate = formatter.format(date);
-      return formattedDate;
-    }
 
     return Container(
         child: Center(
@@ -120,10 +115,12 @@ class _TaskCarouselState extends State<TaskCarousel> {
               await UDS.removeMetaTask(
                   difficultyLabelListDb[currentTask], result['userIndex']);
               Map<String, dynamic> data = {
-                'id': dateParse(datetimeToString(DateTime.now())),
+                'id': datetimeToString(DateTime.now()),
                 'taskTitle': task.description,
                 'isCustomTask': false
               };
+              print("Data");
+              print(data);
               await UDS.addDailyEvalMorningEvent(data);
               Navigator.pushReplacementNamed(context, '/navigation',
                   arguments: uuid);

@@ -20,6 +20,7 @@ import 'screens/firebase_test_screen.dart';
 import 'package:curiosity_flutter/models/daily_evaluation.dart';
 import 'screens/mindful_sessions_screen.dart';
 import 'screens/welcome_back_screen.dart';
+import 'package:curiosity_flutter/helper/date_parse.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key key}) : super(key: key);
@@ -90,38 +91,21 @@ class _NavigationState extends State<Navigation> {
   }
 
   //Converts Datetime object into a string of form example: 'Sun, Nov 28'
-  String datetimeToString(DateTime date) {
+  String datetimeToString1(DateTime date) {
     DateFormat formatter = DateFormat('E, MMM d');
     String formattedDate = formatter.format(date);
     return formattedDate;
-  }
-
-  //Converts Datetime object into a string of form example: '04-05-22'
-  String datetimeToString2(DateTime date) {
-    DateFormat formatter = DateFormat('MM-dd-y');
-    String formattedDate = formatter.format(date);
-    return formattedDate;
-  }
-
-  //MM-dd-yyyy to MM-dd-yy
-  String dateParse(String date) {
-    String res;
-    for (int i = 0; i < date.length; i++) {
-      if (i == 6 && i == 7) continue;
-      res += date[i];
-    }
-    return res;
   }
 
   //Gets today's date and task.  Returns object {String date, String task}
   Future<List<dynamic>> getToday() async {
     List<dynamic> res = List.filled(2, 0);
 
-    String today = datetimeToString(DateTime.now());
+    String today = datetimeToString1(DateTime.now());
 
     String task = 'Write about anything for 30 minutes';
     await UDS
-        .getUserDailyEvalByDate(dateParse(datetimeToString2(DateTime.now())))
+        .getUserDailyEvalByDate(datetimeToString(DateTime.now()))
         .then((res) {
       task = res['dailyEvalRecord'].taskTitle;
     });
