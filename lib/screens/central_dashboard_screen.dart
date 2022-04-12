@@ -27,6 +27,12 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
   DateTime today = DateTime.now();
 
   @override
+  void didChangeDependencies() {
+    setState(() {});
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     //For each day, returns the nightly evaluation for that day.
     List<DailyEvaluation> getEvents(DateTime d) {

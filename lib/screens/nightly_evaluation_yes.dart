@@ -200,9 +200,13 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                       onPressed: () => pickImage()),
                 ),
                 Padding(
+                    padding: EdgeInsets.only(
+                        left: width / 5.5, right: width / 5.5, top: 20),
+                    child: image != null ? Image.file(image) : Container()),
+                Padding(
                   padding: EdgeInsets.only(
                       left: width / 5.5,
-                      top: height / 5,
+                      top: height / 20,
                       right: width / 5.5,
                       bottom: 20),
                   child: CupertinoButton(

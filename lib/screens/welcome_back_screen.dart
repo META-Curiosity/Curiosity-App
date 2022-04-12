@@ -76,7 +76,8 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                 onPressed: () {
                   // Navigate to the second screen using a named route.
                   Navigator.pushNamed(context, '/activity_survey',
-                      arguments: widget.uuid);
+                          arguments: widget.uuid)
+                      .then((_) => setState(() {}));
                 },
                 child: const Text("I'm done!"),
               ),

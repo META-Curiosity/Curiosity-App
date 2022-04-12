@@ -86,8 +86,14 @@ class _NavigationState extends State<Navigation> {
         '${currentMonth.month.toString().padLeft(2, '0')}-31-${currentMonth.year.toString().substring(2, 4)}'; //MM-DD-YYYY
     Map<String, dynamic> datesObj =
         await UDS.getUserDailyEvalDatesByMonth(convertedTime);
-    print(datesObj['dailyEvalRecords']);
-    return datesObj['dailyEvalRecords'];
+    List<DailyEvaluation> sucessfulDates = [];
+    for (DailyEvaluation dateEvals in datesObj['dailyEvalRecords']) {
+      if (dateEvals.isSuccessful == true) {
+        sucessfulDates.add(dateEvals);
+      }
+    }
+
+    return sucessfulDates;
   }
 
   //Converts Datetime object into a string of form example: 'Sun, Nov 28'
