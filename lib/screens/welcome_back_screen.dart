@@ -17,8 +17,6 @@ class WelcomeBackScreen extends StatefulWidget {
 }
 
 class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
-  WelcomeBackScreen welcomeBackSceen;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -78,14 +76,8 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                 ),
                 onPressed: () {
                   // Navigate to the second screen using a named route.
-                  Navigator.pushNamed(context, '/activity_survey',
-                          arguments: widget.uuid)
-                      .then((result) {
-                    welcomeBackSceen = new WelcomeBackScreen(
-                        date: widget.date,
-                        task: widget.task,
-                        uuid: widget.uuid);
-                  });
+                  Navigator.pushReplacementNamed(context, '/activity_survey',
+                      arguments: widget.uuid);
                 },
                 child: const Text("I'm done!"),
               ),

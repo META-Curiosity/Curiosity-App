@@ -236,7 +236,8 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                         print("Sending");
                         print(data);
                         await UDS.updateDailyEval(data);
-                        Navigator.pop(context);
+                        Navigator.pushReplacementNamed(context, '/navigation',
+                            arguments: _id);
                       }),
                 ),
               ],
