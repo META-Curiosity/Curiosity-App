@@ -159,16 +159,7 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                   padding: EdgeInsets.only(
                       left: width / 5.5, right: width / 5.5, top: 20),
                   child: image != null
-                      ?
-                      //  Image.file(image)
-                      Text(
-                          "Photo successfully submitted",
-                          style: TextStyle(
-                              color: Colors.green,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w400),
-                          textAlign: TextAlign.center,
-                        )
+                      ? Image.file(image)
                       : Text(
                           "No photo selected",
                           style: TextStyle(

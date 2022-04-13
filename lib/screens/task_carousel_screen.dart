@@ -116,7 +116,7 @@ class _TaskCarouselState extends State<TaskCarousel> {
                   difficultyLabelListDb[currentTask], result['userIndex']);
               Map<String, dynamic> data = {
                 'id': datetimeToString(DateTime.now()),
-                'taskTitle': task.description,
+                'taskTitle': task.title,
                 'isCustomTask': false
               };
               print("Data");
