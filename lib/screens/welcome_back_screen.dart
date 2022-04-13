@@ -1,6 +1,7 @@
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:curiosity_flutter/navigation.dart';
 import 'package:intl/intl.dart';
 
 class WelcomeBackScreen extends StatefulWidget {
@@ -16,6 +17,8 @@ class WelcomeBackScreen extends StatefulWidget {
 }
 
 class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
+  WelcomeBackScreen welcomeBackSceen;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -61,10 +64,10 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
             // SvgPicture.asset('assets/images/edit.svg',
             //     semanticsLabel: 'Pencil editing a book', height: 200),
             const SizedBox(height: 30),
-            const Text(
-              "⏰ 8:30 PM",
-              style: TextStyle(fontSize: 16),
-            ),
+            // const Text(
+            //   "⏰ 8:30 PM",
+            //   style: TextStyle(fontSize: 16),
+            // ),
             const SizedBox(height: 30),
             SizedBox(
               width: 275,
@@ -77,7 +80,12 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                   // Navigate to the second screen using a named route.
                   Navigator.pushNamed(context, '/activity_survey',
                           arguments: widget.uuid)
-                      .then((_) => setState(() {}));
+                      .then((result) {
+                    welcomeBackSceen = new WelcomeBackScreen(
+                        date: widget.date,
+                        task: widget.task,
+                        uuid: widget.uuid);
+                  });
                 },
                 child: const Text("I'm done!"),
               ),
