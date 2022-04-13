@@ -7,6 +7,7 @@ import 'package:curiosity_flutter/models/user.dart';
 import 'package:curiosity_flutter/models/props.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
+import 'package:curiosity_flutter/helper/date_parse.dart';
 
 class ViewTasksScreen extends StatefulWidget {
   const ViewTasksScreen({Key key}) : super(key: key);
@@ -81,12 +82,6 @@ class _ViewTasksScreen extends State<ViewTasksScreen> {
     String when = arg.user.customTasks[id].moment;
     String what = arg.user.customTasks[id].method;
     String proof = arg.user.customTasks[id].proof;
-
-    String datetimeToString(DateTime date) {
-      DateFormat formatter = DateFormat('MM-dd-y');
-      String formattedDate = formatter.format(date);
-      return formattedDate;
-    }
 
     return Form(
       key: _formKey,

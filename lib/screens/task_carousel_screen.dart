@@ -6,6 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:curiosity_flutter/services/meta_task_db_service.dart';
 import 'package:intl/intl.dart';
+import 'package:curiosity_flutter/helper/date_parse.dart';
 
 class TaskCarousel extends StatefulWidget {
   const TaskCarousel({Key key}) : super(key: key);
@@ -39,11 +40,6 @@ class _TaskCarouselState extends State<TaskCarousel> {
     // UserDbService UDS = UserDbService('hashedEmail');
     final uuid = ModalRoute.of(context).settings.arguments as String;
     UserDbService UDS = UserDbService(uuid);
-    String datetimeToString(DateTime date) {
-      DateFormat formatter = DateFormat('MM-dd-y');
-      String formattedDate = formatter.format(date);
-      return formattedDate;
-    }
 
     return Container(
         child: Center(
@@ -123,6 +119,8 @@ class _TaskCarouselState extends State<TaskCarousel> {
                 'taskTitle': task.title,
                 'isCustomTask': false
               };
+              print("Data");
+              print(data);
               await UDS.addDailyEvalMorningEvent(data);
               Navigator.pushReplacementNamed(context, '/navigation',
                   arguments: uuid);

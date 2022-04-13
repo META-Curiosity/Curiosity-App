@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as Path;
 import 'package:intl/intl.dart';
+import 'package:curiosity_flutter/helper/date_parse.dart';
 
 class EvaluationCompletedPage extends StatefulWidget {
   @override
@@ -23,13 +24,6 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
   var base64encode;
   String _id;
   UserDbService UDS;
-
-  //Converts date into MM-DD-YY ex. 04-07-22
-  String datetimeToString(DateTime date) {
-    DateFormat formatter = DateFormat('MM-dd-y');
-    String formattedDate = formatter.format(date);
-    return formattedDate;
-  }
 
   @override
   void didChangeDependencies() {
@@ -197,9 +191,13 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                       onPressed: () => pickImage()),
                 ),
                 Padding(
+                    padding: EdgeInsets.only(
+                        left: width / 5.5, right: width / 5.5, top: 20),
+                    child: image != null ? Image.file(image) : Container()),
+                Padding(
                   padding: EdgeInsets.only(
                       left: width / 5.5,
-                      top: height / 5,
+                      top: height / 20,
                       right: width / 5.5,
                       bottom: 20),
                   child: CupertinoButton(
@@ -229,7 +227,8 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                         print("Sending");
                         print(data);
                         await UDS.updateDailyEval(data);
-                        Navigator.pop(context);
+                        Navigator.pushReplacementNamed(context, '/navigation',
+                            arguments: _id);
                       }),
                 ),
               ],

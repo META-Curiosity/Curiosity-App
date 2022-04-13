@@ -20,6 +20,7 @@ import 'screens/firebase_test_screen.dart';
 import 'package:curiosity_flutter/models/daily_evaluation.dart';
 import 'screens/mindful_sessions_screen.dart';
 import 'screens/welcome_back_screen.dart';
+import 'package:curiosity_flutter/helper/date_parse.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key key}) : super(key: key);
@@ -85,20 +86,19 @@ class _NavigationState extends State<Navigation> {
         '${currentMonth.month.toString().padLeft(2, '0')}-31-${currentMonth.year.toString().substring(2, 4)}'; //MM-DD-YYYY
     Map<String, dynamic> datesObj =
         await UDS.getUserDailyEvalDatesByMonth(convertedTime);
+    List<DailyEvaluation> sucessfulDates = [];
+    for (DailyEvaluation dateEvals in datesObj['dailyEvalRecords']) {
+      if (dateEvals.isSuccessful == true) {
+        sucessfulDates.add(dateEvals);
+      }
+    }
 
-    return datesObj['dailyEvalRecords'];
+    return sucessfulDates;
   }
 
   //Converts Datetime object into a string of form example: 'Sun, Nov 28'
-  String datetimeToString(DateTime date) {
+  String datetimeToString1(DateTime date) {
     DateFormat formatter = DateFormat('E, MMM d');
-    String formattedDate = formatter.format(date);
-    return formattedDate;
-  }
-
-  //Converts Datetime object into a string of form example: '04-05-22'
-  String datetimeToString2(DateTime date) {
-    DateFormat formatter = DateFormat('MM-dd-y');
     String formattedDate = formatter.format(date);
     return formattedDate;
   }
@@ -107,12 +107,11 @@ class _NavigationState extends State<Navigation> {
   Future<List<dynamic>> getToday() async {
     List<dynamic> res = List.filled(2, 0);
 
-    String today = datetimeToString(DateTime.now());
-    //TODO: Replace task with a backend function that retrieves today's task
+    String today = datetimeToString1(DateTime.now());
 
     String task = 'Write about anything for 30 minutes';
     await UDS
-        .getUserDailyEvalByDate(datetimeToString2(DateTime.now()))
+        .getUserDailyEvalByDate(datetimeToString(DateTime.now()))
         .then((res) {
       task = res['dailyEvalRecord'].taskTitle;
     });

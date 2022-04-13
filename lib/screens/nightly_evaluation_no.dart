@@ -2,14 +2,10 @@ import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:curiosity_flutter/helper/date_parse.dart';
 
 class EvaluationNotCompleted extends StatelessWidget {
   //Converts date into MM-DD-YY ex. 04-07-22
-  String datetimeToString(DateTime date) {
-    DateFormat formatter = DateFormat('MM-dd-y');
-    String formattedDate = formatter.format(date);
-    return formattedDate;
-  }
 
   String reflection = "";
   @override
