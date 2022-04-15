@@ -295,12 +295,12 @@ class MyApp extends StatelessWidget {
               ),
             ),
         '/task_carousel': (context) => Scaffold(
-              appBar: AppBar(
-                //centerTitle: true,
-                leading: BackButton(),
-                //title: Text('New Task'),
-                backgroundColor: Color(0xFFF6C344),
-              ),
+              // appBar: AppBar(
+              //   //centerTitle: true,
+              //   leading: BackButton(),
+              //   //title: Text('New Task'),
+              //   backgroundColor: Color(0xFFF6C344),
+              // ),
               resizeToAvoidBottomInset: true,
               body: Container(
                 child: TaskCarousel(),

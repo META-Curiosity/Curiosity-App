@@ -39,10 +39,25 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
     }
   }
 
-  UserDbService UDS = UserDbService('hashedEmail');
-  NotificationService notificationService =
-      new NotificationService('hashedEmail');
+  String _id;
+
+  //UserDbService UDS = UserDbService('hashedEmail');
+
+  UserDbService UDS;
   User user = User();
+  NotificationService notificationService;
+
+  @override
+  void didChangeDependencies() {
+    String uuid = ModalRoute.of(context).settings.arguments as String;
+    setState(() {
+      _id = uuid;
+      UDS = UserDbService(uuid);
+      notificationService = NotificationService(uuid);
+    });
+    super.didChangeDependencies();
+  }
+
   Future<void> showInformationDialog(BuildContext context) async {
     return await showDialog(
         context: context,
@@ -147,7 +162,10 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
                       child: Center(
                         child: Column(
                           children: [
-                            SizedBox(height: 120),
+                            SizedBox(height: 70),
+                            Text(
+                                "Please choose a time after now and before the day ends"),
+                            SizedBox(height: 50),
                             SizedBox(
                               height: 50,
                               width: 200,
@@ -213,9 +231,8 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
                                       .scheduleActivityCompletionNotification(
                                           convertedTime);
                                   Navigator.pushReplacementNamed(
-                                    context,
-                                    '/navigation',
-                                  );
+                                      context, '/navigation',
+                                      arguments: _id);
                                 },
                                 label: Text('CONTINUE'),
                               ),
