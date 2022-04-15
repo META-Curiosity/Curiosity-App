@@ -192,7 +192,8 @@ class _ViewTasksScreen extends State<ViewTasksScreen> {
                         'isCustomTask': true
                       };
                       await UDS.addDailyEvalMorningEvent(data);
-                      Navigator.pushReplacementNamed(context, '/navigation',
+                      Navigator.pushReplacementNamed(
+                          context, '/choose_task_session',
                           arguments: uuid);
                     },
                     icon: Icon(AntDesign.checkcircleo),
