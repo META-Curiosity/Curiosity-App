@@ -386,7 +386,6 @@ class _MyHomePageState extends State<MyHomePage> {
       RemoteNotification notification = message.notification;
       AndroidNotification android = message.notification?.android;
       if (android != null && notification != null) {
-        print('inside the dialog');
         showDialog(
             context: context,
             builder: (_) {

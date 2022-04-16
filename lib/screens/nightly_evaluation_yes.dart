@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as Path;
-import 'package:intl/intl.dart';
 import 'package:curiosity_flutter/helper/date_parse.dart';
 
 class EvaluationCompletedPage extends StatefulWidget {
@@ -191,10 +190,6 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                       onPressed: () => pickImage()),
                 ),
                 Padding(
-                    padding: EdgeInsets.only(
-                        left: width / 5.5, right: width / 5.5, top: 20),
-                    child: image != null ? Image.file(image) : Container()),
-                Padding(
                   padding: EdgeInsets.only(
                       left: width / 5.5,
                       top: height / 20,
@@ -224,8 +219,6 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                           'reflection': reflection,
                           'activityEnjoyment': activityEnjoyment
                         };
-                        print("Sending");
-                        print(data);
                         await UDS.updateDailyEval(data);
                         Navigator.pushReplacementNamed(context, '/navigation',
                             arguments: _id);
