@@ -40,9 +40,6 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
   }
 
   String _id;
-
-  //UserDbService UDS = UserDbService('hashedEmail');
-
   UserDbService UDS;
   User user = User();
   NotificationService notificationService;

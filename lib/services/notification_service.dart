@@ -180,7 +180,7 @@ class NotificationService {
     }
   }
 
-  // Removing all the mindfulness session notification
+  // Removing all the activity completion notifications
   void cancelActivityCompletionNotification() async {
     try {
       log.infoObj({'method': 'cancelActivityCompletionNotification'});

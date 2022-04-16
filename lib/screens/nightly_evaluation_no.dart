@@ -4,14 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:curiosity_flutter/helper/date_parse.dart';
 
+import '../services/notification_service.dart';
+
 class EvaluationNotCompleted extends StatelessWidget {
   //Converts date into MM-DD-YY ex. 04-07-22
 
   String reflection = "";
+  
   @override
   Widget build(BuildContext context) {
     String uuid = ModalRoute.of(context).settings.arguments as String;
     UserDbService UDS = UserDbService(uuid);
+    NotificationService notificationService = NotificationService(uuid);
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return GestureDetector(
@@ -84,38 +88,6 @@ class EvaluationNotCompleted extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Padding(
-                //   padding: EdgeInsets.symmetric(horizontal: 20),
-                //   child: Text(
-                //     "If your task requires you to upload a photo, please do so:",
-                //     style: TextStyle(
-                //         color: Colors.white,
-                //         fontSize: 20,
-                //         fontWeight: FontWeight.w300),
-                //     textAlign: TextAlign.center,
-                //   ),
-                // ),
-                // Padding(
-                //   padding: EdgeInsets.only(
-                //       left: width / 5.5, right: width / 5.5, top: 20),
-                //   child: CupertinoButton(
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.center,
-                //         children: [
-                //           Text(
-                //             "Select Photo",
-                //             style: TextStyle(
-                //                 color: Colors.white,
-                //                 fontSize: 18,
-                //                 fontWeight: FontWeight.w400),
-                //             textAlign: TextAlign.center,
-                //           ),
-                //         ],
-                //       ),
-                //       borderRadius: BorderRadius.circular(14),
-                //       color: Colors.blue,
-                //       onPressed: () {}),
-                // ),
                 Padding(
                   padding: EdgeInsets.only(
                       left: width / 5.5,
@@ -146,9 +118,8 @@ class EvaluationNotCompleted extends StatelessWidget {
                           'reflection': reflection,
                           'activityEnjoyment': null
                         };
-                        print("Sending");
-                        print(data);
                         await UDS.updateDailyEval(data);
+                        await notificationService.cancelActivityCompletionNotification();
                         Navigator.pop(context);
                       }),
                 ),
