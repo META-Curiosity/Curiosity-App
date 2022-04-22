@@ -36,7 +36,7 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
     setState(() {
       _id = uuid;
       UDS = UserDbService(uuid);
-      notificationService = NotificationService(uuid);
+      notificationService = NotificationService();
     });
     print(arg + " was recieved");
     setState(() {

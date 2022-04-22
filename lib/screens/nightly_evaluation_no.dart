@@ -15,7 +15,7 @@ class EvaluationNotCompleted extends StatelessWidget {
   Widget build(BuildContext context) {
     String uuid = ModalRoute.of(context).settings.arguments as String;
     UserDbService UDS = UserDbService(uuid);
-    NotificationService notificationService = NotificationService(uuid);
+    NotificationService notificationService = NotificationService();
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return GestureDetector(
