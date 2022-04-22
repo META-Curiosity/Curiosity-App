@@ -45,7 +45,7 @@ class _MindfulSessionsScreenState extends State<MindfulSessionsScreen> {
                       arguments: [widget.uuid, 0]);
                 },
                 label: const Text('Mindful Eating',
-                    style: TextStyle(fontSize: 18)),
+                    style: TextStyle(fontSize: 16)),
               ),
             ),
             SizedBox(height: 30),
@@ -68,7 +68,7 @@ class _MindfulSessionsScreenState extends State<MindfulSessionsScreen> {
                       arguments: [widget.uuid, 1]);
                 },
                 label: const Text('Mindful Walking',
-                    style: TextStyle(fontSize: 18)),
+                    style: TextStyle(fontSize: 16)),
               ),
             ),
             SizedBox(height: 30),
@@ -91,7 +91,7 @@ class _MindfulSessionsScreenState extends State<MindfulSessionsScreen> {
                       arguments: [widget.uuid, 2]);
                 },
                 label: const Text('Mindful Washing',
-                    style: TextStyle(fontSize: 18)),
+                    style: TextStyle(fontSize: 16)),
               ),
             ),
           ],

@@ -101,8 +101,10 @@ void main() async {
       if (payload == NotificationPayload.MindfulnessSession.toString()) {
         print('redirected to mindfulness screen');
         // [TODO]: redirect the user to slide 32
+
       } else if (payload == NotificationPayload.DailyActivitySetup.toString()) {
         print('redirected to daily activity setup screen');
+
         // [TODO]: redirect the user to slide 19
       } else if (payload ==
           NotificationPayload.DailyActivityCompletion.toString()) {

@@ -122,7 +122,7 @@ class _TaskCarouselState extends State<TaskCarousel> {
               print("Data");
               print(data);
               await UDS.addDailyEvalMorningEvent(data);
-              Navigator.pushReplacementNamed(context, '/navigation',
+              Navigator.pushReplacementNamed(context, '/choose_task_session',
                   arguments: uuid);
             },
             child: Text(

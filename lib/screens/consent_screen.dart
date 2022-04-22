@@ -63,8 +63,9 @@ class _ConsentState extends State<Consent> {
             style: TextStyle(fontSize: 18),
           ),
         ),
-        SizedBox(height: 130),
+        SizedBox(height: 60),
         SizedBox(
+          height: 50,
           width: MediaQuery.of(context).size.width - 50.0,
           child: ElevatedButton(
               onPressed: () async {
@@ -77,8 +78,10 @@ class _ConsentState extends State<Consent> {
                 elevation: 0,
               )),
         ),
+        SizedBox(height: 30),
         Center(
           child: SizedBox(
+            height: 50,
             width: MediaQuery.of(context).size.width - 50.0,
             child: ElevatedButton(
                 onPressed: () async {

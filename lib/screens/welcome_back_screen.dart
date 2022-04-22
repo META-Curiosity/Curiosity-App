@@ -41,18 +41,20 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
               height: 170,
               width: 300,
               decoration: BoxDecoration(
+                color: Colors.grey[300],
                 border: Border.all(
                   color: Colors.black,
                   width: 5,
                 ),
                 borderRadius: BorderRadius.circular(10.0),
               ),
+
               child: Center(
                 child: Text(
                   widget.task,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: 30,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.black),
                 ),
