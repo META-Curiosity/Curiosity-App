@@ -69,14 +69,16 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   // Check in the local storage to get user mindfulness preference
-    Map<String, dynamic> remindersResult = await localStorageService.getMindfulReminders();
-    List<int> mindfulnessReminders = remindersResult[MINDFULNESS_NOTIFICATIONS_KEY];
-    if (mindfulnessReminders != null) {
-      await ns.scheduleMindfulnessSessionNotification(mindfulnessReminders);
-    }
+  Map<String, dynamic> remindersResult =
+      await localStorageService.getMindfulReminders();
+  List<int> mindfulnessReminders =
+      remindersResult[MINDFULNESS_NOTIFICATIONS_KEY];
+  if (mindfulnessReminders != null) {
+    await ns.scheduleMindfulnessSessionNotification(mindfulnessReminders);
+  }
 
-    // Scheduling reminders for user to setup their activity notification
-    await ns.scheduleSetupActivityNotification();
+  // Scheduling reminders for user to setup their activity notification
+  await ns.scheduleSetupActivityNotification();
   print("firebase messaging background handler finished");
 }
 
@@ -93,14 +95,15 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   // Requesting users permission for notification
-  NotificationSettings settings = await FirebaseMessaging.instance.requestPermission();
+  NotificationSettings settings =
+      await FirebaseMessaging.instance.requestPermission();
   print('User granted permission: ${settings.authorizationStatus}');
 
   // Show the message in the foreground for development only
   // Turn off in production
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: false // false in production
-    );
+      );
 
   await FirebaseMessaging.instance.subscribeToTopic('notification');
 
@@ -112,8 +115,10 @@ void main() async {
     print('Message received from Firebase');
 
     // Check in the local storage to get user mindfulness preference
-    Map<String, dynamic> remindersResult = await localStorageService.getMindfulReminders();
-    List<int> mindfulnessReminders = remindersResult[MINDFULNESS_NOTIFICATIONS_KEY];
+    Map<String, dynamic> remindersResult =
+        await localStorageService.getMindfulReminders();
+    List<int> mindfulnessReminders =
+        remindersResult[MINDFULNESS_NOTIFICATIONS_KEY];
     if (mindfulnessReminders != null) {
       print("Mindfulness reminder is not null for the user");
       await ns.scheduleMindfulnessSessionNotification(mindfulnessReminders);
@@ -124,12 +129,14 @@ void main() async {
   });
 
   // Creating initial settings for local notification
-  var initializationSettingsAndroid = AndroidInitializationSettings('codex_logo');
+  var initializationSettingsAndroid =
+      AndroidInitializationSettings('codex_logo');
   var initializationSettingsIOS = IOSInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
-      onDidReceiveLocalNotification: (int id, String title, String body, String payload) async {});
+      onDidReceiveLocalNotification:
+          (int id, String title, String body, String payload) async {});
   var initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS); // Flutter initializing default settings
@@ -137,9 +144,11 @@ void main() async {
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
       // Determine what to do with the notification once selected
       onSelectNotification: (String payload) async {
-        String userId = (await localStorageService.getUserHashedEmail())[HASHED_EMAIL_KEY];
+    String userId =
+        (await localStorageService.getUserHashedEmail())[HASHED_EMAIL_KEY];
     if (payload != null) {
-      if (payload == NotificationPayload.MindfulnessSession.toString() || payload == NotificationPayload.DailyActivityCompletion.toString()) {
+      if (payload == NotificationPayload.MindfulnessSession.toString() ||
+          payload == NotificationPayload.DailyActivityCompletion.toString()) {
         print('redirected to mindfulness screen');
         navigatorKey.currentState.pushNamed('/navigation', arguments: userId);
         // [TODO]: redirect the user to slide 32
@@ -397,14 +406,16 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
+          String hashedEmail =
+              sha256.convert(utf8.encode(currentUser.email)).toString();
           userDbService = UserDbService(hashedEmail);
           LocalStorageService localStorageService = LocalStorageService();
           await localStorageService.addUserHashedEmail(hashedEmail);
 
           // Verifying if the user has registered before - if they have then
           // the application does not sign the user up
-          Map<String, dynamic> isUserRegistered = await userDbService.getUserData();
+          Map<String, dynamic> isUserRegistered =
+              await userDbService.getUserData();
           print(isUserRegistered);
           if (isUserRegistered['error'] != null) {
             // [TODO]: Handle the case where the database encounters an error
@@ -419,15 +430,12 @@ class _MyHomePageState extends State<MyHomePage> {
             log.successString('user has registered successfully', 0);
             // After user successfully register then proceed to ask them for
             // their study id
-            Navigator.pushReplacementNamed(
-              context, '/study_id',
-              arguments: isUserRegistered['user'].id
-            );
+            Navigator.pushReplacementNamed(context, '/study_id',
+                arguments: isUserRegistered['user'].id);
           } else {
             // Registered user logging back in again
             log.successString('user logged in successfully', 0);
             if (isUserRegistered['user'].onboarded == true) {
-
               Map<String, dynamic> recievedTask = await userDbService
                   .getUserDailyEvalByDate(datetimeToString(DateTime.now()));
               if (recievedTask['dailyEvalRecord'] == null) {
