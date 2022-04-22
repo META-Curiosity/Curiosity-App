@@ -39,7 +39,7 @@ Input:
 Output:
   - Ouput new UserDbService object
 '''
-UserDbService userDbService = new UserDbService('HASHED_EMAIL');
+UserDbService userDbService = UserDbService('HASHED_EMAIL');
 ```
 
 2. registerUserId() -> response
@@ -119,7 +119,7 @@ Map<String, dynamic> data = {
     "moment": "every day",
     "proof": "create a new full stack application with nodejs and react"
 };
-CustomTask zero = new CustomTask.fromData(data);
+CustomTask zero = CustomTask.fromData(data);
 // To be replace by the user original tasks dictionary in the database
 Map<String, CustomTask> oldTask = {'0': new CustomTask(), ..., '5': new CustomTask()};
 db.updateTask('1', new CustomTask.fromData(data), oldTask);
@@ -347,7 +347,7 @@ await userDbService.getTypeOfTaskToday();
 Output:
   Ouput new AdminDbService service object
 '''
-AdminDbService adminDbService = new AdminDbService();
+AdminDbService adminDbService = AdminDbService();
 ```
 
 2. getUserById(id) -> response
@@ -379,7 +379,7 @@ await adminDbService.getAllUsers();
 Output:
   Ouput new MetaTaskDbServices object
 '''
-MetaTaskDbServices metaTaskDbService = new MetaTaskDbServices();
+MetaTaskDbServices metaTaskDbService = MetaTaskDbServices();
 ```
 
 2. addMetaTask(data) -> response
@@ -432,7 +432,7 @@ await metaTaskDbService.getCountForDifficulty('easy');
 ## Log Service - Utilized to print logs in the console
 1. Constructor
 ```dart
-LogService logService = new LogService();
+LogService logService = LogService();
 ```
 
 2. infoObj(data, stackCall) 
@@ -508,7 +508,7 @@ logService.errorString('error ALERT', 2);
 Input:
   - String uuid: the user hashed email uuid
 '''
-NotificationService notificationService = new NotificationService(uuid);
+NotificationService notificationService = NotificationService();
 ```
 
 2. scheduleSetupActivityNotification() 
@@ -561,3 +561,92 @@ await notificationService.scheduleActivityCompletionNotification('15:54');
 '''
 await notificationService.cancelActivityCompletionNotification();
 ```
+
+-----------------------------------------------------------------------------------------------
+## Local Storage Service - Utilized to store user information locally on device
+1. Constructor
+```dart
+'''
+- No input/output
+'''
+LocalStorageService localStorageService = LocalStorageService();
+```
+
+2. addMindfulReminders(List\<int> value) 
+```dart
+'''
+Input:
+  - List<int> value: The user mindfulness reminders time range
+Ouput:
+  - Map<String, dynamic> response:
+    - bool success: indicate if operation is successful
+'''
+await localStorageService.addMindfulReminders([8,9,10,11,12]);
+```
+
+3. getMindfulReminders() 
+```dart
+'''
+Ouput:
+  - Map<String, dynamic> response:
+    - bool success: indicate if operation is successful
+    - List<int> MINDFULNESS_NOTIFICATIONS_KEY: user mindfulness notification times
+'''
+await localStorageService.getMindfulReminders();
+```
+
+4. addMindfulEligibility(bool eligibility) 
+```dart
+'''
+Input:
+  - bool eligibility: Whether user eligible for mindfulness session
+Ouput:
+  - Map<String, dynamic> response:
+    - bool success: indicate if operation is successful
+'''
+await localStorageService.addMindfulEligibility(true);
+```
+
+5. getMindfulEligibility() 
+```dart
+'''
+Ouput:
+  - Map<String, dynamic> response:
+    - bool success: indicate if operation is successful
+    - bool MINDFULNESS_ELIGIBILITY_KEY: if user is eligible for mindfulness session
+'''
+await localStorageService.getMindfulEligibility();
+```
+
+6. addUserHashedEmail(String hashedEmail) 
+```dart
+'''
+Input:
+  - String hashedEmail: User hashed email
+Ouput:
+  - Map<String, dynamic> response:
+    - bool success: indicate if operation is successful
+'''
+await localStorageService.addUserHashedEmail("or32irjowej");
+```
+
+7. getUserHashedEmail() 
+```dart
+'''
+Ouput:
+  - Map<String, dynamic> response:
+    - bool success: indicate if operation is successful
+    - String HASHED_EMAIL_KEY: user id for database call
+'''
+await localStorageService.getUserHashedEmail();
+```
+
+8. transformStringToTimeList(List\<String> notificationList) 
+```dart
+'''
+Input:
+  - List<String> notificationList: [start, end] of the user notification time list
+Ouput:
+  - List<int> notificationTimes: a list containing start and end range of user notification preference
+'''
+await localStorageService.transformStringToTimeList(["8", "12"]) // output [8,9,10,11,12];

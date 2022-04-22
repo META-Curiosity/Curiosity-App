@@ -54,12 +54,12 @@ class LocalStorageService {
   }
 
   // Add user mindfulness eligibility to the local storage
-  Future<Map<String, dynamic>> addMindfulEligibility(bool value) async {
+  Future<Map<String, dynamic>> addMindfulEligibility(bool eligibility) async {
     try {
-      log.infoObj({'method': 'addMindfulEligibility', 'value': value});
+      log.infoObj({'method': 'addMindfulEligibility', 'eligibility': eligibility});
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      await prefs.setBool(MINDFULNESS_ELIGIBILITY_KEY, value);
+      await prefs.setBool(MINDFULNESS_ELIGIBILITY_KEY, eligibility);
       log.infoObj({'method': 'addMindfulEligibility - success'});
       return {'success': true };
     } catch (error) {
