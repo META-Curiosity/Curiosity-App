@@ -139,16 +139,16 @@ void main() async {
       onSelectNotification: (String payload) async {
         String userId = (await localStorageService.getUserHashedEmail())[HASHED_EMAIL_KEY];
     if (payload != null) {
-      if (payload == NotificationPayload.MindfulnessSession.toString()) {
+      if (payload == NotificationPayload.MindfulnessSession.toString() || payload == NotificationPayload.DailyActivityCompletion.toString()) {
         print('redirected to mindfulness screen');
         navigatorKey.currentState.pushNamed('/navigation', arguments: userId);
         // [TODO]: redirect the user to slide 32
+
       } else if (payload == NotificationPayload.DailyActivitySetup.toString()) {
         print('redirected to daily activity setup screen');
         navigatorKey.currentState.pushNamed('/good_morning', arguments: userId);
-      } else if (payload == NotificationPayload.DailyActivityCompletion.toString()) {
-        print('redirected to daily activity completion screen');
-        navigatorKey.currentState.pushNamed('/navigation', arguments: userId);
+      } else {
+        print("Error not recognizing payload - $payload");
       }
     }
   });

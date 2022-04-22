@@ -97,8 +97,9 @@ class _StudyIdState extends State<StudyId> {
               style: TextStyle(fontSize: 18),
             ),
           ),
-          SizedBox(height: 100),
+          SizedBox(height: 45),
           SizedBox(
+            height: 50,
             width: MediaQuery.of(context).size.width - 50.0,
             child: ElevatedButton(
                 onPressed: () async {
@@ -110,8 +111,10 @@ class _StudyIdState extends State<StudyId> {
                   elevation: 0,
                 )),
           ),
+          SizedBox(height: 30),
           Center(
             child: SizedBox(
+              height: 50,
               width: MediaQuery.of(context).size.width - 50.0,
               child: ElevatedButton(
                   onPressed: () async {
