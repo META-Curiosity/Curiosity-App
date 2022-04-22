@@ -4,8 +4,6 @@ import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'dart:async';
 
-import '../main.dart';
-
 class StudyId extends StatefulWidget {
   const StudyId({Key key})
       : super(

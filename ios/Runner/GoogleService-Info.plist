@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>49671142207-cui4ubp9iuj7bof451jesrp0n9ckqvqr.apps.googleusercontent.com</string>
+	<string>49671142207-shueonee6loqjlv1staj8pjaior8250p.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.49671142207-cui4ubp9iuj7bof451jesrp0n9ckqvqr</string>
+	<string>com.googleusercontent.apps.49671142207-shueonee6loqjlv1staj8pjaior8250p</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>49671142207-18dndk2f4se2ioj1ih73uavd7qedl25m.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.metalab.curiosityapp</string>
+	<string>com.ucsb.metalab.curiosityapp</string>
 	<key>PROJECT_ID</key>
 	<string>curiosity-e1f26</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:49671142207:ios:4f5bcd7f2820580c35718a</string>
+	<string>1:49671142207:ios:facb301c00c76f2735718a</string>
 	<key>DATABASE_URL</key>
 	<string>https://curiosity-e1f26.firebaseio.com</string>
 </dict>

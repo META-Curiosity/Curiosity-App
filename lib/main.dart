@@ -6,6 +6,7 @@ import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 //screens
+import 'const/local_storage_key.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/set_custom_tasks_screen.dart';
 import 'screens/input_tasks_screen.dart';
@@ -47,6 +48,8 @@ import 'dart:convert';
 //Helpers
 import 'package:curiosity_flutter/helper/date_parse.dart';
 
+import './services/local_storage_service.dart';
+
 const String ANDROID_CHANNEL_ID = 'high_importance_channel';
 const String ANDROID_CHANNEL_NAME = 'High Importance Channel';
 
@@ -57,12 +60,24 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
-// When the user clicks on the notification when the app is in the background
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  // [TODO]: Mechanism to handle push notification when the application is in the background
-  print('A bg message just showed up: ${message.messageId}');
+// Runs when a push notification is triggered in the background
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  LocalStorageService localStorageService = LocalStorageService();
+  NotificationService ns = NotificationService();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // Check in the local storage to get user mindfulness preference
+    Map<String, dynamic> remindersResult = await localStorageService.getMindfulReminders();
+    List<int> mindfulnessReminders = remindersResult[MINDFULNESS_NOTIFICATIONS_KEY];
+    if (mindfulnessReminders != null) {
+      await ns.scheduleMindfulnessSessionNotification(mindfulnessReminders);
+    }
+
+    // Scheduling reminders for user to setup their activity notification
+    await ns.scheduleSetupActivityNotification();
+  print("firebase messaging background handler finished");
 }
 
 // Initializing the application when first launched
@@ -71,45 +86,69 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Setting up connection with firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  print("Finished initializing application");
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Setting message handler function when the application is in the background
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  // Setting up what options for application if it is open in the foreground
+
+  // Requesting users permission for notification
+  NotificationSettings settings = await FirebaseMessaging.instance.requestPermission();
+  print('User granted permission: ${settings.authorizationStatus}');
+
+  // Show the message in the foreground for development only
+  // Turn off in production
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-      alert: true, badge: true, sound: true);
+      alert: false // false in production
+    );
+
+  await FirebaseMessaging.instance.subscribeToTopic('notification');
+
+  NotificationService ns = NotificationService();
+  LocalStorageService localStorageService = LocalStorageService();
+
+  // Handle background logic to setup task reminder for the day
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    print('Message received from Firebase');
+
+    // Check in the local storage to get user mindfulness preference
+    Map<String, dynamic> remindersResult = await localStorageService.getMindfulReminders();
+    List<int> mindfulnessReminders = remindersResult[MINDFULNESS_NOTIFICATIONS_KEY];
+    if (mindfulnessReminders != null) {
+      print("Mindfulness reminder is not null for the user");
+      await ns.scheduleMindfulnessSessionNotification(mindfulnessReminders);
+    }
+
+    // Scheduling reminders for user to setup their activity notification
+    await ns.scheduleSetupActivityNotification();
+  });
 
   // Creating initial settings for local notification
-  var initializationSettingsAndroid =
-      AndroidInitializationSettings('codex_logo');
+  var initializationSettingsAndroid = AndroidInitializationSettings('codex_logo');
   var initializationSettingsIOS = IOSInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
-      onDidReceiveLocalNotification:
-          (int id, String title, String body, String payload) async {});
+      onDidReceiveLocalNotification: (int id, String title, String body, String payload) async {});
   var initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS); // Flutter initializing default settings
 
-  // Flutter initializing default settings
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
       // Determine what to do with the notification once selected
       onSelectNotification: (String payload) async {
+        String userId = (await localStorageService.getUserHashedEmail())[HASHED_EMAIL_KEY];
     if (payload != null) {
-      if (payload == NotificationPayload.MindfulnessSession.toString()) {
+      if (payload == NotificationPayload.MindfulnessSession.toString() || payload == NotificationPayload.DailyActivityCompletion.toString()) {
         print('redirected to mindfulness screen');
+        navigatorKey.currentState.pushNamed('/navigation', arguments: userId);
         // [TODO]: redirect the user to slide 32
 
       } else if (payload == NotificationPayload.DailyActivitySetup.toString()) {
         print('redirected to daily activity setup screen');
-
-        // [TODO]: redirect the user to slide 19
-      } else if (payload ==
-          NotificationPayload.DailyActivityCompletion.toString()) {
-        print('redirected to daily activity completion screen');
-        // [TODO]: redirect the user to slide 26
+        navigatorKey.currentState.pushNamed('/good_morning', arguments: userId);
+      } else {
+        print("Error not recognizing payload - $payload");
       }
     }
   });
@@ -327,6 +366,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
       },
+      navigatorKey: navigatorKey,
     );
   }
 }
@@ -349,64 +389,7 @@ class _MyHomePageState extends State<MyHomePage> {
   UserDbService userDbService;
   LogService log = new LogService();
 
-  Future<void> initializeFirebaseMessaging() async {
-    // Requesting users permission for notification
-    NotificationSettings settings =
-        await FirebaseMessaging.instance.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-    log.infoString('User granted permission: ${settings.authorizationStatus}');
-
-    // Initializing push notification message for users
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      log.infoString('Message received - $message');
-      RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
-      if (notification != null && android != null) {
-        flutterLocalNotificationsPlugin.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(channel.id, channel.name,
-                  color: Colors.blue,
-                  playSound: true,
-                  icon: '@mipmap/ic_launcher'),
-            ));
-      }
-    });
-
-    // Initializing screens to show when the user received a message with opened application
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
-      RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
-      if (android != null && notification != null) {
-        showDialog(
-            context: context,
-            builder: (_) {
-              return AlertDialog(
-                title: Text(notification.title),
-                content: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Text(notification.body)],
-                  ),
-                ),
-              );
-            });
-      }
-    });
-  }
-
   Future<void> initialize() async {
-    await initializeFirebaseMessaging();
     // Change page once user is logged in
     FirebaseAuth.instance.authStateChanges().listen((User user) async {
       if (user == null) {
@@ -414,14 +397,15 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          String hashedEmail =
-              sha256.convert(utf8.encode(currentUser.email)).toString();
+          String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
           userDbService = UserDbService(hashedEmail);
+          LocalStorageService localStorageService = LocalStorageService();
+          await localStorageService.addUserHashedEmail(hashedEmail);
 
           // Verifying if the user has registered before - if they have then
           // the application does not sign the user up
-          Map<String, dynamic> isUserRegistered =
-              await userDbService.getUserData();
+          Map<String, dynamic> isUserRegistered = await userDbService.getUserData();
+          print(isUserRegistered);
           if (isUserRegistered['error'] != null) {
             // [TODO]: Handle the case where the database encounters an error
             //  when checking the user existence
@@ -436,19 +420,16 @@ class _MyHomePageState extends State<MyHomePage> {
             // After user successfully register then proceed to ask them for
             // their study id
             Navigator.pushReplacementNamed(
-              context,
-              '/study_id',
+              context, '/study_id',
+              arguments: isUserRegistered['user'].id
             );
-          } else if (isUserRegistered['user'] != null) {
+          } else {
             // Registered user logging back in again
             log.successString('user logged in successfully', 0);
-            print(isUserRegistered['user'].id);
-            print(isUserRegistered['user'].onboarded);
             if (isUserRegistered['user'].onboarded == true) {
+
               Map<String, dynamic> recievedTask = await userDbService
                   .getUserDailyEvalByDate(datetimeToString(DateTime.now()));
-              print("REEEEEE");
-              print(recievedTask['dailyEvalRecord'] == null);
               if (recievedTask['dailyEvalRecord'] == null) {
                 Navigator.pushReplacementNamed(context, '/good_morning',
                     arguments: isUserRegistered['user'].id);

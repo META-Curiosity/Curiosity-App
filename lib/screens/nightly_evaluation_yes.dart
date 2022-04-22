@@ -10,6 +10,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as Path;
 import 'package:curiosity_flutter/helper/date_parse.dart';
 
+import '../services/notification_service.dart';
+
 class EvaluationCompletedPage extends StatefulWidget {
   @override
   _EvaluationCompletedPageState createState() =>
@@ -23,6 +25,8 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
   var base64encode;
   String _id;
   UserDbService UDS;
+  NotificationService notificationService;
+  
 
   @override
   void didChangeDependencies() {
@@ -32,6 +36,7 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
     setState(() {
       _id = uuid;
       UDS = UserDbService(uuid);
+      notificationService = NotificationService();
     });
     print(arg + " was recieved");
     setState(() {
@@ -220,6 +225,7 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                           'activityEnjoyment': activityEnjoyment
                         };
                         await UDS.updateDailyEval(data);
+                        await notificationService.cancelActivityCompletionNotification();
                         Navigator.pushReplacementNamed(context, '/navigation',
                             arguments: _id);
                       }),

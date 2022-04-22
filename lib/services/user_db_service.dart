@@ -8,6 +8,7 @@ import 'package:curiosity_flutter/services/log_service.dart';
 import 'package:curiosity_flutter/services/meta_task_db_service.dart';
 import '../helper/dateHelper.dart';
 import 'dart:math';
+import './local_storage_service.dart';
 
 /* 
 1) UserDbService - the service expects an authenticated user id to perform necessary operations
@@ -21,6 +22,7 @@ class UserDbService {
   final String DAILY_EVAL_DB_NAME = 'daily-eval-dev';
   final String MINDFUL_SESSION_DB_NAME = 'mindful-session-completion';
   final LogService log = new LogService();
+  final LocalStorageService localStorageService = LocalStorageService();
   String uid;
   CollectionReference usersCollection;
   CollectionReference dailyEvalCollection;
@@ -78,15 +80,16 @@ class UserDbService {
       await usersCollection.doc(uid).update({'labId': labId});
       // Even number lab id will get access to the mindfulness screen
       if (labId >= 0 && labId % 2 == 0) {
+        await localStorageService.addMindfulEligibility(true);
         await usersCollection.doc(uid).update({'mindfulEligibility': true});
       } else {
+        await localStorageService.addMindfulEligibility(false);
         await usersCollection.doc(uid).update({'mindfulEligibility': false});
       }
       log.successObj({'method': 'updateUserLabId - success'});
       return {'success': true};
     } catch (error) {
-      log.errorObj(
-          {'method': 'updateUserLabId - error', 'error': error.toString()}, 2);
+      log.errorObj({'method': 'updateUserLabId - error', 'error': error.toString()}, 2);
       return {'error': error, 'success': false};
     }
   }
@@ -107,10 +110,13 @@ class UserDbService {
   }
 
   // Updating reminders for when the user would like to get reminded to finish their mindfulness
-  Future<Map<String, dynamic>> updateMindfulReminders(
-      List<int> reminders) async {
+  Future<Map<String, dynamic>> updateMindfulReminders(List<int> reminders) async {
     try {
       log.infoObj({'method': 'updateMindfulReminders', 'reminders': reminders});
+      
+      // Updating the local storage according to the users preference
+      await localStorageService.addMindfulReminders(reminders);
+
       await usersCollection.doc(uid).update({'mindfulReminders': reminders});
       log.successObj({'method': 'updateMindfulReminders - success'});
       return {'success': true};
@@ -124,8 +130,7 @@ class UserDbService {
   }
 
   // Updating reminders for when the user would like to get reminded to complete their activity
-  Future<Map<String, dynamic>> updateCompleteActivityReminders(
-      List<int> reminders) async {
+  Future<Map<String, dynamic>> updateCompleteActivityReminders(List<int> reminders) async {
     try {
       log.infoObj(
           {'method': 'updateCompleteActivityReminder', 'reminders': reminders});

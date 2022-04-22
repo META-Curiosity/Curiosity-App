@@ -40,9 +40,6 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
   }
 
   String _id;
-
-  //UserDbService UDS = UserDbService('hashedEmail');
-
   UserDbService UDS;
   User user = User();
   NotificationService notificationService;
@@ -53,7 +50,7 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
     setState(() {
       _id = uuid;
       UDS = UserDbService(uuid);
-      notificationService = NotificationService(uuid);
+      notificationService = NotificationService();
     });
     super.didChangeDependencies();
   }
@@ -227,9 +224,12 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
                                   print(zone);
                                   print(minutes);
                                   print("Converted Time = " + convertedTime);
-                                  await notificationService
-                                      .scheduleActivityCompletionNotification(
-                                          convertedTime);
+                                  
+                                  // Cancel the reminders for users to setup their activity for the day
+                                  await notificationService.cancelSetupActivityNotification();
+
+                                  // Setup notification for user to complete their activity for the day
+                                  await notificationService.scheduleActivityCompletionNotification(convertedTime);
                                   Navigator.pushReplacementNamed(
                                       context, '/navigation',
                                       arguments: _id);
