@@ -115,7 +115,7 @@ void main() async {
     Map<String, dynamic> remindersResult = await localStorageService.getMindfulReminders();
     List<int> mindfulnessReminders = remindersResult[MINDFULNESS_NOTIFICATIONS_KEY];
     if (mindfulnessReminders != null) {
-      print("Mindfulness reminder is null for the user");
+      print("Mindfulness reminder is not null for the user");
       await ns.scheduleMindfulnessSessionNotification(mindfulnessReminders);
     }
 
