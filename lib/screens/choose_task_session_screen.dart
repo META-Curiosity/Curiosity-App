@@ -40,6 +40,7 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
   }
 
   String _id;
+  bool haveMindfullness = false;
   UserDbService UDS;
   User user = User();
   NotificationService notificationService;

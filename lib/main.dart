@@ -445,7 +445,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     arguments: isUserRegistered['user'].id);
               } else {
                 Navigator.pushReplacementNamed(context, '/navigation',
-                    arguments: [isUserRegistered['user'].id, 1]);
+                    arguments: [isUserRegistered['user'].id, 0]);
               }
             } else {
               Navigator.pushReplacementNamed(context, '/study_id',

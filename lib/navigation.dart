@@ -37,6 +37,8 @@ class _NavigationState extends State<Navigation> {
   User user = User();
   String _id;
   int index = 0; //index for nav bar
+  bool haveMindfullness = false;
+  int labId = -1;
 
   @override
   void didChangeDependencies() {
@@ -49,17 +51,46 @@ class _NavigationState extends State<Navigation> {
       index = start;
       UDS = UserDbService(uuid);
     });
+    UDS.getUserData().then((res) {
+      haveMindfullness = res['user'].labId % 2 == 0;
+      labId = res['user'].labId;
+    });
     getEverything().then((result) {
       setState(() {
-        screens = [
-          WelcomeBackScreen(date: result[3][0], task: result[3][1], uuid: uuid),
-          MindfulSessionsScreen(
-              uuid: uuid), //To be replaced with meditation screen
-          CentralDashboardScreen(
-              dates: listOfDailyEvaluationsToMap(result[1]),
-              records: result[2]),
-          EditCustomTasksScreen(user: result[0]),
-        ];
+        print('haveMindfulness = ' + haveMindfullness.toString());
+        if (haveMindfullness == true) {
+          screens = [
+            WelcomeBackScreen(
+                date: result[3][0], task: result[3][1], uuid: uuid),
+            MindfulSessionsScreen(
+                uuid: uuid), //To be replaced with meditation screen
+            CentralDashboardScreen(
+                dates: listOfDailyEvaluationsToMap(result[1]),
+                records: result[2]),
+            EditCustomTasksScreen(user: result[0]),
+          ];
+          items = <Widget>[
+            Icon(Icons.home, size: 20, color: Colors.black),
+            Icon(Entypo.leaf, size: 20, color: Colors.black),
+            Icon(Icons.today, size: 20, color: Colors.black),
+            Icon(Icons.list, size: 20, color: Colors.black),
+          ];
+        } else {
+          screens = [
+            WelcomeBackScreen(
+                date: result[3][0], task: result[3][1], uuid: uuid),
+            CentralDashboardScreen(
+                dates: listOfDailyEvaluationsToMap(result[1]),
+                records: result[2]),
+            EditCustomTasksScreen(user: result[0]),
+          ];
+          items = <Widget>[
+            Icon(Icons.home, size: 20, color: Colors.black),
+            Icon(Icons.today, size: 20, color: Colors.black),
+            Icon(Icons.list, size: 20, color: Colors.black),
+          ];
+        }
+
         _dataRecieved = true;
         print("DONE $_dataRecieved");
       });
@@ -70,6 +101,7 @@ class _NavigationState extends State<Navigation> {
 
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
   List<Widget> screens = [];
+  List<Widget> items = [];
   Map<DateTime, List<DailyEvaluation>> _dates = {};
   bool _datesRecieved = false;
   bool _recordsRecieved = false;
@@ -171,12 +203,6 @@ class _NavigationState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
-    final items = <Widget>[
-      Icon(Icons.home, size: 20, color: Colors.black),
-      Icon(Entypo.leaf, size: 20, color: Colors.black),
-      Icon(Icons.today, size: 20, color: Colors.black),
-      Icon(Icons.list, size: 20, color: Colors.black),
-    ];
     return !_dataRecieved
         ? Loading()
         : Scaffold(
