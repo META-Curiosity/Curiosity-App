@@ -36,12 +36,17 @@ class _NavigationState extends State<Navigation> {
   UserDbService UDS;
   User user = User();
   String _id;
+  int index = 0; //index for nav bar
 
   @override
   void didChangeDependencies() {
-    String uuid = ModalRoute.of(context).settings.arguments as String;
+    List<dynamic> args =
+        ModalRoute.of(context).settings.arguments as List<dynamic>;
+    String uuid = args[0];
+    int start = args[1];
     setState(() {
       _id = uuid;
+      index = start;
       UDS = UserDbService(uuid);
     });
     getEverything().then((result) {
@@ -63,7 +68,6 @@ class _NavigationState extends State<Navigation> {
     super.didChangeDependencies();
   }
 
-  int index = 0; //index for nav bar
   final navigationKey = GlobalKey<CurvedNavigationBarState>();
   List<Widget> screens = [];
   Map<DateTime, List<DailyEvaluation>> _dates = {};

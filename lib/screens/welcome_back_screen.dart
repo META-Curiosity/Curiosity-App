@@ -81,7 +81,7 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                   Navigator.pushReplacementNamed(context, '/activity_survey',
                       arguments: widget.uuid);
                 },
-                child: const Text("I'm done!"),
+                child: const Text("Mark goal as complete."),
               ),
             ),
             SizedBox(height: 20),

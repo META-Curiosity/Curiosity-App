@@ -150,12 +150,14 @@ void main() async {
       if (payload == NotificationPayload.MindfulnessSession.toString() ||
           payload == NotificationPayload.DailyActivityCompletion.toString()) {
         print('redirected to mindfulness screen');
-        navigatorKey.currentState.pushNamed('/navigation', arguments: userId);
+        navigatorKey.currentState
+            .pushNamed('/navigation', arguments: [userId, 1]);
         // [TODO]: redirect the user to slide 32
 
       } else if (payload == NotificationPayload.DailyActivitySetup.toString()) {
         print('redirected to daily activity setup screen');
-        navigatorKey.currentState.pushNamed('/good_morning', arguments: userId);
+        navigatorKey.currentState
+            .pushNamed('/good_morning', arguments: [userId, 0]);
       } else {
         print("Error not recognizing payload - $payload");
       }
@@ -443,7 +445,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     arguments: isUserRegistered['user'].id);
               } else {
                 Navigator.pushReplacementNamed(context, '/navigation',
-                    arguments: isUserRegistered['user'].id);
+                    arguments: [isUserRegistered['user'].id, 1]);
               }
             } else {
               Navigator.pushReplacementNamed(context, '/study_id',
