@@ -26,7 +26,6 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
   String _id;
   UserDbService UDS;
   NotificationService notificationService;
-  
 
   @override
   void didChangeDependencies() {
@@ -225,9 +224,10 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                           'activityEnjoyment': activityEnjoyment
                         };
                         await UDS.updateDailyEval(data);
-                        await notificationService.cancelActivityCompletionNotification();
+                        await notificationService
+                            .cancelActivityCompletionNotification();
                         Navigator.pushReplacementNamed(context, '/navigation',
-                            arguments: _id);
+                            arguments: [_id, 0]);
                       }),
                 ),
               ],
