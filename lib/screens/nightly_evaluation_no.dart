@@ -6,15 +6,29 @@ import 'package:curiosity_flutter/helper/date_parse.dart';
 
 import '../services/notification_service.dart';
 
-class EvaluationNotCompleted extends StatelessWidget {
+class EvaluationNotCompleted extends StatefulWidget {
   //Converts date into MM-DD-YY ex. 04-07-22
 
+  @override
+  State<EvaluationNotCompleted> createState() => _EvaluationNotCompletedState();
+}
+
+class _EvaluationNotCompletedState extends State<EvaluationNotCompleted> {
   String reflection = "";
-  
+
+  String _id;
+  UserDbService UDS;
+  @override
+  void didChangeDependencies() {
+    final String uuid = ModalRoute.of(context).settings.arguments as String;
+    setState(() {
+      _id = uuid;
+      UDS = UserDbService(uuid);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    String uuid = ModalRoute.of(context).settings.arguments as String;
-    UserDbService UDS = UserDbService(uuid);
     NotificationService notificationService = NotificationService();
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
@@ -119,8 +133,10 @@ class EvaluationNotCompleted extends StatelessWidget {
                           'activityEnjoyment': null
                         };
                         await UDS.updateDailyEval(data);
-                        await notificationService.cancelActivityCompletionNotification();
-                        Navigator.pop(context);
+                        await notificationService
+                            .cancelActivityCompletionNotification();
+                        Navigator.pushReplacementNamed(context, '/navigation',
+                            arguments: [_id, 0]);
                       }),
                 ),
               ],

@@ -51,6 +51,7 @@ class _NavigationState extends State<Navigation> {
       index = start;
       UDS = UserDbService(uuid);
     });
+    //Checks if user has access to mindfulness
     UDS.getUserData().then((res) {
       haveMindfullness = res['user'].labId % 2 == 0;
       labId = res['user'].labId;
@@ -61,7 +62,10 @@ class _NavigationState extends State<Navigation> {
         if (haveMindfullness == true) {
           screens = [
             WelcomeBackScreen(
-                date: result[3][0], task: result[3][1], uuid: uuid),
+                date: result[3][0],
+                task: result[3][1],
+                uuid: uuid,
+                taskStatus: result[3][2]),
             MindfulSessionsScreen(
                 uuid: uuid), //To be replaced with meditation screen
             CentralDashboardScreen(
@@ -78,7 +82,10 @@ class _NavigationState extends State<Navigation> {
         } else {
           screens = [
             WelcomeBackScreen(
-                date: result[3][0], task: result[3][1], uuid: uuid),
+                date: result[3][0],
+                task: result[3][1],
+                uuid: uuid,
+                taskStatus: result[3][2]),
             CentralDashboardScreen(
                 dates: listOfDailyEvaluationsToMap(result[1]),
                 records: result[2]),
@@ -141,19 +148,33 @@ class _NavigationState extends State<Navigation> {
 
   //Gets today's date and task.  Returns object {String date, String task}
   Future<List<dynamic>> getToday() async {
-    List<dynamic> res = List.filled(2, 0);
+    List<dynamic> res = List.filled(3, 0);
 
     String today = datetimeToString1(DateTime.now());
 
-    String task = 'Write about anything for 30 minutes';
+    String task = '';
+    int taskStatus = -1; //-1 is null, 0 is skip, 1 is completed
+
     await UDS
         .getUserDailyEvalByDate(datetimeToString(DateTime.now()))
         .then((res) {
       task = res['dailyEvalRecord'].taskTitle;
     });
-
+    //Checks if task has been skiped or completed
+    await UDS
+        .getUserDailyEvalByDate(datetimeToString(DateTime.now()))
+        .then((res) {
+      if (res['dailyEvalRecord'].isSuccessful != null) {
+        if (res['dailyEvalRecord'].isSuccessful == false) {
+          taskStatus = 0;
+        } else {
+          taskStatus = 1;
+        }
+      }
+    });
     res[0] = today;
     res[1] = task;
+    res[2] = taskStatus;
 
     return res;
   }

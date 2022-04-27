@@ -34,6 +34,7 @@ import 'screens/introduction_task_screen.dart';
 import 'screens/mindful_completion_screen.dart';
 import 'screens/daily_custom_task_screen.dart';
 import 'screens/view_tasks_screen.dart';
+
 //firebase
 import 'package:firebase_core/firebase_core.dart';
 import 'package:curiosity_flutter/provider/google_sign_in.dart';
