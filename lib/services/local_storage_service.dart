@@ -58,8 +58,13 @@ class LocalStorageService {
     try {
       log.infoObj({'method': 'addMindfulEligibility', 'eligibility': eligibility});
       SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      await prefs.setBool(MINDFULNESS_ELIGIBILITY_KEY, eligibility);
+      
+      if (eligibility == null) {
+        await prefs.remove(MINDFULNESS_ELIGIBILITY_KEY);
+      } else {
+        await prefs.setBool(MINDFULNESS_ELIGIBILITY_KEY, eligibility);
+      }
+    
       log.infoObj({'method': 'addMindfulEligibility - success'});
       return {'success': true };
     } catch (error) {

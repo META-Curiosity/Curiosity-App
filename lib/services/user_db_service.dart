@@ -44,8 +44,20 @@ class UserDbService {
       if (response['error'] != null) {
         return {'error': response['error']};
       }
-      log.successObj({'method': 'getUserData - success'});
-      return {'user': response['user']};
+      log.successObj({'method': 'getUserData - success', 'response': response});
+
+      User user = response['user'];
+      // If the user exists in the database refresh the local storage item
+      if (user != null) {
+        await localStorageService.addMindfulEligibility(user.mindfulEligibility);
+
+        // User is allowed to have mindfulness session
+        if (user.mindfulEligibility != null && user.mindfulEligibility) {
+          await localStorageService.addMindfulReminders(user.mindfulReminders.cast<int>());
+        }
+      }
+
+      return {'user': user};
     } catch (error) {
       log.errorObj({'method': 'getUserData', 'error': error.toString()});
       return {'error': error.toString()};
