@@ -53,6 +53,9 @@ import './services/local_storage_service.dart';
 // user model class
 import './models/user.dart' as MetaUser;
 
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+
 const String ANDROID_CHANNEL_ID = 'high_importance_channel';
 const String ANDROID_CHANNEL_NAME = 'High Importance Channel';
 
@@ -63,25 +66,75 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
+// Setting up the notification details for Android and iOS
+const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+        'activity_reminder_id', 'Activity Reminder Channel',
+        channelDescription: 'Activity Reminder activity',
+        icon: 'codex_logo',
+        importance: Importance.high,
+        playSound: true);
+const IOSNotificationDetails iOSPlatformChannelSpecifics =
+    IOSNotificationDetails(
+        presentAlert: true, presentBadge: true, presentSound: true);
+NotificationDetails platformChannelSpecifics = NotificationDetails(
+    android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
+
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-// Runs when a push notification is triggered in the background
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   LocalStorageService localStorageService = LocalStorageService();
   NotificationService ns = NotificationService();
-  
+  print("Inside firebase background handler");
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   // Check in the local storage to get user mindfulness preference
   Map<String, dynamic> remindersResult =
       await localStorageService.getMindfulReminders();
+
+  // Setting up the time zone - based in PST
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation('America/Los_Angeles'));
+
+  await flutterLocalNotificationsPlugin.zonedSchedule(
+      100,
+      'DEVELOPER PRODUCTION TEST [IGNORE]',
+      'background message successfully received',
+      tz.TZDateTime.now(tz.local).add(Duration(seconds: 5)),
+      platformChannelSpecifics,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      payload: NotificationPayload.MindfulnessSession.toString());
+
   List<int> mindfulnessReminders =
       remindersResult[MINDFULNESS_NOTIFICATIONS_KEY];
   if (mindfulnessReminders != null) {
     await ns.scheduleMindfulnessSessionNotification(mindfulnessReminders);
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        101,
+        'DEVELOPER PRODUCTION TEST [IGNORE]',
+        'User mindfulness session notification is not null',
+        tz.TZDateTime.now(tz.local).add(Duration(seconds: 10)),
+        platformChannelSpecifics,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        payload: NotificationPayload.MindfulnessSession.toString());
   }
 
   // Scheduling reminders for user to setup their activity notification
   await ns.scheduleSetupActivityNotification();
+  await flutterLocalNotificationsPlugin.zonedSchedule(
+      101,
+      'DEVELOPER PRODUCTION TEST [IGNORE]',
+      'Setup user activity notification',
+      tz.TZDateTime.now(tz.local).add(Duration(seconds: 10)),
+      platformChannelSpecifics,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      payload: NotificationPayload.MindfulnessSession.toString());
   print("firebase messaging background handler finished");
 }
 
@@ -108,7 +161,7 @@ void main() async {
       alert: false // false in production
       );
 
-  await FirebaseMessaging.instance.subscribeToTopic('notification');
+  await FirebaseMessaging.instance.subscribeToTopic('notification-dev');
 
   NotificationService ns = NotificationService();
   LocalStorageService localStorageService = LocalStorageService();
@@ -117,11 +170,20 @@ void main() async {
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     print('Message received from Firebase');
 
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        100,
+        'DEVELOPER PRODUCTION TEST [IGNORE]',
+        'background message successfully received',
+        tz.TZDateTime.now(tz.local).add(Duration(seconds: 9)),
+        platformChannelSpecifics,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        payload: NotificationPayload.MindfulnessSession.toString());
+
     // Check in the local storage to get user mindfulness preference
-    Map<String, dynamic> remindersResult =
-        await localStorageService.getMindfulReminders();
-    List<int> mindfulnessReminders =
-        remindersResult[MINDFULNESS_NOTIFICATIONS_KEY];
+    Map<String, dynamic> remindersResult = await localStorageService.getMindfulReminders();
+    List<int> mindfulnessReminders = remindersResult[MINDFULNESS_NOTIFICATIONS_KEY];
     if (mindfulnessReminders != null) {
       print("Mindfulness reminder is not null for the user");
       await ns.scheduleMindfulnessSessionNotification(mindfulnessReminders);
@@ -419,8 +481,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
           // Verifying if the user has registered before - if they have then
           // the application does not sign the user up
-          Map<String, dynamic> isUserRegistered = await userDbService.getUserData();
-          
+          Map<String, dynamic> isUserRegistered =
+              await userDbService.getUserData();
+
           MetaUser.User user = isUserRegistered['user'];
           String error = isUserRegistered['error'];
 
@@ -434,7 +497,7 @@ class _MyHomePageState extends State<MyHomePage> {
           if (user == null && isUserRegistered['error']) {
             // user has not registered yet -> registering the user
             await userDbService.registerUserId();
-            
+
             log.successString('user has registered successfully', 0);
             // After user successfully register then proceed to ask them for
             // their study id

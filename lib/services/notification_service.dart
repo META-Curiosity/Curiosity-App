@@ -45,7 +45,7 @@ class NotificationService {
             DailyActivitySetupReminderIds[pos],
             'Activity Setup reminder',
             'Please setup your activity for the day',
-            tz.TZDateTime.now(tz.local).add(Duration(hours: 9 + (1 * pos))),
+            tz.TZDateTime.now(tz.local).add(Duration(seconds: 9 + (1 * pos))),
             platformChannelSpecifics,
             androidAllowWhileIdle:
                 true, // deliver notification for android while on low power
@@ -90,11 +90,11 @@ class NotificationService {
 
       // Setting up notifications
       for (int i = 0; i < mindfulnessNotiTimes.length; i++) {
-        flutterLocalNotificationsPlugin.zonedSchedule(
+        await flutterLocalNotificationsPlugin.zonedSchedule(
             MindfulnessReminderIds[i],
             'Complete your mindfulness session',
             'Please finish your mindfulness session for the day',
-            tz.TZDateTime.now(tz.local).add(Duration(hours: mindfulnessNotiTimes[i])),
+            tz.TZDateTime.now(tz.local).add(Duration(seconds: mindfulnessNotiTimes[i])),
             platformChannelSpecifics,
             androidAllowWhileIdle: true,
             uiLocalNotificationDateInterpretation:
