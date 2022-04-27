@@ -20,7 +20,7 @@ class User {
   bool onboarded; // Indicate whether user finished with onboarding process
   bool hasViewedMetaTaskIntro; // if user have view intro when first viewing meta task
 
-  var mindfulReminders;
+  List<dynamic> mindfulReminders;
   var completeActivityReminders;
 
   // Default constructor to initialize everthing to null equivalent

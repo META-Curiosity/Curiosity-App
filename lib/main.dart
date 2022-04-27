@@ -48,8 +48,10 @@ import 'package:crypto/crypto.dart';
 import 'dart:convert';
 //Helpers
 import 'package:curiosity_flutter/helper/date_parse.dart';
-
+// local storage service
 import './services/local_storage_service.dart';
+// user model class
+import './models/user.dart' as MetaUser;
 
 const String ANDROID_CHANNEL_ID = 'high_importance_channel';
 const String ANDROID_CHANNEL_NAME = 'High Importance Channel';
@@ -67,7 +69,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   LocalStorageService localStorageService = LocalStorageService();
   NotificationService ns = NotificationService();
-
+  
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   // Check in the local storage to get user mindfulness preference
   Map<String, dynamic> remindersResult =
@@ -417,40 +419,43 @@ class _MyHomePageState extends State<MyHomePage> {
 
           // Verifying if the user has registered before - if they have then
           // the application does not sign the user up
-          Map<String, dynamic> isUserRegistered =
-              await userDbService.getUserData();
-          print(isUserRegistered);
-          if (isUserRegistered['error'] != null) {
+          Map<String, dynamic> isUserRegistered = await userDbService.getUserData();
+          
+          MetaUser.User user = isUserRegistered['user'];
+          String error = isUserRegistered['error'];
+
+          if (error != null) {
             // [TODO]: Handle the case where the database encounters an error
             //  when checking the user existence
-            log.errorObj({'error': isUserRegistered['error']});
+            log.errorObj({'error': error});
           }
 
           //Initialize First Screen
-          if (isUserRegistered['user'] == null) {
+          if (user == null && isUserRegistered['error']) {
             // user has not registered yet -> registering the user
             await userDbService.registerUserId();
+            
             log.successString('user has registered successfully', 0);
             // After user successfully register then proceed to ask them for
             // their study id
             Navigator.pushReplacementNamed(context, '/study_id',
-                arguments: isUserRegistered['user'].id);
+                arguments: user.id);
           } else {
             // Registered user logging back in again
             log.successString('user logged in successfully', 0);
-            if (isUserRegistered['user'].onboarded == true) {
+            if (user.onboarded == true) {
               Map<String, dynamic> recievedTask = await userDbService
                   .getUserDailyEvalByDate(datetimeToString(DateTime.now()));
               if (recievedTask['dailyEvalRecord'] == null) {
                 Navigator.pushReplacementNamed(context, '/good_morning',
-                    arguments: isUserRegistered['user'].id);
+                    arguments: user.id);
               } else {
                 Navigator.pushReplacementNamed(context, '/navigation',
-                    arguments: [isUserRegistered['user'].id, 0]);
+                    arguments: [user.id, 0]);
               }
             } else {
               Navigator.pushReplacementNamed(context, '/study_id',
-                  arguments: isUserRegistered['user'].id);
+                  arguments: user.id);
             }
           }
         }
