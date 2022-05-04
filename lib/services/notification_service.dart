@@ -26,8 +26,7 @@ class NotificationService {
             importance: Importance.high,
             playSound: true);
     const IOSNotificationDetails iOSPlatformChannelSpecifics =
-        IOSNotificationDetails(
-            presentAlert: true, presentBadge: true, presentSound: true);
+        IOSNotificationDetails(presentAlert: true, presentBadge: false, presentSound: true);
     platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
         iOS: iOSPlatformChannelSpecifics);
@@ -45,7 +44,7 @@ class NotificationService {
             DailyActivitySetupReminderIds[pos],
             'Activity Setup reminder',
             'Please setup your activity for the day',
-            tz.TZDateTime.now(tz.local).add(Duration(seconds: 9 + (1 * pos))),
+            tz.TZDateTime.now(tz.local).add(Duration(hours: 9 + (1 * pos))),
             platformChannelSpecifics,
             androidAllowWhileIdle:
                 true, // deliver notification for android while on low power
@@ -78,7 +77,6 @@ class NotificationService {
     }
   }
 
-  // Trigger at 12AM PST
   // Scheduling the notification to remind the user to complete their mindfulness
   // session
   void scheduleMindfulnessSessionNotification(List<int> mindfulnessNotiTimes) async {
@@ -88,20 +86,24 @@ class NotificationService {
         'mindfulnessNotiTimes': mindfulnessNotiTimes
       });
 
-      // Setting up notifications
-      for (int i = 0; i < mindfulnessNotiTimes.length; i++) {
-        await flutterLocalNotificationsPlugin.zonedSchedule(
-            MindfulnessReminderIds[i],
+      // int numNotifications = calcDiffBetweenTimes(startTime, '23:59').inHours;
+      String crntTime = tz.TZDateTime.now(tz.local).toString().split(" ")[1].substring(0, 5);
+      for (int pos = 0; pos < mindfulnessNotiTimes.length; pos++) {
+        int minuteDiff = calcDiffBetweenTimes(crntTime, mindfulnessNotiTimes[pos].toString() + ":00").inMinutes;
+
+        // Only schedule notification for user if the choosen time is later in the day
+        if (minuteDiff >= 0) {
+          await flutterLocalNotificationsPlugin.zonedSchedule(
+            MindfulnessReminderIds[pos],
             'Complete your mindfulness session',
             'Please finish your mindfulness session for the day',
-            tz.TZDateTime.now(tz.local).add(Duration(seconds: mindfulnessNotiTimes[i])),
+            tz.TZDateTime.now(tz.local).add(Duration(seconds: minuteDiff)),
             platformChannelSpecifics,
             androidAllowWhileIdle: true,
-            uiLocalNotificationDateInterpretation:
-                UILocalNotificationDateInterpretation.absoluteTime,
+            uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
             payload: NotificationPayload.MindfulnessSession.toString());
+        }        
       }
-
       log.successObj(
           {'method': 'scheduleMindfulnessActivityNotification - success'});
     } catch (error) {
