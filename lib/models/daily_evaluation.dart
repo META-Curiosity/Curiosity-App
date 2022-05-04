@@ -9,6 +9,8 @@ class DailyEvaluation {
   String taskTitle;
   String imageProof; // stored as base64 encoding
   int hashedDate; // comparison purpose
+  String taskId;
+  String taskDifficulty; // null for custom task 
 
   DailyEvaluation.fromData(Map<String, dynamic> data) {
     isSuccessful = data['isSuccessful'];
@@ -19,6 +21,8 @@ class DailyEvaluation {
     imageProof = data['imageProof'];
     hashedDate = data['hashedDate'];
     activityEnjoyment = data['activityEnjoyment'];
+    taskId = data['taskId'];
+    taskDifficulty = data['taskDifficulty']; // null for custom task 
   }
 
   // Default constructor for a daily evaluation
@@ -31,6 +35,8 @@ class DailyEvaluation {
     hashedDate = null;
     isSuccessful = null;
     isCustomTask = null;
+    taskId = null;
+    taskDifficulty = null;
   }
 
   Map<String, dynamic> toJson() {
@@ -42,7 +48,9 @@ class DailyEvaluation {
       'hashedDate': hashedDate,
       'taskTitle': taskTitle,
       'isCustomTask': isCustomTask,
-      'activityEnjoyment': activityEnjoyment
+      'activityEnjoyment': activityEnjoyment,
+      'taskDifficulty': taskDifficulty,
+      'taskId': taskId
     };
   }
 

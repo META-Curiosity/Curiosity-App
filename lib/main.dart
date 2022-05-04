@@ -53,9 +53,6 @@ import './services/local_storage_service.dart';
 // user model class
 import './models/user.dart' as MetaUser;
 
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
-
 const String ANDROID_CHANNEL_ID = 'high_importance_channel';
 const String ANDROID_CHANNEL_NAME = 'High Importance Channel';
 
@@ -76,67 +73,11 @@ const AndroidNotificationDetails androidPlatformChannelSpecifics =
         playSound: true);
 const IOSNotificationDetails iOSPlatformChannelSpecifics =
     IOSNotificationDetails(
-        presentAlert: true, presentBadge: true, presentSound: true);
+        presentAlert: true, presentBadge: false, presentSound: true);
 NotificationDetails platformChannelSpecifics = NotificationDetails(
     android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  LocalStorageService localStorageService = LocalStorageService();
-  NotificationService ns = NotificationService();
-  print("Inside firebase background handler");
-
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // Check in the local storage to get user mindfulness preference
-  Map<String, dynamic> remindersResult =
-      await localStorageService.getMindfulReminders();
-
-  // Setting up the time zone - based in PST
-  tz.initializeTimeZones();
-  tz.setLocalLocation(tz.getLocation('America/Los_Angeles'));
-
-  await flutterLocalNotificationsPlugin.zonedSchedule(
-      100,
-      'DEVELOPER PRODUCTION TEST [IGNORE]',
-      'background message successfully received',
-      tz.TZDateTime.now(tz.local).add(Duration(seconds: 5)),
-      platformChannelSpecifics,
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      payload: NotificationPayload.MindfulnessSession.toString());
-
-  List<int> mindfulnessReminders =
-      remindersResult[MINDFULNESS_NOTIFICATIONS_KEY];
-  if (mindfulnessReminders != null) {
-    await ns.scheduleMindfulnessSessionNotification(mindfulnessReminders);
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        101,
-        'DEVELOPER PRODUCTION TEST [IGNORE]',
-        'User mindfulness session notification is not null',
-        tz.TZDateTime.now(tz.local).add(Duration(seconds: 10)),
-        platformChannelSpecifics,
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        payload: NotificationPayload.MindfulnessSession.toString());
-  }
-
-  // Scheduling reminders for user to setup their activity notification
-  await ns.scheduleSetupActivityNotification();
-  await flutterLocalNotificationsPlugin.zonedSchedule(
-      101,
-      'DEVELOPER PRODUCTION TEST [IGNORE]',
-      'Setup user activity notification',
-      tz.TZDateTime.now(tz.local).add(Duration(seconds: 10)),
-      platformChannelSpecifics,
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      payload: NotificationPayload.MindfulnessSession.toString());
-  print("firebase messaging background handler finished");
-}
 
 // Initializing the application when first launched
 void main() async {
@@ -147,55 +88,28 @@ void main() async {
   print("Finished initializing application");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Setting message handler function when the application is in the background
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
   // Requesting users permission for notification
-  NotificationSettings settings =
-      await FirebaseMessaging.instance.requestPermission();
+  NotificationSettings settings = await FirebaseMessaging.instance.requestPermission();
   print('User granted permission: ${settings.authorizationStatus}');
 
   // Show the message in the foreground for development only
   // Turn off in production
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: false // false in production
-      );
+  );
 
   await FirebaseMessaging.instance.subscribeToTopic('notification-dev');
 
-  NotificationService ns = NotificationService();
   LocalStorageService localStorageService = LocalStorageService();
 
   // Handle background logic to setup task reminder for the day
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    print('Message received from Firebase');
-
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        100,
-        'DEVELOPER PRODUCTION TEST [IGNORE]',
-        'background message successfully received',
-        tz.TZDateTime.now(tz.local).add(Duration(seconds: 9)),
-        platformChannelSpecifics,
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        payload: NotificationPayload.MindfulnessSession.toString());
-
     // Check in the local storage to get user mindfulness preference
-    Map<String, dynamic> remindersResult = await localStorageService.getMindfulReminders();
-    List<int> mindfulnessReminders = remindersResult[MINDFULNESS_NOTIFICATIONS_KEY];
-    if (mindfulnessReminders != null) {
-      print("Mindfulness reminder is not null for the user");
-      await ns.scheduleMindfulnessSessionNotification(mindfulnessReminders);
-    }
-
-    // Scheduling reminders for user to setup their activity notification
-    await ns.scheduleSetupActivityNotification();
+    print(message.data);
   });
 
   // Creating initial settings for local notification
-  var initializationSettingsAndroid =
-      AndroidInitializationSettings('codex_logo');
+  var initializationSettingsAndroid = AndroidInitializationSettings('codex_logo');
   var initializationSettingsIOS = IOSInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -209,16 +123,12 @@ void main() async {
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
       // Determine what to do with the notification once selected
       onSelectNotification: (String payload) async {
-    String userId =
-        (await localStorageService.getUserHashedEmail())[HASHED_EMAIL_KEY];
+    String userId = (await localStorageService.getUserHashedEmail())[HASHED_EMAIL_KEY];
     if (payload != null) {
       if (payload == NotificationPayload.MindfulnessSession.toString() ||
           payload == NotificationPayload.DailyActivityCompletion.toString()) {
         print('redirected to mindfulness screen');
-        navigatorKey.currentState
-            .pushNamed('/navigation', arguments: [userId, 1]);
-        // [TODO]: redirect the user to slide 32
-
+        navigatorKey.currentState.pushNamed('/navigation', arguments: [userId, 1]);
       } else if (payload == NotificationPayload.DailyActivitySetup.toString()) {
         print('redirected to daily activity setup screen');
         navigatorKey.currentState
@@ -473,16 +383,14 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          String hashedEmail =
-              sha256.convert(utf8.encode(currentUser.email)).toString();
+          String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
           userDbService = UserDbService(hashedEmail);
           LocalStorageService localStorageService = LocalStorageService();
           await localStorageService.addUserHashedEmail(hashedEmail);
 
           // Verifying if the user has registered before - if they have then
           // the application does not sign the user up
-          Map<String, dynamic> isUserRegistered =
-              await userDbService.getUserData();
+          Map<String, dynamic> isUserRegistered = await userDbService.getUserData();
 
           MetaUser.User user = isUserRegistered['user'];
           String error = isUserRegistered['error'];
