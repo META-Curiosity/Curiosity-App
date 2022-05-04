@@ -97,7 +97,7 @@ class NotificationService {
             MindfulnessReminderIds[pos],
             'Complete your mindfulness session',
             'Please finish your mindfulness session for the day',
-            tz.TZDateTime.now(tz.local).add(Duration(seconds: minuteDiff)),
+            tz.TZDateTime.now(tz.local).add(Duration(minutes: minuteDiff)),
             platformChannelSpecifics,
             androidAllowWhileIdle: true,
             uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
