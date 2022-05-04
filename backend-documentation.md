@@ -145,7 +145,7 @@ Map<String, dynamic> customTask = {
     'id': '11-20-21',
     'taskTitle': 'jogging in the morning',
     'isCustomTask': true,
-    'taskId': 0
+    'taskId': '0'
 };
 
 // For META task
@@ -153,7 +153,7 @@ Map<String, dynamic> metaTask = {
   'id': '11-20-21',
   'taskTitle': 'jogging in the morning',
   'isCustomTask': false,
-  'taskId': 0,
+  'taskId': '0',
   'taskDifficulty': 'Easy'
 }
 await userDbService.addDailyEvalMorningEvent(data);
