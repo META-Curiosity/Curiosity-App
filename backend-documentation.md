@@ -133,16 +133,29 @@ Input:
     - String taskTitle: title of the choosen task
     - String id: the current date (MM-DD-YY)
     - Boolean isCustomTask: True = task created from user and False = task created by META
+    - String taskId: the id of the task
+    - String taskDifficulty: Only appear when the task is a META task, use for querying
 Ouput:
     - Map<String, dynamic> response:
       - DailyEvaluation dailyEvalRecord: the daily evaluation record after user chose their task for the day
     
 '''
-Map<String, dynamic> data = {
+// For custom task
+Map<String, dynamic> customTask = {
     'id': '11-20-21',
     'taskTitle': 'jogging in the morning',
-    'isCustomTask': true
+    'isCustomTask': true,
+    'taskId': 0
 };
+
+// For META task
+Map<String, dynamic> metaTask = {
+  'id': '11-20-21',
+  'taskTitle': 'jogging in the morning',
+  'isCustomTask': false,
+  'taskId': 0,
+  'taskDifficulty': 'Easy'
+}
 await userDbService.addDailyEvalMorningEvent(data);
 ```
 
