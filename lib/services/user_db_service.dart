@@ -436,6 +436,8 @@ class UserDbService {
   //  1. taskTitle (title of the choosen task)
   //  2. id - the current date (MM-DD-YY)
   //  3. isCustomTask (a task from experiment or from user)
+  //  4. taskDifficulty (Only present for META task for querying)
+  //  3. taskId (task identification number)
   Future<Map<String, dynamic>> addDailyEvalMorningEvent(
       Map<String, dynamic> data) async {
     try {
