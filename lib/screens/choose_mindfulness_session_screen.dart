@@ -182,7 +182,7 @@ class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
                                             }
                                             // await UDS
                                             //     .updateMindfulReminders(data);
-                                            notificationService
+                                            await notificationService
                                                 .scheduleMindfulnessSessionNotification(
                                                     data);
                                             Navigator.pushReplacementNamed(
