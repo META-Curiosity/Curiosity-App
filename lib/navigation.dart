@@ -1,3 +1,4 @@
+import 'package:curiosity_flutter/models/custom_task.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -21,6 +22,7 @@ import 'package:curiosity_flutter/models/daily_evaluation.dart';
 import 'screens/mindful_sessions_screen.dart';
 import 'screens/welcome_back_screen.dart';
 import 'package:curiosity_flutter/helper/date_parse.dart';
+import 'package:curiosity_flutter/services/meta_task_db_service.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key key}) : super(key: key);
@@ -34,7 +36,7 @@ class _NavigationState extends State<Navigation> {
   // User user = User();
 
   UserDbService UDS;
-  User user = User();
+  User user;
   String _id;
   int index = 0; //index for nav bar
   bool haveMindfullness = false;
@@ -53,6 +55,7 @@ class _NavigationState extends State<Navigation> {
     });
     //Checks if user has access to mindfulness
     UDS.getUserData().then((res) {
+      user = res['user'];
       haveMindfullness = res['user'].labId % 2 == 0;
       labId = res['user'].labId;
     });
@@ -62,10 +65,12 @@ class _NavigationState extends State<Navigation> {
         if (haveMindfullness == true) {
           screens = [
             WelcomeBackScreen(
-                date: result[3][0],
-                task: result[3][1],
-                uuid: uuid,
-                taskStatus: result[3][2]),
+              date: result[3][0],
+              task: result[3][1],
+              uuid: uuid,
+              taskStatus: result[3][2],
+              description: result[3][3],
+            ),
             MindfulSessionsScreen(
                 uuid: uuid), //To be replaced with meditation screen
             CentralDashboardScreen(
@@ -85,7 +90,8 @@ class _NavigationState extends State<Navigation> {
                 date: result[3][0],
                 task: result[3][1],
                 uuid: uuid,
-                taskStatus: result[3][2]),
+                taskStatus: result[3][2],
+                description: result[3][3]),
             CentralDashboardScreen(
                 dates: listOfDailyEvaluationsToMap(result[1]),
                 records: result[2]),
@@ -148,22 +154,41 @@ class _NavigationState extends State<Navigation> {
 
   //Gets today's date and task.  Returns object {String date, String task}
   Future<List<dynamic>> getToday() async {
-    List<dynamic> res = List.filled(3, 0);
+    List<dynamic> res = List.filled(4, 0);
 
     String today = datetimeToString1(DateTime.now());
 
     String task = '';
     int taskStatus = -1; //-1 is null, 0 is skip, 1 is completed
+    String description = '';
+    bool isCustomTask = false;
+    String difficulty;
+    int taskId;
 
+    //Checks if task has been skipped or completed +  get task title
     await UDS
         .getUserDailyEvalByDate(datetimeToString(DateTime.now()))
         .then((res) {
       task = res['dailyEvalRecord'].taskTitle;
-    });
-    //Checks if task has been skiped or completed
-    await UDS
-        .getUserDailyEvalByDate(datetimeToString(DateTime.now()))
-        .then((res) {
+      isCustomTask = res['dailyEvalRecord'].isCustomTask;
+
+      if (isCustomTask) {
+        CustomTask ct;
+
+        for (int i = 0; i < 6; i++) {
+          String customTaskId = i.toString();
+          if (user.customTasks[customTaskId].method == task) {
+            ct = user.customTasks[customTaskId];
+            break;
+          }
+        }
+        description =
+            "When I ${ct.moment}, I will ${ct.method}, and prove it by ${ct.proof}.";
+      } else {
+        taskId = int.parse(res['dailyEvalRecord'].taskId);
+        difficulty = res['dailyEvalRecord'].taskDifficulty;
+      }
+
       if (res['dailyEvalRecord'].isSuccessful != null) {
         if (res['dailyEvalRecord'].isSuccessful == false) {
           taskStatus = 0;
@@ -172,10 +197,19 @@ class _NavigationState extends State<Navigation> {
         }
       }
     });
+
+    //Get task description
+    if (!isCustomTask) {
+      MetaTaskDbServices MTDS = new MetaTaskDbServices();
+      await MTDS.getTaskByDifficultyAndID(difficulty, taskId).then((res) {
+        description = res['metaTask'].description;
+      });
+      print('DESCRIPTION: ${description}');
+    }
     res[0] = today;
     res[1] = task;
     res[2] = taskStatus;
-
+    res[3] = description;
     return res;
   }
 

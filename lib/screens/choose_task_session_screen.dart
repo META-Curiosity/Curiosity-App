@@ -42,7 +42,7 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
   String _id;
   bool haveMindfullness = false;
   UserDbService UDS;
-  User user = User();
+  User user;
   NotificationService notificationService;
 
   @override
@@ -53,6 +53,13 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
       UDS = UserDbService(uuid);
       notificationService = NotificationService();
     });
+
+    UDS.getUserData().then((res) => {
+          setState(() {
+            user = res['user'];
+          })
+        });
+
     super.didChangeDependencies();
   }
 
@@ -234,9 +241,19 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
                                   await notificationService
                                       .scheduleActivityCompletionNotification(
                                           convertedTime);
-                                  Navigator.pushReplacementNamed(
-                                      context, '/navigation',
-                                      arguments: [_id, 0]);
+                                  if (user.labId % 2 == 0) {
+                                    Navigator.pushReplacementNamed(
+                                      context,
+                                      '/choose_mindfulness_session',
+                                      arguments: _id,
+                                    ); //[user id, starting screen]
+                                  } else {
+                                    Navigator.pushReplacementNamed(
+                                        context, '/navigation', arguments: [
+                                      _id,
+                                      0
+                                    ]); //[user id, starting screen]
+                                  }
                                 },
                                 label: Text('CONTINUE'),
                               ),

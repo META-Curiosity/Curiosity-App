@@ -39,6 +39,7 @@ class _TaskCarouselState extends State<TaskCarousel>
   String _id;
   UserDbService UDS;
   List<MetaTask> tasks = List.filled(3, null);
+  List<String> taskIdList = List.filled(3, null);
 
   @override
   void didChangeDependencies() async {
@@ -51,6 +52,7 @@ class _TaskCarouselState extends State<TaskCarousel>
     for (int i = 0; i < difficultyLabelListDb.length; i++) {
       Map<String, dynamic> result =
           await UDS.getRandomMetaTask(difficultyLabelListDb[currentTask]);
+      taskIdList[i] = result['taskId'].toString();
       await MTDS
           .getTaskByDifficultyAndID(difficultyLabelListDb[i], result['taskId'])
           .then((res) {
@@ -169,10 +171,13 @@ class _TaskCarouselState extends State<TaskCarousel>
                   Map<String, dynamic> data = {
                     'id': datetimeToString(DateTime.now()),
                     'taskTitle': tasks[currentTask].title,
-                    'isCustomTask': false
+                    'isCustomTask': false,
+                    'taskId': taskIdList[currentTask],
+                    'taskDifficulty': difficultyLabelListDb[currentTask]
                   };
 
                   await UDS.addDailyEvalMorningEvent(data);
+
                   Navigator.pushReplacementNamed(
                       context, '/choose_task_session',
                       arguments: _id);

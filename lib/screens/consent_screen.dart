@@ -27,12 +27,7 @@ class _ConsentState extends State<Consent> {
   }
 
   void navigateBasedOnStudyId(BuildContext context, String studyId) {
-    int convertedStudyId = int.parse(studyId);
-    if (convertedStudyId % 2 == 0)
-      Navigator.pushReplacementNamed(context, '/choose_mindfulness_session',
-          arguments: _id);
-    else
-      Navigator.pushReplacementNamed(context, '/introduction', arguments: _id);
+    Navigator.pushReplacementNamed(context, '/introduction', arguments: _id);
   }
 
   @override
