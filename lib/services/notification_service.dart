@@ -26,7 +26,7 @@ class NotificationService {
             importance: Importance.high,
             playSound: true);
     const IOSNotificationDetails iOSPlatformChannelSpecifics =
-        IOSNotificationDetails(presentAlert: true, presentBadge: false, presentSound: true);
+        IOSNotificationDetails(presentAlert: true, presentBadge: true, presentSound: true);
     platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
         iOS: iOSPlatformChannelSpecifics);
@@ -86,13 +86,14 @@ class NotificationService {
         'mindfulnessNotiTimes': mindfulnessNotiTimes
       });
 
-      // int numNotifications = calcDiffBetweenTimes(startTime, '23:59').inHours;
       String crntTime = tz.TZDateTime.now(tz.local).toString().split(" ")[1].substring(0, 5);
+      
+      int totalNotification = 0;
       for (int pos = 0; pos < mindfulnessNotiTimes.length; pos++) {
         int minuteDiff = calcDiffBetweenTimes(crntTime, mindfulnessNotiTimes[pos].toString() + ":00").inMinutes;
-
         // Only schedule notification for user if the choosen time is later in the day
         if (minuteDiff >= 0) {
+          totalNotification += 1;
           await flutterLocalNotificationsPlugin.zonedSchedule(
             MindfulnessReminderIds[pos],
             'Complete your mindfulness session',
@@ -104,8 +105,10 @@ class NotificationService {
             payload: NotificationPayload.MindfulnessSession.toString());
         }        
       }
-      log.successObj(
-          {'method': 'scheduleMindfulnessActivityNotification - success'});
+      log.successObj({
+        'method': 'scheduleMindfulnessActivityNotification - success',
+        'totalNotification': totalNotification
+      });
     } catch (error) {
       log.errorObj({
         'method': 'scheduleMindfulnessActivityNotification - error',

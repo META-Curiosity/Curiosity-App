@@ -22,7 +22,6 @@ class UserDbService {
   final String DAILY_EVAL_DB_NAME = 'daily-eval-dev';
   final String MINDFUL_SESSION_DB_NAME = 'mindful-session-completion';
   final LogService log = new LogService();
-  final LocalStorageService localStorageService = LocalStorageService();
   String uid;
   CollectionReference usersCollection;
   CollectionReference dailyEvalCollection;
@@ -45,17 +44,7 @@ class UserDbService {
         return {'error': response['error']};
       }
       log.successObj({'method': 'getUserData - success', 'response': response});
-
       User user = response['user'];
-      // If the user exists in the database refresh the local storage item
-      if (user != null) {
-        await localStorageService.addMindfulEligibility(user.mindfulEligibility);
-
-        // User is allowed to have mindfulness session
-        if (user.mindfulEligibility != null && user.mindfulEligibility) {
-          await localStorageService.addMindfulReminders(user.mindfulReminders.cast<int>());
-        }
-      }
 
       return {'user': user};
     } catch (error) {
@@ -92,10 +81,8 @@ class UserDbService {
       await usersCollection.doc(uid).update({'labId': labId});
       // Even number lab id will get access to the mindfulness screen
       if (labId >= 0 && labId % 2 == 0) {
-        await localStorageService.addMindfulEligibility(true);
         await usersCollection.doc(uid).update({'mindfulEligibility': true});
       } else {
-        await localStorageService.addMindfulEligibility(false);
         await usersCollection.doc(uid).update({'mindfulEligibility': false});
       }
       log.successObj({'method': 'updateUserLabId - success'});
@@ -126,9 +113,6 @@ class UserDbService {
     try {
       log.infoObj({'method': 'updateMindfulReminders', 'reminders': reminders});
       
-      // Updating the local storage according to the users preference
-      await localStorageService.addMindfulReminders(reminders);
-
       await usersCollection.doc(uid).update({'mindfulReminders': reminders});
       log.successObj({'method': 'updateMindfulReminders - success'});
       return {'success': true};

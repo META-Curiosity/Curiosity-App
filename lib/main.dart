@@ -56,6 +56,8 @@ import './models/user.dart' as MetaUser;
 const String ANDROID_CHANNEL_ID = 'high_importance_channel';
 const String ANDROID_CHANNEL_NAME = 'High Importance Channel';
 
+final LocalStorageService localStorageService = LocalStorageService();
+
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
     ANDROID_CHANNEL_ID, ANDROID_CHANNEL_NAME,
     importance: Importance.high, playSound: true);
@@ -73,7 +75,7 @@ const AndroidNotificationDetails androidPlatformChannelSpecifics =
         playSound: true);
 const IOSNotificationDetails iOSPlatformChannelSpecifics =
     IOSNotificationDetails(
-        presentAlert: true, presentBadge: false, presentSound: true);
+        presentAlert: true, presentBadge: true, presentSound: true);
 NotificationDetails platformChannelSpecifics = NotificationDetails(
     android: androidPlatformChannelSpecifics, iOS: iOSPlatformChannelSpecifics);
 
@@ -97,10 +99,6 @@ void main() async {
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: false // false in production
   );
-
-  await FirebaseMessaging.instance.subscribeToTopic('notification-dev');
-
-  LocalStorageService localStorageService = LocalStorageService();
 
   // Handle background logic to setup task reminder for the day
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
@@ -385,7 +383,6 @@ class _MyHomePageState extends State<MyHomePage> {
         if (currentUser != null) {
           String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
           userDbService = UserDbService(hashedEmail);
-          LocalStorageService localStorageService = LocalStorageService();
           await localStorageService.addUserHashedEmail(hashedEmail);
 
           // Verifying if the user has registered before - if they have then
