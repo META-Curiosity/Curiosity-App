@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:curiosity_flutter/models/user.dart';
 import 'dart:async';
+import 'package:curiosity_flutter/services/notification_service.dart';
 
 class ChooseMindfulnessSession extends StatefulWidget {
   const ChooseMindfulnessSession({Key key}) : super(key: key);
@@ -26,6 +27,7 @@ class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
   // UserDbService UDS = UserDbService('hashedEmail');
   UserDbService UDS;
   User user = User();
+  NotificationService notificationService;
 
   String _id;
   @override
@@ -34,6 +36,7 @@ class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
     setState(() {
       _id = uuid;
       UDS = UserDbService(uuid);
+      notificationService = NotificationService();
     });
     super.didChangeDependencies();
   }
@@ -177,11 +180,14 @@ class _ChooseMindfulnessSessionState extends State<ChooseMindfulnessSession> {
                                             } else {
                                               data = [16, 17, 18, 19, 20];
                                             }
-                                            await UDS
-                                                .updateMindfulReminders(data);
+                                            // await UDS
+                                            //     .updateMindfulReminders(data);
+                                            notificationService
+                                                .scheduleMindfulnessSessionNotification(
+                                                    data);
                                             Navigator.pushReplacementNamed(
-                                                context, '/introduction',
-                                                arguments: _id);
+                                                context, '/navigation',
+                                                arguments: [_id, 0]);
                                           },
                                           child: Row(
                                             children: <Widget>[

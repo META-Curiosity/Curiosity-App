@@ -10,13 +10,15 @@ class WelcomeBackScreen extends StatefulWidget {
   String task; //Today's task
   String uuid; //User id
   int taskStatus; // true if user finished/skip task for today
-  WelcomeBackScreen(
-      {Key key,
-      @required this.date,
-      @required this.task,
-      @required this.uuid,
-      @required this.taskStatus})
-      : super(key: key);
+  String description;
+  WelcomeBackScreen({
+    Key key,
+    @required this.date,
+    @required this.task,
+    @required this.uuid,
+    @required this.taskStatus,
+    @required this.description,
+  }) : super(key: key);
 
   @override
   State<WelcomeBackScreen> createState() => _WelcomeBackScreenState();
@@ -25,6 +27,36 @@ class WelcomeBackScreen extends StatefulWidget {
 class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
   @override
   Widget build(BuildContext context) {
+    //Dialog for description of task
+    Dialog errorDialog = Dialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0)), //this right here
+      child: Container(
+        height: 400.0,
+        width: 300.0,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(30.0),
+              child: Text(
+                widget.description,
+                style: TextStyle(fontSize: 18.0),
+              ),
+            ),
+            Padding(padding: EdgeInsets.only(top: 40.0)),
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'Got It!',
+                  style: TextStyle(color: Colors.purple, fontSize: 18.0),
+                ))
+          ],
+        ),
+      ),
+    );
     return Container(
       color: Colors.amber,
       child: Center(
@@ -42,28 +74,36 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                     style: TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 30),
-                  Container(
-                    // margin: const EdgeInsets.all(15.0),
-                    padding: const EdgeInsets.all(10.0),
-                    height: 170,
-                    width: 300,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 5,
+                  GestureDetector(
+                    onTap: () {
+                      print(widget.description);
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) => errorDialog);
+                    },
+                    child: Container(
+                      // margin: const EdgeInsets.all(15.0),
+                      padding: const EdgeInsets.all(10.0),
+                      height: 170,
+                      width: 300,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 5,
+                        ),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
 
-                    child: Center(
-                      child: Text(
-                        widget.task,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
+                      child: Center(
+                        child: Text(
+                          widget.task,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
+                        ),
                       ),
                     ),
                   ),
