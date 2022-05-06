@@ -3,6 +3,7 @@ import 'package:curiosity_flutter/navigation.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
 import 'package:curiosity_flutter/services/notification_service.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
+import 'package:curiosity_flutter/services/user_token_db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 //screens
@@ -57,6 +58,7 @@ const String ANDROID_CHANNEL_ID = 'high_importance_channel';
 const String ANDROID_CHANNEL_NAME = 'High Importance Channel';
 
 final LocalStorageService localStorageService = LocalStorageService();
+FirebaseMessaging messaging = FirebaseMessaging.instance;
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
     ANDROID_CHANNEL_ID, ANDROID_CHANNEL_NAME,
@@ -91,19 +93,19 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Requesting users permission for notification
-  NotificationSettings settings = await FirebaseMessaging.instance.requestPermission();
+  NotificationSettings settings = await messaging.requestPermission();
   print('User granted permission: ${settings.authorizationStatus}');
 
   // Show the message in the foreground for development only
   // Turn off in production
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-      alert: false // false in production
+  await messaging.setForegroundNotificationPresentationOptions(
+      alert: true // false in production
   );
 
   // Handle background logic to setup task reminder for the day
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     // Check in the local storage to get user mindfulness preference
-    print(message.data);
+    print('Received a message from Firebase messaging');
   });
 
   // Creating initial settings for local notification
@@ -385,10 +387,20 @@ class _MyHomePageState extends State<MyHomePage> {
           userDbService = UserDbService(hashedEmail);
           await localStorageService.addUserHashedEmail(hashedEmail);
 
+          FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
+            navigatorKey.currentState.pushNamed('/good_morning', arguments: hashedEmail);
+            print('User clicked on a message from firebase');
+          });
+
           // Verifying if the user has registered before - if they have then
           // the application does not sign the user up
           Map<String, dynamic> isUserRegistered = await userDbService.getUserData();
-
+          String token = await messaging.getToken();
+          
+          // Adding device specific registration token to send notification
+          UserTokenDbService userTokenDbService = UserTokenDbService();
+          await userTokenDbService.addUserToken(hashedEmail, token);
+          
           MetaUser.User user = isUserRegistered['user'];
           String error = isUserRegistered['error'];
 
