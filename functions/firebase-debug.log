@@ -1,0 +1,104 @@
+[debug] [2022-05-06T16:54:06.496Z] ----------------------------------------------------------------------
+[debug] [2022-05-06T16:54:06.497Z] Command:       /Users/macbook/.nvm/versions/node/v14.17.0/bin/node /Users/macbook/.nvm/versions/node/v14.17.0/bin/firebase deploy
+[debug] [2022-05-06T16:54:06.497Z] CLI Version:   10.8.0
+[debug] [2022-05-06T16:54:06.497Z] Platform:      darwin
+[debug] [2022-05-06T16:54:06.497Z] Node Version:  v14.17.0
+[debug] [2022-05-06T16:54:06.498Z] Time:          Fri May 06 2022 09:54:06 GMT-0700 (Pacific Daylight Time)
+[debug] [2022-05-06T16:54:06.498Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-05-06T16:54:06.550Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-05-06T16:54:06.551Z] > authorizing via signed-in user (trungbui@ucsb.edu)
+[debug] [2022-05-06T16:54:06.551Z] [iam] checking project curiosity-e1f26 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]
+[debug] [2022-05-06T16:54:06.553Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/curiosity-e1f26:testIamPermissions [none]
+[debug] [2022-05-06T16:54:06.553Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/curiosity-e1f26:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[debug] [2022-05-06T16:54:06.912Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/curiosity-e1f26:testIamPermissions 200
+[debug] [2022-05-06T16:54:06.912Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/curiosity-e1f26:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[debug] [2022-05-06T16:54:06.913Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/curiosity-e1f26/serviceAccounts/curiosity-e1f26@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2022-05-06T16:54:06.913Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/curiosity-e1f26/serviceAccounts/curiosity-e1f26@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2022-05-06T16:54:07.314Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/curiosity-e1f26/serviceAccounts/curiosity-e1f26@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2022-05-06T16:54:07.314Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/curiosity-e1f26/serviceAccounts/curiosity-e1f26@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'curiosity-e1f26'...
+[info] 
+[info] i  deploying firestore, functions 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run build
+[info] ✔  functions: Finished running predeploy script. 
+[info] i  firestore: reading indexes from firestore.indexes.json... 
+[info] i  cloud.firestore: checking firestore.rules for compilation errors... 
+[debug] [2022-05-06T16:54:14.960Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/curiosity-e1f26:test [none]
+[debug] [2022-05-06T16:54:14.960Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/curiosity-e1f26:test [omitted]
+[debug] [2022-05-06T16:54:15.279Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/curiosity-e1f26:test 200
+[debug] [2022-05-06T16:54:15.279Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/curiosity-e1f26:test {}
+[info] ✔  cloud.firestore: rules file firestore.rules compiled successfully 
+[debug] [2022-05-06T16:54:15.280Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/curiosity-e1f26 [none]
+[debug] [2022-05-06T16:54:15.723Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/curiosity-e1f26 200
+[debug] [2022-05-06T16:54:15.723Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/curiosity-e1f26 {"projectId":"curiosity-e1f26","projectNumber":"49671142207","displayName":"META Curiosity","name":"projects/curiosity-e1f26","resources":{"hostingSite":"curiosity-e1f26","realtimeDatabaseInstance":"curiosity-e1f26","storageBucket":"curiosity-e1f26.appspot.com","locationId":"us-central"},"state":"ACTIVE"}
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[debug] [2022-05-06T16:54:15.724Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/cloudfunctions.googleapis.com [none]
+[debug] [2022-05-06T16:54:15.726Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/runtimeconfig.googleapis.com [none]
+[debug] [2022-05-06T16:54:15.726Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/cloudbuild.googleapis.com [none]
+[debug] [2022-05-06T16:54:15.727Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/artifactregistry.googleapis.com [none]
+[debug] [2022-05-06T16:54:16.239Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/cloudbuild.googleapis.com 200
+[debug] [2022-05-06T16:54:16.239Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/cloudbuild.googleapis.com [omitted]
+[warn] ⚠  functions: missing required API cloudbuild.googleapis.com. Enabling now... 
+[debug] [2022-05-06T16:54:16.240Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/cloudbuild.googleapis.com:enable [none]
+[debug] [2022-05-06T16:54:16.241Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/cloudfunctions.googleapis.com 200
+[debug] [2022-05-06T16:54:16.241Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/cloudfunctions.googleapis.com [omitted]
+[info] ✔  functions: required API cloudfunctions.googleapis.com is enabled 
+[debug] [2022-05-06T16:54:16.242Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/runtimeconfig.googleapis.com 200
+[debug] [2022-05-06T16:54:16.242Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2022-05-06T16:54:16.245Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/artifactregistry.googleapis.com 200
+[debug] [2022-05-06T16:54:16.245Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/artifactregistry.googleapis.com [omitted]
+[debug] [2022-05-06T16:54:16.954Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/cloudbuild.googleapis.com:enable 200
+[debug] [2022-05-06T16:54:16.955Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/cloudbuild.googleapis.com:enable [omitted]
+[debug] [2022-05-06T16:54:26.963Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/cloudbuild.googleapis.com [none]
+[debug] [2022-05-06T16:54:27.500Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/cloudbuild.googleapis.com 200
+[debug] [2022-05-06T16:54:27.500Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/cloudbuild.googleapis.com [omitted]
+[info] i  functions: waiting for API cloudbuild.googleapis.com to activate... 
+[debug] [2022-05-06T16:54:37.502Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/cloudbuild.googleapis.com [none]
+[debug] [2022-05-06T16:54:37.948Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/cloudbuild.googleapis.com 200
+[debug] [2022-05-06T16:54:37.948Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/curiosity-e1f26/services/cloudbuild.googleapis.com [omitted]
+[info] ✔  functions: required API cloudbuild.googleapis.com is enabled 
+[debug] [2022-05-06T16:54:37.955Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/curiosity-e1f26/adminSdkConfig [none]
+[debug] [2022-05-06T16:54:38.358Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/curiosity-e1f26/adminSdkConfig 200
+[debug] [2022-05-06T16:54:38.359Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/curiosity-e1f26/adminSdkConfig {"projectId":"curiosity-e1f26","databaseURL":"https://curiosity-e1f26.firebaseio.com","storageBucket":"curiosity-e1f26.appspot.com","locationId":"us-central"}
+[debug] [2022-05-06T16:54:38.360Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/curiosity-e1f26/configs [none]
+[debug] [2022-05-06T16:54:38.742Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/curiosity-e1f26/configs 200
+[debug] [2022-05-06T16:54:38.743Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/curiosity-e1f26/configs {}
+[info] i  functions: preparing codebase default for deployment 
+[debug] [2022-05-06T16:54:38.750Z] Validating nodejs source
+[debug] [2022-05-06T16:54:39.908Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts .",
+    "build": "tsc",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "16"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "firebase-admin": "^10.2.0",
+    "firebase-functions": "^3.21.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^8.9.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-import": "^2.25.4",
+    "firebase-functions-test": "^0.2.0",
+    "typescript": "^4.5.4"
+  },
+  "private": true
+}
+[debug] [2022-05-06T16:54:39.908Z] Building nodejs source
+[error] Error: Failed to load environment variables from .env.:
+[error] - FirebaseError Invalid dotenv file, error on lines: GOOGLE_APPLICATION_CREDENTIALS

@@ -1,3 +1,4 @@
+import 'package:curiosity_flutter/services/user_token_db_service.dart';
 import 'package:flutter/material.dart';
 import 'package:curiosity_flutter/services/user_db_service.dart';
 import 'package:curiosity_flutter/models/user.dart';
@@ -234,8 +235,10 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
                                   print("Converted Time = " + convertedTime);
 
                                   // Cancel the reminders for users to setup their activity for the day
-                                  await notificationService
-                                      .cancelSetupActivityNotification();
+                                  UserTokenDbService userTokenDbService = UserTokenDbService();
+                                  List<String> date = DateTime.now().toString().split(" ")[0].split('-');
+                                  String crntDate = date[1] + "-" + date[2] + "-" + date[0].substring(2);
+                                  await userTokenDbService.markUserSetupCompleted(_id, crntDate);
 
                                   // Setup notification for user to complete their activity for the day
                                   await notificationService
