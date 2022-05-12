@@ -294,7 +294,7 @@ Input:
 Ouput:
   - Map<String, dynamic> response:
       - MindfulSession userMindfulInput: a record of the user entered mindfulness completion stored in the database
-'''
+''' 
 Map<String, dynamic> data = {
   'hasCompleted': false,
   'id': '01-02-2022'
@@ -663,3 +663,39 @@ Ouput:
   - List<int> notificationTimes: a list containing start and end range of user notification preference
 '''
 await localStorageService.transformStringToTimeList(["8", "12"]) // output [8,9,10,11,12];
+```
+-----------------------------------------------------------------------------------------------
+## User Token Db Service - Storing Firebase Cloud Messaging token to send notification
+1. Constructor
+```dart
+'''
+- No input/output
+'''
+UserTokenDbService userTokenDbService = UserTokenDbService();
+```
+
+2.markUserSetupCompleted(String id, String crntDate)
+```dart
+'''
+Input:
+  - String id: User uuid
+  - String crntDate: The date when user setup activity for the day (MM-DD-YY)
+Ouput:
+  - Map<String, dynamic> response:
+    - bool success: indicate if operation is successful
+'''
+await userTokenDbService.markUserSetupCompleted('hashedEmail', '05-06-22');
+```
+
+3.addUserToken(String hashedEmail, String token)
+```dart
+'''
+Input:
+  - String hashedEmail: User uuid
+  - String token: User Firebase Cloud Messaging token
+Ouput:
+  - Map<String, dynamic> response:
+    - bool success: indicate if operation is successful
+'''
+await userTokenDbService.addUserToken('hashedEmail', 'randomTokenInserted');
+```

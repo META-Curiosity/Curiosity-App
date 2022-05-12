@@ -236,9 +236,9 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
 
                                   // Cancel the reminders for users to setup their activity for the day
                                   UserTokenDbService userTokenDbService = UserTokenDbService();
-                                  await userTokenDbService.markUserSetupCompleted(_id, "05-06-22");
-                                  // await notificationService
-                                  //     .cancelSetupActivityNotification();
+                                  List<String> date = DateTime.now().toString().split(" ")[0].split('-');
+                                  String crntDate = date[1] + "-" + date[2] + "-" + date[0].substring(2);
+                                  await userTokenDbService.markUserSetupCompleted(_id, crntDate);
 
                                   // Setup notification for user to complete their activity for the day
                                   await notificationService
