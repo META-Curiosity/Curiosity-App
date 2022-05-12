@@ -16,7 +16,10 @@ if (!admin.apps.length) {
 export const sendUserActivitySetupMessage = functions.pubsub.schedule('0 8-23 * * *').onRun(
   async (context) => {
     try {
-      functions.logger.info('sendUserActivitySetupMessage');
+      functions.logger.info({
+        method: 'sendUserActivitySetupMessage - start'
+      });
+
       const userTokenDbColection = admin
         .firestore()
         .collection(USER_TOKEN_DB_NAME);
@@ -40,16 +43,27 @@ export const sendUserActivitySetupMessage = functions.pubsub.schedule('0 8-23 * 
       const tokensToBeSent: any = [];
 
       // console.log(JSON.stringify(userIdTokenMappings));
-      functions.logger.info({ userIdTokenMappings: userIdTokenMappings });
+      functions.logger.info({ 
+        method: 'sendUserActivitySetupMessage',
+        userIdTokenMappings: userIdTokenMappings 
+      });
 
       // Parsing current date to appropriate parameter
-      const date = new Date().toISOString().split('T')[0].split('-');
-      const convertedDate =
-        date[1] + '-' + date[2] + '-' + date[0].substr(2, 4);
+      const date = new Date().toLocaleDateString().split('/');
+      if (parseInt(date[0], 10) < 10) {
+        date[0] = '0' + date[0];
+      }
+      if (parseInt(date[1], 10) < 10) {
+        date[1] = '0' + date[1];
+      }
+      const convertedDate = date[0] + '-' + date[1] + '-' + date[2].substr(2, 4);
+      
+      functions.logger.info({ 
+        method: 'sendUserActivitySetupMessage',
+        convertedDate: convertedDate 
+      });
 
-      const activitySetupRecord = await activitySetupRecordCollection
-        .doc(convertedDate)
-        .get();
+      const activitySetupRecord = await activitySetupRecordCollection.doc(convertedDate).get();
 
       // No activity record exist => send notification message to all users
       if (!activitySetupRecord.exists) {
@@ -57,8 +71,8 @@ export const sendUserActivitySetupMessage = functions.pubsub.schedule('0 8-23 * 
         Object.keys(userIdTokenMappings).forEach((userId) => {
           tokensToBeSent.push(userIdTokenMappings[userId]);
         });
-        sendMessage(tokensToBeSent);
       } else {
+        // Some users have completed their activity setup for the day
         const completedIds = new Set(
           activitySetupRecord.data()!!['completedIds']
         );
@@ -74,14 +88,18 @@ export const sendUserActivitySetupMessage = functions.pubsub.schedule('0 8-23 * 
         });
 
         functions.logger.info({
+          method: 'SendUserActivitySetupMessage',
           tokensToBeSent: JSON.stringify(tokensToBeSent),
         });
-        await sendMessage(tokensToBeSent);
-        return console.log("success");
       }
+      await sendMessage(tokensToBeSent);
+      functions.logger.info({
+        method: 'SendUserActivitySetupMessage',
+        status: 'success'
+      })
     } catch (error) {
       console.log(error);
-      functions.logger.info({ error: error });
+      functions.logger.info({ method: 'SendUserActivitySetupMessage', error: error });
     }
   }
 );
