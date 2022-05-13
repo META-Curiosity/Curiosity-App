@@ -189,8 +189,8 @@ class _ViewTasksScreen extends State<ViewTasksScreen> {
                       Map<String, dynamic> data = {
                         'id': datetimeToString(DateTime.now()),
                         'taskTitle': what,
-                        'isCustomTask': true
-                        // [TODO]: MIGHT NEED THE TASK ID HEHRE -TRUNG
+                        'isCustomTask': true,
+                        'taskId': id,
                       };
                       await UDS.addDailyEvalMorningEvent(data);
                       Navigator.pushReplacementNamed(

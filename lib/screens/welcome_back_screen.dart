@@ -29,34 +29,40 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
   Widget build(BuildContext context) {
     //Dialog for description of task
     Dialog errorDialog = Dialog(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0)), //this right here
-      child: Container(
-        height: 400.0,
-        width: 300.0,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(30.0),
-              child: Text(
-                widget.description,
-                style: TextStyle(fontSize: 18.0),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0)), //this right here
+        child: SingleChildScrollView(
+          child: Expanded(
+            child: Container(
+              height: 400.0,
+              width: 300.0,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(30.0),
+                      child: Text(
+                        widget.description,
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.only(top: 40.0)),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'Got It!',
+                          style:
+                              TextStyle(color: Colors.purple, fontSize: 18.0),
+                        ))
+                  ],
+                ),
               ),
             ),
-            Padding(padding: EdgeInsets.only(top: 40.0)),
-            TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text(
-                  'Got It!',
-                  style: TextStyle(color: Colors.purple, fontSize: 18.0),
-                ))
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
     return Container(
       color: Colors.amber,
       child: Center(
