@@ -49,7 +49,10 @@ export const sendUserActivitySetupMessage = functions.pubsub.schedule('0 8-23 * 
       });
 
       // Parsing current date to appropriate parameter
-      const date = new Date().toLocaleDateString().split('/');
+      const date = new Date().toLocaleDateString('en-US', {
+        timeZone: 'America/Los_Angeles',
+      }).split('/');
+      
       if (parseInt(date[0], 10) < 10) {
         date[0] = '0' + date[0];
       }
