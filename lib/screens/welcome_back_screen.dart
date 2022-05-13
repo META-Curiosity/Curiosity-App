@@ -123,9 +123,9 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                       ),
                       onPressed: () {
                         // Navigate to the second screen using a named route.
-                        Navigator.pushReplacementNamed(
-                            context, '/activity_survey',
-                            arguments: widget.uuid);
+                        Navigator.pushNamed(context, '/activity_survey',
+                                arguments: widget.uuid)
+                            .then((_) => setState(() {}));
                       },
                       child: const Text("Mark goal as complete."),
                     ),
