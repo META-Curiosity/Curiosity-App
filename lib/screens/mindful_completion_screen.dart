@@ -1,3 +1,4 @@
+import 'package:curiosity_flutter/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:survey_kit/survey_kit.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +17,7 @@ class _MindfulCompletionState extends State<MindfulCompletion> {
   //UserDbService UDS = UserDbService('hashedEmail');
 
   UserDbService UDS;
+  NotificationService ns;
   String _id;
 
   @override
@@ -24,6 +26,7 @@ class _MindfulCompletionState extends State<MindfulCompletion> {
     setState(() {
       _id = uuid;
       UDS = UserDbService(uuid);
+      ns = NotificationService();
     });
     super.didChangeDependencies();
   }
@@ -46,7 +49,7 @@ class _MindfulCompletionState extends State<MindfulCompletion> {
                     snapshot.data != null) {
                   final task = snapshot.data;
                   return SurveyKit(
-                    onResult: (SurveyResult result) {
+                    onResult: (SurveyResult result) async {
                       bool answer = false;
                       for (var stepResult in result.results) {
                         for (var questionResult in stepResult.results) {
@@ -62,7 +65,9 @@ class _MindfulCompletionState extends State<MindfulCompletion> {
                         'hasCompleted': answer,
                         'id': datetimeToString(DateTime.now())
                       };
-                      UDS.addMindfulnessSessionCompletion(data);
+                      await UDS.addMindfulnessSessionCompletion(data);
+                      await ns.cancelMindfulSessionNotification();
+
                     },
                     task: task,
                     showProgress: true,
