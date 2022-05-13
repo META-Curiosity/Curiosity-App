@@ -76,6 +76,7 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool clicked = false;
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return GestureDetector(
@@ -216,18 +217,21 @@ class _EvaluationCompletedPageState extends State<EvaluationCompletedPage> {
                       borderRadius: BorderRadius.circular(14),
                       color: Colors.blue,
                       onPressed: () async {
-                        Map<String, dynamic> data = {
-                          'id': datetimeToString(DateTime.now()),
-                          'isSuccessful': true,
-                          'imageProof': base64encode,
-                          'reflection': reflection,
-                          'activityEnjoyment': activityEnjoyment
-                        };
-                        await UDS.updateDailyEval(data);
-                        await notificationService
-                            .cancelActivityCompletionNotification();
-                        Navigator.pushReplacementNamed(context, '/navigation',
-                            arguments: [_id, 0]);
+                        if (!clicked) {
+                          clicked = true;
+                          Map<String, dynamic> data = {
+                            'id': datetimeToString(DateTime.now()),
+                            'isSuccessful': true,
+                            'imageProof': base64encode,
+                            'reflection': reflection,
+                            'activityEnjoyment': activityEnjoyment
+                          };
+                          await UDS.updateDailyEval(data);
+                          await notificationService
+                              .cancelActivityCompletionNotification();
+                          Navigator.pushReplacementNamed(context, '/navigation',
+                              arguments: [_id, 0]);
+                        }
                       }),
                 ),
               ],

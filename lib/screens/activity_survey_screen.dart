@@ -13,152 +13,147 @@ class _ActivitySurveyState extends State<ActivitySurvey> {
   @override
   Widget build(BuildContext context) {
     String uuid = ModalRoute.of(context).settings.arguments as String;
-    return MaterialApp(
-      home: Scaffold(
-        body: Container(
-          color: Colors.white,
-          child: Align(
-            alignment: Alignment.center,
-            child: FutureBuilder<Task>(
-              future: getSampleTask(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done &&
-                    snapshot.hasData &&
-                    snapshot.data != null) {
-                  final task = snapshot.data;
-                  return SurveyKit(
-                    onResult: (SurveyResult result) {
-                      List<String> responses = [];
-                      for (var stepResult in result.results) {
-                        for (var questionResult in stepResult.results) {
-                          responses.add(questionResult.valueIdentifier);
-                        }
+    return Scaffold(
+      body: Container(
+        color: Colors.white,
+        child: Align(
+          alignment: Alignment.center,
+          child: FutureBuilder<Task>(
+            future: getSampleTask(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.hasData &&
+                  snapshot.data != null) {
+                final task = snapshot.data;
+                return SurveyKit(
+                  onResult: (SurveyResult result) {
+                    List<String> responses = [];
+                    for (var stepResult in result.results) {
+                      for (var questionResult in stepResult.results) {
+                        responses.add(questionResult.valueIdentifier);
                       }
-                      if (responses.length == 2) {
-                        Navigator.of(context, rootNavigator: true)
-                            .pushReplacementNamed('/nightly_evaluation_yes',
-                                arguments: [uuid, responses[1]]);
-                      } else {
-                        Navigator.of(context, rootNavigator: true).pop();
-                      }
-                    },
-                    task: task,
-                    showProgress: true,
-                    localizations: {
-                      'cancel': 'Cancel',
-                      'next': 'Next',
-                    },
-                    themeData: Theme.of(context).copyWith(
-                      colorScheme: ColorScheme.fromSwatch(
-                        primarySwatch: Colors.cyan,
-                      ).copyWith(
-                        onPrimary: Colors.white,
-                      ),
-                      primaryColor: Colors.cyan,
-                      backgroundColor: Colors.white,
-                      appBarTheme: const AppBarTheme(
-                        color: Colors.white,
-                        iconTheme: IconThemeData(
-                          color: Colors.cyan,
-                        ),
-                        titleTextStyle: TextStyle(
-                          color: Colors.cyan,
-                        ),
-                      ),
-                      iconTheme: const IconThemeData(
+                    }
+                    if (responses.length == 2) {
+                      Navigator.of(context, rootNavigator: true)
+                          .pushReplacementNamed('/nightly_evaluation_yes',
+                              arguments: [uuid, responses[1]]);
+                    } else {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
+                  },
+                  task: task,
+                  showProgress: true,
+                  localizations: {
+                    'cancel': 'Cancel',
+                    'next': 'Next',
+                  },
+                  themeData: Theme.of(context).copyWith(
+                    colorScheme: ColorScheme.fromSwatch(
+                      primarySwatch: Colors.cyan,
+                    ).copyWith(
+                      onPrimary: Colors.white,
+                    ),
+                    primaryColor: Colors.cyan,
+                    backgroundColor: Colors.white,
+                    appBarTheme: const AppBarTheme(
+                      color: Colors.white,
+                      iconTheme: IconThemeData(
                         color: Colors.cyan,
                       ),
-                      textSelectionTheme: TextSelectionThemeData(
-                        cursorColor: Colors.cyan,
-                        selectionColor: Colors.cyan,
-                        selectionHandleColor: Colors.cyan,
+                      titleTextStyle: TextStyle(
+                        color: Colors.cyan,
                       ),
-                      cupertinoOverrideTheme: CupertinoThemeData(
-                        primaryColor: Colors.cyan,
-                      ),
-                      outlinedButtonTheme: OutlinedButtonThemeData(
-                        style: ButtonStyle(
-                          minimumSize: MaterialStateProperty.all(
-                            Size(150.0, 60.0),
-                          ),
-                          side: MaterialStateProperty.resolveWith(
-                            (Set<MaterialState> state) {
-                              if (state.contains(MaterialState.disabled)) {
-                                return BorderSide(
-                                  color: Colors.grey,
-                                );
-                              }
+                    ),
+                    iconTheme: const IconThemeData(
+                      color: Colors.cyan,
+                    ),
+                    textSelectionTheme: TextSelectionThemeData(
+                      cursorColor: Colors.cyan,
+                      selectionColor: Colors.cyan,
+                      selectionHandleColor: Colors.cyan,
+                    ),
+                    cupertinoOverrideTheme: CupertinoThemeData(
+                      primaryColor: Colors.cyan,
+                    ),
+                    outlinedButtonTheme: OutlinedButtonThemeData(
+                      style: ButtonStyle(
+                        minimumSize: MaterialStateProperty.all(
+                          Size(150.0, 60.0),
+                        ),
+                        side: MaterialStateProperty.resolveWith(
+                          (Set<MaterialState> state) {
+                            if (state.contains(MaterialState.disabled)) {
                               return BorderSide(
-                                color: Colors.cyan,
+                                color: Colors.grey,
                               );
-                            },
+                            }
+                            return BorderSide(
+                              color: Colors.cyan,
+                            );
+                          },
+                        ),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
-                          shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                          ),
-                          textStyle: MaterialStateProperty.resolveWith(
-                            (Set<MaterialState> state) {
-                              if (state.contains(MaterialState.disabled)) {
-                                return Theme.of(context)
-                                    .textTheme
-                                    .button
-                                    ?.copyWith(
-                                      color: Colors.grey,
-                                    );
-                              }
+                        ),
+                        textStyle: MaterialStateProperty.resolveWith(
+                          (Set<MaterialState> state) {
+                            if (state.contains(MaterialState.disabled)) {
                               return Theme.of(context)
                                   .textTheme
                                   .button
                                   ?.copyWith(
-                                    color: Colors.cyan,
+                                    color: Colors.grey,
                                   );
-                            },
-                          ),
-                        ),
-                      ),
-                      textButtonTheme: TextButtonThemeData(
-                        style: ButtonStyle(
-                          textStyle: MaterialStateProperty.all(
-                            Theme.of(context).textTheme.button?.copyWith(
+                            }
+                            return Theme.of(context).textTheme.button?.copyWith(
                                   color: Colors.cyan,
-                                ),
-                          ),
-                        ),
-                      ),
-                      textTheme: TextTheme(
-                        headline2: TextStyle(
-                          fontSize: 28.0,
-                          color: Colors.black,
-                        ),
-                        headline5: TextStyle(
-                          fontSize: 24.0,
-                          color: Colors.black,
-                        ),
-                        bodyText2: TextStyle(
-                          fontSize: 18.0,
-                          color: Colors.black,
-                        ),
-                        subtitle1: TextStyle(
-                          fontSize: 18.0,
-                          color: Colors.black,
-                        ),
-                      ),
-                      inputDecorationTheme: InputDecorationTheme(
-                        labelStyle: TextStyle(
-                          color: Colors.black,
+                                );
+                          },
                         ),
                       ),
                     ),
-                    surveyProgressbarConfiguration: SurveyProgressConfiguration(
-                      backgroundColor: Colors.white,
+                    textButtonTheme: TextButtonThemeData(
+                      style: ButtonStyle(
+                        textStyle: MaterialStateProperty.all(
+                          Theme.of(context).textTheme.button?.copyWith(
+                                color: Colors.cyan,
+                              ),
+                        ),
+                      ),
                     ),
-                  );
-                }
-                return CircularProgressIndicator.adaptive();
-              },
-            ),
+                    textTheme: TextTheme(
+                      headline2: TextStyle(
+                        fontSize: 28.0,
+                        color: Colors.black,
+                      ),
+                      headline5: TextStyle(
+                        fontSize: 24.0,
+                        color: Colors.black,
+                      ),
+                      bodyText2: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black,
+                      ),
+                      subtitle1: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                    inputDecorationTheme: InputDecorationTheme(
+                      labelStyle: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  surveyProgressbarConfiguration: SurveyProgressConfiguration(
+                    backgroundColor: Colors.white,
+                  ),
+                );
+              }
+              return CircularProgressIndicator.adaptive();
+            },
           ),
         ),
       ),
