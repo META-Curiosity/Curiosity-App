@@ -100,7 +100,7 @@ void main() async {
   // Turn off in production
   await messaging.setForegroundNotificationPresentationOptions(
       alert: true // false in production
-  );
+      );
 
   // Handle background logic to setup task reminder for the day
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
@@ -109,7 +109,8 @@ void main() async {
   });
 
   // Creating initial settings for local notification
-  var initializationSettingsAndroid = AndroidInitializationSettings('codex_logo');
+  var initializationSettingsAndroid =
+      AndroidInitializationSettings('codex_logo');
   var initializationSettingsIOS = IOSInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -123,12 +124,14 @@ void main() async {
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
       // Determine what to do with the notification once selected
       onSelectNotification: (String payload) async {
-    String userId = (await localStorageService.getUserHashedEmail())[HASHED_EMAIL_KEY];
+    String userId =
+        (await localStorageService.getUserHashedEmail())[HASHED_EMAIL_KEY];
     if (payload != null) {
       if (payload == NotificationPayload.MindfulnessSession.toString() ||
           payload == NotificationPayload.DailyActivityCompletion.toString()) {
         print('redirected to mindfulness screen');
-        navigatorKey.currentState.pushNamed('/navigation', arguments: [userId, 1]);
+        navigatorKey.currentState
+            .pushNamed('/navigation', arguments: [userId, 0]);
       } else if (payload == NotificationPayload.DailyActivitySetup.toString()) {
         print('redirected to daily activity setup screen');
         navigatorKey.currentState
@@ -383,24 +386,28 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         var currentUser = FirebaseAuth.instance.currentUser;
         if (currentUser != null) {
-          String hashedEmail = sha256.convert(utf8.encode(currentUser.email)).toString();
+          String hashedEmail =
+              sha256.convert(utf8.encode(currentUser.email)).toString();
           userDbService = UserDbService(hashedEmail);
           await localStorageService.addUserHashedEmail(hashedEmail);
 
-          FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
-            navigatorKey.currentState.pushNamed('/good_morning', arguments: hashedEmail);
+          FirebaseMessaging.onMessageOpenedApp
+              .listen((RemoteMessage message) async {
+            navigatorKey.currentState
+                .pushNamed('/good_morning', arguments: hashedEmail);
             print('User clicked on a message from firebase');
           });
 
           // Verifying if the user has registered before - if they have then
           // the application does not sign the user up
-          Map<String, dynamic> isUserRegistered = await userDbService.getUserData();
+          Map<String, dynamic> isUserRegistered =
+              await userDbService.getUserData();
           String token = await messaging.getToken();
-          
+
           // Adding device specific registration token to send notification
           UserTokenDbService userTokenDbService = UserTokenDbService();
           await userTokenDbService.addUserToken(hashedEmail, token);
-          
+
           MetaUser.User user = isUserRegistered['user'];
           String error = isUserRegistered['error'];
 
