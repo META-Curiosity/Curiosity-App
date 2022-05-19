@@ -417,16 +417,16 @@ class _MyHomePageState extends State<MyHomePage> {
             log.errorObj({'error': error});
           }
 
-          //Initialize First Screen
-          if (user == null && isUserRegistered['error']) {
+          //Initialize First Screen 
+          if (user == null) {
             // user has not registered yet -> registering the user
-            await userDbService.registerUserId();
-
+            Map<String, dynamic> userRegistrationResposne = await userDbService.registerUserId();
+            MetaUser.User newUser = userRegistrationResposne["user"];
             log.successString('user has registered successfully', 0);
             // After user successfully register then proceed to ask them for
             // their study id
             Navigator.pushReplacementNamed(context, '/study_id',
-                arguments: user.id);
+                arguments: newUser.id);
           } else {
             // Registered user logging back in again
             log.successString('user logged in successfully', 0);
