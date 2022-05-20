@@ -89,7 +89,7 @@ class _TaskCarouselState extends State<TaskCarousel>
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: 40),
+            SizedBox(height: 20),
             SafeArea(
               child: Text(
                 'Today\'s Task',
@@ -99,10 +99,10 @@ class _TaskCarouselState extends State<TaskCarousel>
             SizedBox(height: 20),
             Text("Pick a level of difficulty to get started",
                 style: TextStyle(fontSize: 16)),
-            SizedBox(height: 40),
+            SizedBox(height: 30),
             CarouselSlider(
               options: CarouselOptions(
-                height: 420,
+                height: 460,
                 aspectRatio: 16 / 7,
                 viewportFraction: 0.75,
                 initialPage: 0,
@@ -237,7 +237,7 @@ class _TaskCardState extends State<TaskCard> {
                 SizedBox(height: 20),
                 Text(widget.task,
                     style: TextStyle(
-                        fontSize: 28,
+                        fontSize: 24,
                         color: widget.color,
                         fontWeight: FontWeight.bold)),
                 SizedBox(height: 20),
@@ -248,7 +248,7 @@ class _TaskCardState extends State<TaskCard> {
                 Padding(
                     padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                     child: widget.difficultyIcon),
-                SizedBox(height: 10),
+                SizedBox(height: 30),
                 Text(widget.difficultyLabel,
                     style: TextStyle(
                         fontSize: 24,
@@ -306,7 +306,7 @@ class _DescriptionCardState extends State<DescriptionCard> {
                   child: Text(widget.description,
                       style: TextStyle(
                           height: 1.15,
-                          fontSize: 14,
+                          fontSize: 13,
                           color: widget.color,
                           fontWeight: FontWeight.bold)),
                 ),
