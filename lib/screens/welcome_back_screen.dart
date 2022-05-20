@@ -32,33 +32,37 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0)), //this right here
         child: SingleChildScrollView(
-          child: Expanded(
-            child: Container(
-              height: 400.0,
-              width: 300.0,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(30.0),
-                      child: Text(
-                        widget.description,
-                        style: TextStyle(fontSize: 18.0),
-                      ),
+          child: Container(
+            height: 400.0,
+            width: 350.0,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: Text("Today's Curoisity Goal",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ))),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 10.0),
+                    child: Text(
+                      widget.description,
+                      style: TextStyle(fontSize: 16.0),
                     ),
-                    Padding(padding: EdgeInsets.only(top: 40.0)),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text(
-                          'Got It!',
-                          style:
-                              TextStyle(color: Colors.purple, fontSize: 18.0),
-                        ))
-                  ],
-                ),
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 10.0)),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        'Got It!',
+                        style: TextStyle(color: Colors.purple, fontSize: 18.0),
+                      ))
+                ],
               ),
             ),
           ),
