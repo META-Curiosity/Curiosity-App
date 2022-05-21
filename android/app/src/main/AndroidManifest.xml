@@ -10,8 +10,8 @@
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
   <!-- Line 13 for iOS and and Line 14 for Android, comment one of depending on application usage -->
-<!--<application android:name="${applicationName}" android:label="curiosity_flutter" android:icon="@mipmap/ic_launcher">-->
-      <application android:name="io.flutter.app.FlutterApplication" android:label="curiosity_flutter" android:icon="@mipmap/ic_launcher">
+<application android:name="${applicationName}" android:label="curiosity_flutter" android:icon="@mipmap/ic_launcher">
+      <!-- <application android:name="io.flutter.app.FlutterApplication" android:label="curiosity_flutter" android:icon="@mipmap/ic_launcher"> -->
     <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
       <intent-filter>
         <action android:name="android.intent.action.BOOT_COMPLETED"/>
