@@ -35,21 +35,31 @@ class _AudioPlayerState extends State<AudioPlayer> {
     //Set the image and audio based on the setting selected.
     if (args == 0) {
       //Picks a random number in range [0,2]
-      int randomNumber = random.nextInt(3);
+      int randomNumber = random.nextInt(5);
       List<String> audioChoices = [
         'assets/audio/eating1.mp3',
         'assets/audio/eating2.mp3',
-        'assets/audio/eating3.mp3'
+        'assets/audio/eating3.mp3',
+        'assets/audio/eating4.mp3',
+        'assets/audio/eating5.mp3'
       ];
 
       image = 'assets/images/food.jpg';
       audio = audioChoices[randomNumber];
       print("0");
-      print(randomNumber);
+      print(audio);
     } else if (args == 1) {
+      int randomNumber = random.nextInt(3);
+      List<String> audioChoices = [
+        'assets/audio/walking1.mp3',
+        'assets/audio/walking2.mp3',
+        'assets/audio/walking3.mp3'
+      ];
+
       image = 'assets/images/forest.jpeg';
-      audio = 'assets/audio/walking1.mp3';
+      audio = audioChoices[randomNumber];
       print("1");
+      print(audio);
     } else {
       //Picks a random number in range [0,2]
       int randomNumber = random.nextInt(3);
@@ -62,6 +72,7 @@ class _AudioPlayerState extends State<AudioPlayer> {
       image = 'assets/images/beach.jpg';
       audio = audioChoices[randomNumber];
       print("2");
+      print(audio);
     }
     setUpPlaylist(audio);
     super.didChangeDependencies();
