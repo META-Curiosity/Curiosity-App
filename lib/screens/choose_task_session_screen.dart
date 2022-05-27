@@ -15,6 +15,8 @@ class ChooseTaskSession extends StatefulWidget {
 }
 
 class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
+  double _invalidTimeError = 0.0;
+
   final List<String> images = <String>[
     "assets/images/morningCity.jpeg",
     "assets/images/noonCity.jpeg",
@@ -26,7 +28,9 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
     "Evening: 4pm - 9pm"
   ];
 
-  TimeOfDay _time = TimeOfDay(hour: 7, minute: 15);
+  TimeOfDay _time = TimeOfDay(
+      hour: DateTime.now().add(Duration(hours: 1)).hour,
+      minute: DateTime.now().minute);
 
   void _selectTime() async {
     final TimeOfDay newTime = await showTimePicker(
@@ -168,10 +172,16 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
                       child: Center(
                         child: Column(
                           children: [
-                            SizedBox(height: 70),
-                            Text(
-                                "Please choose a time after now and before the day ends"),
                             SizedBox(height: 50),
+                            AnimatedOpacity(
+                              opacity: _invalidTimeError,
+                              duration: Duration(milliseconds: 500),
+                              child: Text(
+                                  "Please choose a time after now and before the day ends",
+                                  style: TextStyle(
+                                      color: Colors.red, fontSize: 14)),
+                            ),
+                            SizedBox(height: 70),
                             SizedBox(
                               height: 50,
                               width: 200,
@@ -235,27 +245,43 @@ class _ChooseMindfulnessSessionState extends State<ChooseTaskSession> {
                                   print("Converted Time = " + convertedTime);
 
                                   // Cancel the reminders for users to setup their activity for the day
-                                  UserTokenDbService userTokenDbService = UserTokenDbService();
-                                  List<String> date = DateTime.now().toString().split(" ")[0].split('-');
-                                  String crntDate = date[1] + "-" + date[2] + "-" + date[0].substring(2);
-                                  await userTokenDbService.markUserSetupCompleted(_id, crntDate);
+                                  UserTokenDbService userTokenDbService =
+                                      UserTokenDbService();
+                                  List<String> date = DateTime.now()
+                                      .toString()
+                                      .split(" ")[0]
+                                      .split('-');
+                                  String crntDate = date[1] +
+                                      "-" +
+                                      date[2] +
+                                      "-" +
+                                      date[0].substring(2);
+                                  await userTokenDbService
+                                      .markUserSetupCompleted(_id, crntDate);
 
-                                  // Setup notification for user to complete their activity for the day
-                                  await notificationService
-                                      .scheduleActivityCompletionNotification(
-                                          convertedTime);
-                                  if (user.labId % 2 == 0) {
-                                    Navigator.pushReplacementNamed(
-                                      context,
-                                      '/choose_mindfulness_session',
-                                      arguments: _id,
-                                    ); //[user id, starting screen]
-                                  } else {
-                                    Navigator.pushReplacementNamed(
-                                        context, '/navigation', arguments: [
-                                      _id,
-                                      0
-                                    ]); //[user id, starting screen]
+                                  // Setup notification for user to complete their activity for the
+                                  try {
+                                    await notificationService
+                                        .scheduleActivityCompletionNotification(
+                                            convertedTime);
+                                    if (user.labId % 2 == 0) {
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/choose_mindfulness_session',
+                                        arguments: _id,
+                                      ); //[user id, starting screen]
+                                    } else {
+                                      Navigator.pushNamed(
+                                          context, '/navigation', arguments: [
+                                        _id,
+                                        0
+                                      ]); //[user id, starting screen]
+                                    }
+                                  } catch (e) {
+                                    setState(() => {_invalidTimeError = 1.0});
+                                    print(
+                                        "invalidTimeerror is ${_invalidTimeError}");
+                                    print(e);
                                   }
                                 },
                                 label: Text('CONTINUE'),
