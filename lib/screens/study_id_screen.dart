@@ -46,6 +46,10 @@ class _StudyIdState extends State<StudyId> {
               content: Form(
                   key: _formKey,
                   child: Column(children: [
+                    Text(
+                        'By participating in this study, you have agreed to the consent form signed outside of this study.',
+                        style: TextStyle(fontSize: 16)),
+                    SizedBox(height: 30),
                     TextFormField(
                       controller: _passwordController,
                       validator: (value) {
