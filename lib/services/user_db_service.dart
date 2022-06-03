@@ -533,22 +533,22 @@ class UserDbService {
       User user = userData['user'];
       // Calculating total number of days registered IN LOCAL DEVICE TIME
       DateTime currentLocalDateTime = DateTime.now().toLocal();
-      DateTime registeredLocalDateTime =
-          DateTime.parse(user.registerDateTime).toLocal();
-      int totalDaysRegistered =
-          DateHelper.daysBetween(currentLocalDateTime, registeredLocalDateTime);
+      DateTime registeredLocalDateTime = DateTime.parse(user.registerDateTime).toLocal();
+      int totalDaysRegistered = DateHelper.daysBetween(currentLocalDateTime, registeredLocalDateTime);
 
       log.successObj({
         'method': 'getUserStreakAndTotalDaysCompleted - successful',
         'totalDaysRegistered': totalDaysRegistered,
         'totalSuccessfulDays': user.totalSuccessfulDays,
-        'currentStreak': user.currentStreak
+        'currentStreak': user.currentStreak,
+        'totalSuccessfulMindfulnessSession': user.totalSuccessfulMindfulnessSession
       });
 
       return {
         'totalDaysRegistered': totalDaysRegistered,
         'totalSuccessfulDays': user.totalSuccessfulDays,
-        'currentStreak': user.currentStreak
+        'currentStreak': user.currentStreak,
+        'totalSuccessfulMindfulnessSession': user.totalSuccessfulMindfulnessSession
       };
     } catch (error) {
       log.errorObj({
@@ -567,10 +567,27 @@ class UserDbService {
       Map<String, dynamic> data) async {
     try {
       log.infoObj({'method': 'addMindfulnessSessionCompletion', 'data': data});
+
       MindfulSession userMindfulInput = new MindfulSession.fromData(data);
       userMindfulInput.hashedDate = calculateDateHash(data['id']);
       await mindfulSesCollection.doc(data['id']).set(userMindfulInput.toJson());
 
+      // Tally successful mindfulness session in user data
+      if (data['hasCompleted'] == true) {
+        // Retrieving user information to update their mindfulness session 
+        Map<String, dynamic> userData = await getUserData();
+
+        if (userData['error'] != null) {
+          log.errorObj({'method': 'addMindfulnessSessionCompletion - error', 'error': userData['error']}, 2);
+          return {'error': userData['error']};
+        }
+
+        User user = userData['user'];
+        int updatedMindfulSesTally = user.totalSuccessfulMindfulnessSession + 1;
+
+        await usersCollection.doc(uid).update({'totalSuccessfulMindfulnessSession': updatedMindfulSesTally});
+      }
+      
       log.successObj({
         'method': 'addMindfulnessSessionCompletion - success',
         'userMindfulInput': userMindfulInput

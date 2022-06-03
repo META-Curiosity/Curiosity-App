@@ -8,6 +8,7 @@ class User {
   Map<String, CustomTask> customTasks = {};
   int currentStreak;
   int totalSuccessfulDays;
+  int totalSuccessfulMindfulnessSession;
   int prevTypeOfTaskDone; // 0 = custom task, 1 = META task
   int labId; // -1 if the user does not have lab id
 
@@ -46,6 +47,7 @@ class User {
     prevTypeOfTaskDone = 1;
     onboarded = false;
     hasViewedMetaTaskIntro = false;
+    totalSuccessfulMindfulnessSession = 0;
   }
 
   // Created from the data retrieved from firestore
@@ -70,6 +72,7 @@ class User {
     onboarded = data['onboarded'] ?? onboarded;
     prevTypeOfTaskDone = data['prevTypeOfTaskDone'] ?? prevTypeOfTaskDone;
     hasViewedMetaTaskIntro = data['hasViewedMetaTaskIntro'] ?? hasViewedMetaTaskIntro;
+    totalSuccessfulMindfulnessSession = data['totalSuccessfulMindfulnessSession'] ?? totalSuccessfulMindfulnessSession;
   }
 
   Map<String, dynamic> toJson() {
@@ -91,7 +94,8 @@ class User {
       'onboarded': onboarded,
       'mindfulReminders': mindfulReminders,
       'prevTypeOfTaskDone': prevTypeOfTaskDone,
-      'hasViewedMetaTaskIntro': hasViewedMetaTaskIntro
+      'hasViewedMetaTaskIntro': hasViewedMetaTaskIntro,
+      'totalSuccessfulMindfulnessSession': totalSuccessfulMindfulnessSession
     };
   }
 
