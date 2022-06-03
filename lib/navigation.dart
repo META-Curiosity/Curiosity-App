@@ -75,7 +75,8 @@ class _NavigationState extends State<Navigation> {
                 uuid: uuid), //To be replaced with meditation screen
             CentralDashboardScreen(
                 dates: listOfDailyEvaluationsToMap(result[1]),
-                records: result[2]),
+                records: result[2],
+                user: result[0]),
             EditCustomTasksScreen(user: result[0]),
           ];
           items = <Widget>[
@@ -94,7 +95,8 @@ class _NavigationState extends State<Navigation> {
                 description: result[3][3]),
             CentralDashboardScreen(
                 dates: listOfDailyEvaluationsToMap(result[1]),
-                records: result[2]),
+                records: result[2],
+                user: result[0]),
             EditCustomTasksScreen(user: result[0]),
           ];
           items = <Widget>[
@@ -164,6 +166,7 @@ class _NavigationState extends State<Navigation> {
     bool isCustomTask = false;
     String difficulty;
     int taskId;
+    int labId;
 
     //Checks if task has been skipped or completed +  get task title
     await UDS
@@ -210,6 +213,7 @@ class _NavigationState extends State<Navigation> {
     res[1] = task;
     res[2] = taskStatus;
     res[3] = description;
+
     return res;
   }
 
