@@ -222,10 +222,11 @@ await userDbService.getUserData();
 '''
 Ouput:
   - Map<String, dynamic> response:
-    - int totalDaysRegistered: Number of days user have registered using the app,
-    - int totalSuccessfulDays: Number of days the user successfully completed a task,
-    - int currentStreak: Number of days in a row that the user completed a task,
+    - int totalDaysRegistered: Number of days user have registered using the app
+    - int totalSuccessfulDays: Number of days the user successfully completed a task
+    - int currentStreak: Number of days in a row that the user completed a task
     - int totalSuccessfulMindfulnessSession: Number of days that user completed mindfulness session
+    - int bestTaskCompletedStreak: User best streak that they completed
 '''
 await userDbService.getUserStreakAndTotalDaysCompleted();
 ```
