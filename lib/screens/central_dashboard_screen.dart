@@ -12,8 +12,12 @@ import 'package:curiosity_flutter/screens/onboarding_screen.dart';
 class CentralDashboardScreen extends StatefulWidget {
   Map<DateTime, List<DailyEvaluation>> dates;
   Map<String, dynamic> records;
+  User user;
   CentralDashboardScreen(
-      {Key key, @required this.dates, @required this.records})
+      {Key key,
+      @required this.dates,
+      @required this.records,
+      @required this.user})
       : super(key: key);
 
   @override
@@ -149,10 +153,34 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
                   title: "Current Streak"),
               recordCard(
                   icon: Icon(Icons.check_circle,
-                      color: Colors.green[400], size: 52),
+                      color: (widget.user.labId % 2 == 0)
+                          ? Colors.blue[400]
+                          : Colors.green[400],
+                      size: 52),
                   stat: widget.records["totalSuccessfulDays"].toString(),
                   //stat: "2",
-                  title: "Total Days Done"),
+                  title: "Goals Completed"),
+            ]),
+            Row(children: <Widget>[
+              (widget.user.labId % 2 == 0
+                  ? recordCard(
+                      icon: Icon(FontAwesome.leaf,
+                          color: Colors.green[700], size: 52),
+                      stat: widget.records["totalSuccessfulMindfulnessSession"]
+                          .toString(),
+                      title: "Mindful Completion")
+                  : recordCard(
+                      icon: Icon(MaterialCommunityIcons.crown,
+                          color: Colors.yellow[700], size: 52),
+                      stat:
+                          widget.records["bestTaskCompletedStreak"].toString(),
+                      title: "Longest Streak")),
+              // : Text('')),
+              recordCard(
+                  icon: Icon(MaterialCommunityIcons.calendar_check,
+                      color: Colors.pink[300], size: 52),
+                  stat: widget.records["totalDaysRegistered"].toString(),
+                  title: "Days In Program"),
             ]),
           ]),
         ),
@@ -197,6 +225,7 @@ class _recordCardState extends State<recordCard> {
                         padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                         child: widget.icon),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.fromLTRB(55, 0, 0, 10),

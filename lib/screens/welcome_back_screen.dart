@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:curiosity_flutter/navigation.dart';
 import 'package:intl/intl.dart';
 import 'package:curiosity_flutter/models/daily_evaluation.dart';
+import 'dart:math';
 
 class WelcomeBackScreen extends StatefulWidget {
   String date; //Current date
@@ -25,6 +26,35 @@ class WelcomeBackScreen extends StatefulWidget {
 }
 
 class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
+  String quote;
+  @override
+  void didChangeDependencies() {
+    List<String> quotes = [
+      "Small steps lead to big changes.",
+      "Consistency is key.",
+      "Cultivating curiosity starts with what you do today.",
+      "Curiosity is a habit—each day counts.",
+      "The secret of your future is hidden in your daily routine",
+      "Do small things with great curiosity.",
+      "Change will not come if we wait for some other day.",
+      "Set an intention to find a sense of wonder today.",
+      "Greet the mundane with childlike curiosity.",
+      "You are what you repeatedly do. Act with curiosity!",
+      "Curiosities are all around you, find them!",
+      "Look for magic in your daily routine.",
+      "Find something that makes you wonder.",
+      "The first step to creating a habit, is to take action.",
+      "Great things never come from comfort zones.",
+      "Don’t forget why you started."
+    ];
+    Random random = new Random();
+    int randomNumber = random.nextInt(16);
+    setState(() {
+      quote = quotes[randomNumber];
+    });
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     //Dialog for description of task
@@ -41,7 +71,7 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                 children: <Widget>[
                   Padding(
                       padding: EdgeInsets.all(20.0),
-                      child: Text("Today's Curoisity Goal",
+                      child: Text("Today's Curiosity Goal",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -73,17 +103,23 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
         child: (widget.taskStatus == -1)
             ? Column(
                 children: <Widget>[
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 50),
                   Text(
                     widget.date,
                     style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    "Focus on progress, not perfection.",
+                  Text(
+                    quote,
                     style: TextStyle(fontSize: 16),
                   ),
-                  const SizedBox(height: 30),
+                  SizedBox(height: 20),
+                  Container(
+                    height: 100,
+                    width: 300,
+                    child: Image(
+                        image: AssetImage('assets/images/yellow_cat_icon.png')),
+                  ),
                   GestureDetector(
                     onTap: () {
                       print(widget.description);
@@ -94,7 +130,7 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                     child: Container(
                       // margin: const EdgeInsets.all(15.0),
                       padding: const EdgeInsets.all(10.0),
-                      height: 170,
+                      height: 200,
                       width: 300,
                       decoration: BoxDecoration(
                         color: Colors.grey[300],
@@ -105,19 +141,31 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
 
-                      child: Center(
-                        child: Text(
-                          widget.task,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
+                      child: Column(children: [
+                        SizedBox(height: 30),
+                        Text("Today's curiosity goal:",
+                            style: TextStyle(
+                              fontSize: 15,
+                            )),
+                        SizedBox(height: 20),
+                        Center(
+                          child: Text(
+                            widget.task,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 20),
+                        Text("Tap to read more",
+                            style: TextStyle(
+                                fontSize: 14, fontStyle: FontStyle.italic)),
+                      ]),
                     ),
                   ),
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 50),
                   SizedBox(
                     width: 275,
                     height: 50,
@@ -154,40 +202,66 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
               )
             : Column(
                 children: <Widget>[
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 50),
                   Text(
                     widget.date,
                     style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    "Focus on progress, not perfection.",
+                  Text(
+                    quote,
                     style: TextStyle(fontSize: 16),
                   ),
-                  const SizedBox(height: 30),
+                  SizedBox(height: 20),
                   Container(
-                    // margin: const EdgeInsets.all(15.0),
-                    padding: const EdgeInsets.all(10.0),
-                    height: 170,
+                    height: 100,
                     width: 300,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 5,
+                    child: Image(
+                        image: AssetImage('assets/images/yellow_cat_icon.png')),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      print(widget.description);
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) => errorDialog);
+                    },
+                    child: Container(
+                      // margin: const EdgeInsets.all(15.0),
+                      padding: const EdgeInsets.all(10.0),
+                      height: 200,
+                      width: 300,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 5,
+                        ),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
 
-                    child: Center(
-                      child: Text(
-                        widget.task,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                      ),
+                      child: Column(children: [
+                        SizedBox(height: 30),
+                        Text("Today's curiosity goal:",
+                            style: TextStyle(
+                              fontSize: 15,
+                            )),
+                        SizedBox(height: 20),
+                        Center(
+                          child: Text(
+                            widget.task,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text("Tap to read more",
+                            style: TextStyle(
+                                fontSize: 14, fontStyle: FontStyle.italic)),
+                      ]),
                     ),
                   ),
                   const SizedBox(height: 30),
