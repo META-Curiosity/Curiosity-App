@@ -152,7 +152,19 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
                       color: Colors.green[400], size: 52),
                   stat: widget.records["totalSuccessfulDays"].toString(),
                   //stat: "2",
-                  title: "Total Days Done"),
+                  title: "Goals completed"),
+            ]),
+            Row(children: <Widget>[
+              recordCard(
+                  icon: Icon(FontAwesome.leaf,
+                      color: Colors.green[700], size: 52),
+                  stat: '18',
+                  title: "Mindful completion"),
+              recordCard(
+                  icon: Icon(MaterialCommunityIcons.calendar_check,
+                      color: Colors.pink[300], size: 52),
+                  stat: "18",
+                  title: "Days In Program"),
             ]),
           ]),
         ),

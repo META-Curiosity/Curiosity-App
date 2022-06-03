@@ -41,7 +41,7 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                 children: <Widget>[
                   Padding(
                       padding: EdgeInsets.all(20.0),
-                      child: Text("Today's Curoisity Goal",
+                      child: Text("Today's Curiosity Goal",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -73,7 +73,7 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
         child: (widget.taskStatus == -1)
             ? Column(
                 children: <Widget>[
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 50),
                   Text(
                     widget.date,
                     style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
@@ -83,7 +83,19 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                     "Focus on progress, not perfection.",
                     style: TextStyle(fontSize: 16),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 40),
+                  Text("Today's Curiosity Goal",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      )),
+                  const SizedBox(height: 5),
+                  Text("Tap below for more info",
+                      style: TextStyle(
+                        fontSize: 16,
+                        // fontWeight: FontWeight.italic,
+                      )),
+                  const SizedBox(height: 10),
                   GestureDetector(
                     onTap: () {
                       print(widget.description);
