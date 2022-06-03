@@ -14,6 +14,25 @@ class StudyId extends StatefulWidget {
   _StudyIdState createState() => _StudyIdState();
 }
 
+bool isNumericUsing_tryParse(String string) {
+  // Null or empty string is not a number
+  if (string == null || string.isEmpty) {
+    return false;
+  }
+
+  // Try to parse input string to number.
+  // Both integer and double work.
+  // Use int.tryParse if you want to check integer only.
+  // Use double.tryParse if you want to check double only.
+  final number = num.tryParse(string);
+
+  if (number == null) {
+    return false;
+  }
+
+  return true;
+}
+
 class _StudyIdState extends State<StudyId> {
   String _id;
 
@@ -69,7 +88,13 @@ class _StudyIdState extends State<StudyId> {
                     TextFormField(
                       controller: _textEditingController,
                       validator: (value) {
-                        return value.isNotEmpty ? null : "Enter Study ID";
+                        if (value.isNotEmpty) {
+                          if (!isNumericUsing_tryParse(value)) {
+                            return "Must be a number";
+                          }
+                        } else {
+                          return "Enter Study ID";
+                        }
                       },
                       decoration: InputDecoration(hintText: "Study ID"),
                     )
