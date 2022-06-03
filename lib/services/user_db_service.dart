@@ -180,6 +180,8 @@ class UserDbService {
       }
 
       User user = userData['user'];
+      int bestStreak = user.bestTaskCompletedStreak;
+      
       if (data['isSuccessful']) {
         if (user.prevSucessDateTime != null) {
           DateTime crntLocalDateTime = DateTime.now().toLocal();
@@ -200,6 +202,7 @@ class UserDbService {
         }
         user.currentStreak += 1;
         user.totalSuccessfulDays += 1;
+        bestStreak = max(bestStreak, user.currentStreak);
         user.prevSucessDateTime = DateTime.now().toUtc().toString();
       } else {
         // Task was not completed successfully -> lose streak
@@ -209,13 +212,15 @@ class UserDbService {
       log.infoObj({
         'currentStreak': user.currentStreak,
         'totalSuccessfulDays': user.totalSuccessfulDays,
-        'prevSuccessDateTime': user.prevSucessDateTime
+        'prevSuccessDateTime': user.prevSucessDateTime,
+        'bestTaskCompletedStreak': bestStreak
       });
 
       await usersCollection.doc(uid).update({
         'currentStreak': user.currentStreak,
         'totalSuccessfulDays': user.totalSuccessfulDays,
-        'prevSucessDateTime': user.prevSucessDateTime
+        'prevSucessDateTime': user.prevSucessDateTime,
+        'bestTaskCompletedStreak': bestStreak
       });
 
       log.infoObj({
@@ -541,14 +546,16 @@ class UserDbService {
         'totalDaysRegistered': totalDaysRegistered,
         'totalSuccessfulDays': user.totalSuccessfulDays,
         'currentStreak': user.currentStreak,
-        'totalSuccessfulMindfulnessSession': user.totalSuccessfulMindfulnessSession
+        'totalSuccessfulMindfulnessSession': user.totalSuccessfulMindfulnessSession,
+        'bestTaskCompletedStreak': user.bestTaskCompletedStreak
       });
 
       return {
         'totalDaysRegistered': totalDaysRegistered,
         'totalSuccessfulDays': user.totalSuccessfulDays,
         'currentStreak': user.currentStreak,
-        'totalSuccessfulMindfulnessSession': user.totalSuccessfulMindfulnessSession
+        'totalSuccessfulMindfulnessSession': user.totalSuccessfulMindfulnessSession,
+        'bestTaskCompletedStreak': user.bestTaskCompletedStreak
       };
     } catch (error) {
       log.errorObj({
