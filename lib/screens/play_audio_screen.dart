@@ -62,11 +62,13 @@ class _AudioPlayerState extends State<AudioPlayer> {
       print(audio);
     } else {
       //Picks a random number in range [0,2]
-      int randomNumber = random.nextInt(3);
+      int randomNumber = random.nextInt(5);
       List<String> audioChoices = [
         'assets/audio/washing1.mp3',
         'assets/audio/washing2.mp3',
-        'assets/audio/washing3.mp3'
+        'assets/audio/washing3.mp3',
+        'assets/audio/washing4.mp3',
+        'assets/audio/washing5.mp3'
       ];
 
       image = 'assets/images/beach.jpg';
