@@ -40,16 +40,36 @@ class _StudyIdState extends State<StudyId> {
         builder: (context) {
           final TextEditingController _textEditingController =
               TextEditingController();
+          final TextEditingController _passwordController =
+              TextEditingController();
           return AlertDialog(
               content: Form(
                   key: _formKey,
-                  child: TextFormField(
-                    controller: _textEditingController,
-                    validator: (value) {
-                      return value.isNotEmpty ? null : "Enter Study ID";
-                    },
-                    decoration: InputDecoration(hintText: "Study ID"),
-                  )),
+                  child: Column(children: [
+                    TextFormField(
+                      controller: _passwordController,
+                      validator: (value) {
+                        if (value.isNotEmpty) {
+                          if (value != "curious123") {
+                            return "Incorrect Password";
+                          }
+                        } else {
+                          return "Enter Password";
+                        }
+
+                        return null;
+                      },
+                      decoration: InputDecoration(hintText: "Study Passcode"),
+                    ),
+                    SizedBox(height: 30),
+                    TextFormField(
+                      controller: _textEditingController,
+                      validator: (value) {
+                        return value.isNotEmpty ? null : "Enter Study ID";
+                      },
+                      decoration: InputDecoration(hintText: "Study ID"),
+                    )
+                  ])),
               actions: <Widget>[
                 TextButton(
                     child: Text('Exit'),
