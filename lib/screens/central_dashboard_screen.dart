@@ -172,8 +172,8 @@ class _CentralDashboardScreenState extends State<CentralDashboardScreen> {
                   : recordCard(
                       icon: Icon(MaterialCommunityIcons.crown,
                           color: Colors.yellow[700], size: 52),
-                      stat: widget.records["totalSuccessfulMindfulnessSession"]
-                          .toString(),
+                      stat:
+                          widget.records["bestTaskCompletedStreak"].toString(),
                       title: "Longest Streak")),
               // : Text('')),
               recordCard(
