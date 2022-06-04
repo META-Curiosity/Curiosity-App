@@ -97,14 +97,13 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
             ),
           ),
         ));
-    return SingleChildScrollView(
-      child: Container(
-        color: Colors.amber,
-        child: Center(
-          child: (widget.taskStatus == -1)
-              ? Column(
+    return Container(
+      color: Colors.amber,
+      child: Center(
+        child: (widget.taskStatus == -1)
+            ? SingleChildScrollView(
+                child: Column(
                   children: <Widget>[
-                    const SizedBox(height: 20),
                     Text(
                       widget.date,
                       style:
@@ -202,8 +201,10 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                       ),
                     ),
                   ],
-                )
-              : Column(
+                ),
+              )
+            : SingleChildScrollView(
+                child: Column(
                   children: <Widget>[
                     const SizedBox(height: 50),
                     Text(
@@ -302,7 +303,7 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                         : Text('')
                   ],
                 ),
-        ),
+              ),
       ),
     );
   }
