@@ -97,206 +97,212 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
             ),
           ),
         ));
-    return Container(
-      color: Colors.amber,
-      child: Center(
-        child: (widget.taskStatus == -1)
-            ? Column(
-                children: <Widget>[
-                  const SizedBox(height: 20),
-                  Text(
-                    widget.date,
-                    style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    quote,
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  SizedBox(height: 20),
-                  Container(
-                    height: 100,
-                    width: 300,
-                    child: Image(
-                        image: AssetImage('assets/images/yellow_cat_icon.png')),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      print(widget.description);
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) => errorDialog);
-                    },
-                    child: Container(
-                      // margin: const EdgeInsets.all(15.0),
-                      padding: const EdgeInsets.all(10.0),
-                      height: 200,
+    return SingleChildScrollView(
+      child: Container(
+        color: Colors.amber,
+        child: Center(
+          child: (widget.taskStatus == -1)
+              ? Column(
+                  children: <Widget>[
+                    const SizedBox(height: 20),
+                    Text(
+                      widget.date,
+                      style:
+                          TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      quote,
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    SizedBox(height: 20),
+                    Container(
+                      height: 100,
                       width: 300,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        border: Border.all(
-                          color: Colors.black,
-                          width: 5,
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-
-                      child: Column(children: [
-                        SizedBox(height: 30),
-                        Text("Today's curiosity goal:",
-                            style: TextStyle(
-                              fontSize: 15,
-                            )),
-                        SizedBox(height: 20),
-                        Center(
-                          child: Text(
-                            widget.task,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Text("Tap to read more",
-                            style: TextStyle(
-                                fontSize: 14, fontStyle: FontStyle.italic)),
-                      ]),
+                      child: Image(
+                          image:
+                              AssetImage('assets/images/yellow_cat_icon.png')),
                     ),
-                  ),
-                  const SizedBox(height: 30),
-                  SizedBox(
-                    width: 275,
-                    height: 50,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: const Color(0xFF4B81EF),
-                      ),
-                      onPressed: () {
-                        // Navigate to the second screen using a named route.
-                        Navigator.pushNamed(context, '/activity_survey',
-                                arguments: widget.uuid)
-                            .then((_) => setState(() {}));
+                    GestureDetector(
+                      onTap: () {
+                        print(widget.description);
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) => errorDialog);
                       },
-                      child: const Text("Mark goal as complete."),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  SizedBox(
-                    width: 275,
-                    height: 50,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.grey[600],
-                      ),
-                      onPressed: () {
-                        // Navigate to the second screen using a named route.
-                        Navigator.pushNamed(context, '/nightly_evaluation_no',
-                            arguments: widget.uuid);
-                      },
-                      child: const Text("Skip today's goal."),
-                    ),
-                  ),
-                ],
-              )
-            : Column(
-                children: <Widget>[
-                  const SizedBox(height: 50),
-                  Text(
-                    widget.date,
-                    style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    quote,
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  SizedBox(height: 20),
-                  Container(
-                    height: 100,
-                    width: 300,
-                    child: Image(
-                        image: AssetImage('assets/images/yellow_cat_icon.png')),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      print(widget.description);
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) => errorDialog);
-                    },
-                    child: Container(
-                      // margin: const EdgeInsets.all(15.0),
-                      padding: const EdgeInsets.all(10.0),
-                      height: 200,
-                      width: 300,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        border: Border.all(
-                          color: Colors.black,
-                          width: 5,
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-
-                      child: Column(children: [
-                        SizedBox(height: 30),
-                        Text("Today's curiosity goal:",
-                            style: TextStyle(
-                              fontSize: 15,
-                            )),
-                        SizedBox(height: 20),
-                        Center(
-                          child: Text(
-                            widget.task,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
+                      child: Container(
+                        // margin: const EdgeInsets.all(15.0),
+                        padding: const EdgeInsets.all(10.0),
+                        height: 200,
+                        width: 300,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 5,
                           ),
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
-                        SizedBox(height: 20),
-                        Text("Tap to read more",
-                            style: TextStyle(
-                                fontSize: 14, fontStyle: FontStyle.italic)),
-                      ]),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  (widget.taskStatus == 0)
-                      ? Padding(
-                          padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                          child: SizedBox(
+
+                        child: Column(children: [
+                          SizedBox(height: 30),
+                          Text("Today's curiosity goal:",
+                              style: TextStyle(
+                                fontSize: 15,
+                              )),
+                          SizedBox(height: 20),
+                          Center(
                             child: Text(
-                              'Its all good, next time will\nbe successful! ✅',
+                              widget.task,
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.5),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
                             ),
                           ),
-                        )
-                      : Text(''),
-                  (widget.taskStatus == 1)
-                      ? Padding(
-                          padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                          child: SizedBox(
+                          SizedBox(height: 20),
+                          Text("Tap to read more",
+                              style: TextStyle(
+                                  fontSize: 14, fontStyle: FontStyle.italic)),
+                        ]),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      width: 275,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: const Color(0xFF4B81EF),
+                        ),
+                        onPressed: () {
+                          // Navigate to the second screen using a named route.
+                          Navigator.pushNamed(context, '/activity_survey',
+                                  arguments: widget.uuid)
+                              .then((_) => setState(() {}));
+                        },
+                        child: const Text("Mark goal as complete."),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    SizedBox(
+                      width: 275,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.grey[600],
+                        ),
+                        onPressed: () {
+                          // Navigate to the second screen using a named route.
+                          Navigator.pushNamed(context, '/nightly_evaluation_no',
+                              arguments: widget.uuid);
+                        },
+                        child: const Text("Skip today's goal."),
+                      ),
+                    ),
+                  ],
+                )
+              : Column(
+                  children: <Widget>[
+                    const SizedBox(height: 50),
+                    Text(
+                      widget.date,
+                      style:
+                          TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      quote,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(height: 20),
+                    Container(
+                      height: 100,
+                      width: 300,
+                      child: Image(
+                          image:
+                              AssetImage('assets/images/yellow_cat_icon.png')),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        print(widget.description);
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) => errorDialog);
+                      },
+                      child: Container(
+                        // margin: const EdgeInsets.all(15.0),
+                        padding: const EdgeInsets.all(10.0),
+                        height: 200,
+                        width: 300,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 5,
+                          ),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+
+                        child: Column(children: [
+                          SizedBox(height: 30),
+                          Text("Today's curiosity goal:",
+                              style: TextStyle(
+                                fontSize: 15,
+                              )),
+                          SizedBox(height: 20),
+                          Center(
                             child: Text(
-                              'Congrats on completing your daily goal.\n\n  Stay Curious! 🎉',
+                              widget.task,
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.25),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
                             ),
                           ),
-                        )
-                      : Text('')
-                ],
-              ),
+                          SizedBox(height: 20),
+                          Text("Tap to read more",
+                              style: TextStyle(
+                                  fontSize: 14, fontStyle: FontStyle.italic)),
+                        ]),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    (widget.taskStatus == 0)
+                        ? Padding(
+                            padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                            child: SizedBox(
+                              child: Text(
+                                'Its all good, next time will\nbe successful! ✅',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.5),
+                              ),
+                            ),
+                          )
+                        : Text(''),
+                    (widget.taskStatus == 1)
+                        ? Padding(
+                            padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                            child: SizedBox(
+                              child: Text(
+                                'Congrats on completing your daily goal.\n\n  Stay Curious! 🎉',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.25),
+                              ),
+                            ),
+                          )
+                        : Text('')
+                  ],
+                ),
+        ),
       ),
     );
   }
