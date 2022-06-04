@@ -103,7 +103,7 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
         child: (widget.taskStatus == -1)
             ? Column(
                 children: <Widget>[
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 20),
                   Text(
                     widget.date,
                     style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
@@ -111,7 +111,7 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                   const SizedBox(height: 12),
                   Text(
                     quote,
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 14),
                   ),
                   SizedBox(height: 20),
                   Container(
@@ -165,7 +165,7 @@ class _WelcomeBackScreenState extends State<WelcomeBackScreen> {
                       ]),
                     ),
                   ),
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 30),
                   SizedBox(
                     width: 275,
                     height: 50,
