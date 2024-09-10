@@ -30,7 +30,7 @@ You'll have to cd into the directory where Flutter is downloaded, and checkout t
 ```git checkout 2.10.0``` You can find what path flutter is located on your computer with:
 ```flutter doctor -v```
 
-Run ```flutter pub get``` and ```flutter pub update``` as needed to download dependent packages and libraries.
+Run ```flutter pub get``` or ```flutter pub upgrade``` as needed to download dependent packages and libraries.
 
 Run ```flutter doctor``` This command will tell you all the needed installations and bug fixes needed to be able to run a Flutter project fully. Follow the instructions if there are any errors in the logs, such as downloading the Android SDK, iOS SDK, etc.
 
