@@ -24,16 +24,15 @@ Clone the repository using
 
 Open the repository using an IDE of your choice (VS Code, IntelliJ, Android Studio, etc.). I would suggest VS code for now for simpliciy. Android Studio and IntelliJ provide better ways to navigate the codebase. You'll also have to download XCode for iOS simulations (Flutter works on all devices, when changing the codebase, we want to make sure it functions in all devices and input types).
 
-Run ```flutter pub get``` and ```flutter pub update``` as needed to download dependent packages and libraries.
-
-Run ```flutter downgrade 2.10.0``` to get onto the correct flutter version (this codebase is a couple of years old). If there is an error (saying flutter cannot be downgraded/found), follow:
+Download flutter 2.10.0 version. Or, if already downloaded, run ```flutter downgrade 2.10.0``` to get onto the correct flutter version (this codebase is a couple of years old). If there is an error (saying flutter cannot be downgraded/found), follow:
 https://stackoverflow.com/questions/66545480/flutter-downgrade-error-there-is-no-previously-recorded-version-for-channel
-
 You'll have to cd into the directory where Flutter is downloaded, and checkout their 2.10.0 branch.
 ```git checkout 2.10.0```
 
 You can find what path flutter is located on your computer with:
 ````flutter doctor -v```
+
+Run ```flutter pub get``` and ```flutter pub update``` as needed to download dependent packages and libraries.
 
 Run ```flutter doctor``` This command will tell you all the needed installations and bug fixes needed to be able to run a Flutter project fully. Follow the instructions if there are any errors in the logs, such as downloading the Android SDK, iOS SDK, etc.
 
