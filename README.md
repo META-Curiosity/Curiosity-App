@@ -15,6 +15,7 @@ For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+**Documentation to Start Running the Flutter App Locally**
 Navigate to our code repository
 https://github.com/META-Curiosity/Curiosity-App
 
