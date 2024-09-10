@@ -22,7 +22,7 @@ https://github.com/META-Curiosity/Curiosity-App
 Clone the repository using
 ```git clone https://github.com/META-Curiosity/Curiosity-App.git```
 
-Open the repository using an IDE of your choice (VS Code, IntelliJ, Android Studio, etc.). I would suggest VS code for now for simpliciy. Android Studio and IntelliJ provide better ways to navigate the codebase. You'll also have to download XCode for iOS simulations (Flutter works on all devices, when changing the codebase, we want to make sure it functions in all devices and input types).
+Open the repository using an IDE of your choice (VS Code, IntelliJ, Android Studio, etc.). I would suggest VS code for now for simplicity. Android Studio and IntelliJ provide better ways to navigate the codebase. You'll also have to download XCode for iOS simulations (Flutter works on all devices, when changing the codebase, we want to make sure it functions in all devices and input types).
 
 Download flutter 2.10.0 version. Or, if already downloaded, run ```flutter downgrade 2.10.0``` to get onto the correct flutter version (this codebase is a couple of years old). If there is an error (saying flutter cannot be downgraded/found), follow:
 https://stackoverflow.com/questions/66545480/flutter-downgrade-error-there-is-no-previously-recorded-version-for-channel
