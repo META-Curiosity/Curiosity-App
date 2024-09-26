@@ -92,6 +92,9 @@ void main() async {
   print("Finished initializing application");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  // Set persistence for Firebase Authentication
+  await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
+
   // Requesting users permission for notification
   NotificationSettings settings = await messaging.requestPermission();
   print('User granted permission: ${settings.authorizationStatus}');
