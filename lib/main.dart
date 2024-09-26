@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curiosity_flutter/const/notification_payload.dart';
 import 'package:curiosity_flutter/navigation.dart';
 import 'package:curiosity_flutter/services/log_service.dart';
@@ -94,6 +95,8 @@ void main() async {
 
   // Set persistence for Firebase Authentication
   await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
+  await FirebaseFirestore.instance.enablePersistence(const PersistenceSettings(synchronizeTabs: true));
+
 
   // Requesting users permission for notification
   NotificationSettings settings = await messaging.requestPermission();
